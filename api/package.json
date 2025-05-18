@@ -1,0 +1,41 @@
+{
+  "name": "autocare-api",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "davenjoroge10@gmail.com",
+  "type": "module",
+  "main": "./src/index.js",
+  "imports": {
+    "#*": "./src/*"
+  },
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "seed": "node ./src/seeders/index.js",
+    "secrets": "node ./src/scripts/secrets.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.14.0",
+    "openai": "^4.89.0",
+    "sequelize": "^6.37.6"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.26",
+    "nodemon": "^3.1.9"
+  }
+}

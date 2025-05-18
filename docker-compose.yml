@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      - web
+  front:
+    build: ./web
+    container_name: ${APP_NAME}-front
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    environment:
+      port: ${WEB_PORT}
+    depends_on:
+      - api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front.rule=Host(`autocare.localhost`)"
+      - "traefik.http.routers.front.entrypoints=web"
+    networks:
+      - web
+  api:
+    build: ./api
+    container_name: ${APP_NAME}-api
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.autocare.localhost`)"
+      - "traefik.http.routers.api.entrypoints=web"
+    environment:
+      PORT: ${API_PORT}
+    networks:
+      - web
+
+  db:
+    container_name: ${APP_NAME}-db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - web
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file: .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`db.autocare.localhost`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=web"
+    depends_on:
+      - db
+    networks:
+      - web
+    
+volumes:
+  db_data:
+
+networks:
+  web:
+    external: false
