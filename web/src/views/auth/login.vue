@@ -5,10 +5,16 @@
             <div class="mt-10">
                 <Form @submit="login()">
                     <div class="space-y-4">
-                        <form-input label="Email address" v-model="email" :error="errors.email" autocomplete="email"
-                            type="email" required></form-input>
-                        <form-input label="Password" v-model="password" autocomplete="password" :error="errors.password"
-                            allow-password-toggle type="password" required></form-input>
+                        <div class="space-y-2">
+                            <form-label>Email address</form-label>
+                            <form-input v-model="email" :error="errors.email" autocomplete="email" type="email"
+                                required></form-input>
+                        </div>
+                        <div class="space-y-2">
+                            <form-label>Password</form-label>
+                            <form-input v-model="password" autocomplete="password" :error="errors.password"
+                                allow-password-toggle type="password" required></form-input>
+                        </div>
 
                         <div v-if="responseError"
                             class="flex items-center space-x-3 border border-red-500 text-red-500 bg-red-500/10 rounded-lg p-2"
@@ -21,9 +27,9 @@
                         </div>
                         <div class="!mt-8">
 
-                            <base-button type="submit" class="w-full" :loading>
+                            <Button type="submit" class="w-full" :loading>
                                 <span>Login</span>
-                            </base-button>
+                            </Button>
                         </div>
                         <div class="space-y-2">
                             <p class="text-gray-600 text-center">
@@ -38,7 +44,9 @@
     </div>
 </template>
 <script lang="ts" setup>
-import FormInput from '@/components/form/input.vue'
+import FormInput from '@/components/ui/input/Input.vue'
+import Button from '@/components/ui/button/Button.vue'
+import FormLabel from '@/components/ui/label/Label.vue'
 import { AuthLoading, useAuthStore } from "@/stores/auth"
 import { AlertCircle, X } from 'lucide-vue-next'
 import { Form, useForm } from "vee-validate"
