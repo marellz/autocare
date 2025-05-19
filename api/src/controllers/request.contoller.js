@@ -25,8 +25,9 @@ class RequestsController {
 
   static async create(req, res, next) {
     try {
-      const { phone, item } = req.body;
+      const { name, phone, item } = req.body;
       const request = await RequestService.create({
+        name,
         phone,
         item,
       });

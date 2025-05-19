@@ -6,6 +6,10 @@ export default {
     allowNull: false,
     primaryKey: true,
   },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
   phone: {
     allowNull: false,
     type: Sequelize.STRING,
