@@ -1,7 +1,7 @@
 import APIError from "#handlers/errors/api.error.js";
 
-export default errorHandler = (err, req, res, next) => {
-  console.error(err); // Log error for debugging
+const errorHandler = (err, req, res, next) => {
+  console.error(err.stack); // Log error for debugging
 
   if (err instanceof APIError) {
     return res.status(err.statusCode).json({ error: err.message });
@@ -9,5 +9,10 @@ export default errorHandler = (err, req, res, next) => {
 
   res
     .status(500)
-    .json({ error: "Internal Server Error.", message: err.message });
+    .json({
+      message: "error",
+      error: err.message,
+    });
 };
+
+export default errorHandler;

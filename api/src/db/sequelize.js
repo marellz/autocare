@@ -1,6 +1,9 @@
 import { Sequelize } from "sequelize";
 import dbConfig from "#config/db.js";
 import userModelDefinition from "#db/models/user.model.js";
+import requestModelDefinition from "#db/models/request.model.js";
+import vendorModelDefinition from "#db/models/vendor.model.js";
+import vendorRequestModelDefinition from "#db/models/vendorRequest.model.js";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -30,6 +33,7 @@ export const syncModels = async () => {
       console.log("Database connection established.");
 
       syncModels();
+
       return; // success
     } catch (error) {
       console.error(`Attempt ${attempt} failed: ${error.message}`);
@@ -45,3 +49,15 @@ export const syncModels = async () => {
 })();
 
 export const UserModel = sequelize.define("users", userModelDefinition);
+export const VendorModel = sequelize.define("vendors", vendorModelDefinition);
+export const RequestModel = sequelize.define(
+  "requests",
+  requestModelDefinition
+);
+export const VendorRequestModel = sequelize.define(
+  "vendor_requests",
+  vendorRequestModelDefinition
+);
+
+VendorModel.hasMany(VendorRequestModel);
+RequestModel.hasMany(VendorRequestModel);

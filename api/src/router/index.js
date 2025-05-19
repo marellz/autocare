@@ -1,9 +1,15 @@
 import homeRoutes from "./routes/_home.js";
 import authRoutes from "./routes/_auth.js";
+import requestRoutes from "./routes/_request.js";
+import vendorRoutes from "./routes/_vendor.js";
+import vendorRequestRoutes from "./routes/_vendorRequests.js";
 
 const routes = new Map([
   ["/", homeRoutes],
   ["/auth", authRoutes],
+  ["/requests", requestRoutes],
+  ["/vendors", vendorRoutes],
+  ["/vendor-requests", vendorRequestRoutes],
 ]);
 
 const registerRoutes = (app) => {
