@@ -17,14 +17,14 @@
     --flame: #ee5622ff;
   */
 
-  --color-primary: #ee5622ff;
+  /* --color-primary: #ee5622ff;
   --color-primary-2: #eca72cff;
   --color-secondary: #44355bff;
   --color-dark: #221e22ff;
-  --color-dark-alt: #31263eff;
+  --color-dark-alt: #31263eff; */
 }
 
-.button {
+/* .button {
   @apply px-4 py-2 bg-primary/20 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white disabled:bg-slate-500/10 disabled:border-slate-500 disabled:text-slate-500;
 }
 
@@ -42,7 +42,7 @@
 
 .form-input {
   @apply border p-2 rounded-lg border-slate-600 bg-slate-600/10 outline-0 w-full;
-}
+} */
 
 /*
     ---break---
