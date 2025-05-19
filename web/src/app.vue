@@ -1,23 +1,21 @@
 <template>
   <div class="flex flex-col h-screen min-h-screen overflow-auto">
     <header>
-      <Container class="flex items-center space-x-4 py-4">
-        <img alt="Vue logo" class="h-10 " src="@/assets/images/logo.svg" width="125" height="125" />
-        <nav class="flex items-center space-x-2 flex-auto">
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
-
-          <div class="!ml-auto flex space-x-2">
-            <template v-if="auth.authenticated">
-              <p>{{ auth.user?.name }}</p>
-              <a href="#logout" @click.prevent="auth.logout">Logout</a>
+      <Container class="py-4">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <template v-for="({ path, label, asBtn }, index) in links" :key="index">
+              <RouterLink v-if="asBtn" :to="path">
+                <Button >{{label}}</Button>
+              </RouterLink>
+              <NavigationMenuItem v-else>
+                <NavigationMenuLink tag="router-link" :href="path">
+                  {{ label }}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
             </template>
-            <template v-else>
-              <RouterLink to="/login">Login</RouterLink>
-              <RouterLink to="/register">Register</RouterLink>
-            </template>
-          </div>
-        </nav>
+          </NavigationMenuList>
+        </NavigationMenu>
       </Container>
     </header>
     <main class="flex-auto py-10">
@@ -31,7 +29,15 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Container from './components/base/container.vue';
 import { useAuthStore } from './stores/auth';
+import NavigationMenu from './components/ui/navigation-menu/NavigationMenu.vue';
+import NavigationMenuLink from './components/ui/navigation-menu/NavigationMenuLink.vue';
+import NavigationMenuItem from './components/ui/navigation-menu/NavigationMenuItem.vue';
+import NavigationMenuList from './components/ui/navigation-menu/NavigationMenuList.vue';
+import Button from './components/ui/button/Button.vue';
 
 const auth = useAuthStore()
-
+const links = [
+  { path: '/', label: 'Requests' },
+  { path: '/request-form', label: 'Make a request', asBtn: true },
+]
 </script>
