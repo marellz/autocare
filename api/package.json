@@ -32,7 +32,8 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.14.0",
     "openai": "^4.89.0",
-    "sequelize": "^6.37.6"
+    "sequelize": "^6.37.6",
+    "twilio": "^5.6.1"
   },
   "devDependencies": {
     "@types/mysql": "^2.15.26",
