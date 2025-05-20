@@ -14,9 +14,21 @@ export default {
     allowNull: false,
     type: Sequelize.STRING,
   },
+  channel: { // communication channel
+    allowNull: false,
+    type: Sequelize.STRING,
+  },
   item: {
     allowNull: false,
     type: Sequelize.STRING,
+  },
+  missingDetails:{ // array of details as string
+    allowNull: true,
+    type: Sequelize.STRING
+  },
+  status: { // missing_details, pending, completed
+    allowNull: false,
+    type: Sequelize.STRING
   },
   // payment: {
   //   allowNull: false,
