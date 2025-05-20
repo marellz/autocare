@@ -24,8 +24,9 @@ app.use(errorMiddleware)
 registerRoutes(app);
 
 const appName = process.env.APP_NAME;
-app.listen(3000, () => {
-  console.log(` ${[appName]} API listening on port 3000`);
+const apiPort = process.env.API_PORT
+app.listen(apiPort, () => {
+  console.log(` ${[appName]} API listening on port ${apiPort}`);
 });
 
 export default app;
