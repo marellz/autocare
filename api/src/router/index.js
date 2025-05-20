@@ -3,6 +3,7 @@ import authRoutes from "./routes/_auth.js";
 import requestRoutes from "./routes/_request.js";
 import vendorRoutes from "./routes/_vendor.js";
 import vendorRequestRoutes from "./routes/_vendorRequests.js";
+import whatsAppWebHookRoutes from "./routes/_whastappWebHook.js";
 
 const routes = new Map([
   ["/", homeRoutes],
@@ -10,6 +11,7 @@ const routes = new Map([
   ["/requests", requestRoutes],
   ["/vendors", vendorRoutes],
   ["/vendor-requests", vendorRequestRoutes],
+  ["/webhook/whatsapp", whatsAppWebHookRoutes]
 ]);
 
 const registerRoutes = (app) => {
