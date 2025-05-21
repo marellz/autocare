@@ -22,6 +22,10 @@ export default {
     allowNull: false,
     type: Sequelize.STRING,
   },
+  capturedDetails: {
+    allowNull: true,
+    type: Sequelize.STRING
+  },
   missingDetails:{ // array of details as string
     allowNull: true,
     type: Sequelize.STRING
@@ -30,10 +34,6 @@ export default {
     allowNull: false,
     type: Sequelize.STRING
   },
-  // payment: {
-  //   allowNull: false,
-  //   type: Sequelize.STRING,
-  // },
   fulfilled_at: {
     allowNull: true,
     type: Sequelize.DATE,
