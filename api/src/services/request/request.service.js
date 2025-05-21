@@ -5,6 +5,11 @@ class RequestService {
     const requests = await RequestModel.findAll({ where });
     return requests;
   }
+  
+  static async findOne(where = {}) {
+    const requests = await RequestModel.findOne({ where });
+    return requests;
+  }
 
   static async findById(id) {
     const request = await RequestModel.findByPk(id);
