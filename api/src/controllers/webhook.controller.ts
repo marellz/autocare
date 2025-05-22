@@ -2,9 +2,9 @@ import ReceiverService from "../services/receiver/receiver.service";
 import { Request } from "express";
 export default class WebHookController {
   static async receive(req: Request) {
-    const { From: sender, Body, ProfileName: name, WaId: phone } = req.body;
 
-    
+    // DATA FROM WHATSAPP
+    const { From: sender, Body, ProfileName: name, WaId: phone } = req.body;
 
     /**
      * FROM A VENDOR TO AN EXISTING REQUEST
@@ -24,7 +24,8 @@ export default class WebHookController {
        * HANDLE REQUEST AS A CLIENT REQUEST
        */
 
-      ReceiverService.handleClientRequest({ sender, name, phone, Body });
+      await ReceiverService.handleClientRequest({ sender, name, phone, Body });
+      
     }
 
     return;
