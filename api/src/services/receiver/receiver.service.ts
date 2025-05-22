@@ -1,21 +1,19 @@
-import { RequestModel } from "../../db/sequelize";
-import type { Request } from "../../db/models/request.model";
-import ParserService from "../../services/parser/parser.service";
+import {
+  type Request,
+  type CapturedDetails,
+  CarPartDetailEnum,
+  RequestStatusEnum,
+} from "../../db/models/request.model";
 import RequestService from "../../services/request/request.service";
 import { sendWhatsapp } from "../../services/twilio/twillio.service";
+import RequestProcessService from "../request/process.service";
+import ParserService from "../parser/parser.service";
 
 interface ClientRequest {
   sender: string;
   name: string;
   Body: string;
   phone: string;
-}
-
-interface CarPartDetails {
-  carBrandAndModel: string;
-  carYear?: string;
-  carGeneration?: string;
-  carPartName: string;
 }
 
 class ReceiverService {
@@ -29,166 +27,85 @@ class ReceiverService {
 
     const incompleteRequest = await RequestService.findOne({
       phone,
-      status: "missing_details",
+      status: RequestStatusEnum.MISSING_DETAILS,
     });
 
     if (incompleteRequest) {
       const _request = incompleteRequest.get();
-      // see if missing details align
-      console.log(_request.id);
-      console.log({
-        Body,
-        missingDetails: _request.missingDetails,
-        oldItem: _request.item,
-      });
-
-      const _missingDetails = _request.missingDetails
-        ? JSON.parse(_request.missingDetails)
-        : [];
-
-      const response = await ParserService.parseMissingDetails(
-        Body,
-        _missingDetails,
-        _request.item
-      );
-
-      if (response.missingKeys && response.missingKeys.length) {
-        // if incomplete, back again.
-
-        sendWhatsapp({
-          to: sender,
-          body: `Still missing keys: ${response.missingKeys.join(", ")}`,
-        });
-      } else {
-        //if complete, update to pending
-
-        const _capturedDetails = _request.capturedDetails
-          ? JSON.parse(_request.capturedDetails)
-          : {};
-
-        const updatedCapturedDetails = {
-          ...response.capturedKeys,
-          ..._capturedDetails,
-        };
-
-        const item = computeItemDetails(updatedCapturedDetails);
-
-        RequestService.update(_request.id, {
-          status: "pending",
-          item,
-          capturedDetails: JSON.stringify(updatedCapturedDetails),
-          missingDetails: null,
-        });
-      }
-
-      return;
-    }
-
-    // pass to AI to discern what they are looking for from the body
-    const {
-      capturedKeys,
-      missingKeys,
-    }: {
-      capturedKeys?: CarPartDetails;
-      missingKeys?: string[];
-    } = await ParserService.parseNewRequest(Body);
-    if (missingKeys && missingKeys.length) {
-      // handle missing keys
-      // create incomplete request
-      // send a chat detailing what is missing.
-
-      // todo: enums!
-      const keys: Record<keyof CarPartDetails, string> = {
-        carPartName: "part name",
-        carBrandAndModel: "your car brand and model",
-        carYear: "car year or generation",
-        carGeneration: "car generation",
-      };
-
-      // const missingKeys = missingKeys.map((m) => keys[m]);
-      const item = capturedKeys ? computeItemDetails(capturedKeys) : "[empty]";
-
-      const _response = `
-      We need the following missing information from your request:
-      - ${missingKeys.join(" \n -")}
-      `;
-
-      await RequestService.create({
-        name,
-        phone,
-        item,
-        channel: "whatsapp",
-        status: "missing_details",
-        capturedDetails: JSON.stringify(capturedKeys),
-        missingDetails: JSON.stringify(
-          missingKeys.map((m) => keys[m as keyof CarPartDetails])
-        ),
-      });
-
-      // send this back
-
-      await sendWhatsapp({ to: sender, body: _response });
-    } else {
-      // confirm receipt.
-
-      const item = capturedKeys ? computeItemDetails(capturedKeys) : "[empty]";
-
-      // throw error if capturedKeys is invalid
-
-      await RequestService.create({
-        name,
-        phone,
-        item,
-        channel: "whatsapp",
-        status: "pending",
-        capturedDetails: JSON.stringify(capturedKeys),
-        missingDetails: null,
-      });
+      const { response, status, missingKeys, capturedKeys } =
+        await RequestProcessService.processIncompleteRequest(Body, _request);
 
       await sendWhatsapp({
         to: sender,
-        body: "We have all your details. We will get back soon.",
+        body: response,
       });
+
+      const item = computeItemDetails(capturedKeys);
+
+      const originalMessages = new Set(_request.originalMessages);
+      originalMessages.add(Body);
+
+      await RequestService.update(_request.id, {
+        status,
+        item,
+        originalMessages: Array.from(originalMessages),
+        capturedDetails: capturedKeys,
+        missingDetails: missingKeys,
+      });
+
+      return { response };
+    } else {
+      const { response, capturedKeys, missingKeys } =
+        await RequestProcessService.processNewRequest(Body);
+
+      let status = RequestStatusEnum.MISSING_DETAILS;
+      if (!missingKeys.length) {
+        status = RequestStatusEnum.PENDING;
+      }
+
+      const item = computeItemDetails(capturedKeys);
+
+      const payload = {
+        name,
+        phone,
+        item,
+        originalMessages: [Body],
+        channel: "whatsapp",
+        status,
+        capturedDetails: capturedKeys,
+        missingDetails: missingKeys,
+      };
+
+      await RequestService.create(payload);
+
+      await sendWhatsapp({ to: sender, body: response });
+
+      return { response };
     }
   }
 
   static async handleVendorResponse(existingRequest: Request, body: string) {
-    console.log({ existingRequest });
     // updateRequest
     // const {availability, condition, } = ParserService.parseVendorResponse(Body)
     const response = await ParserService.parseVendorResponse(body);
-
-    console.log({ type: "Vendor response", response });
     // grab pending details, fill in. if missing, repeat. if not, close conversation.
 
-    return;
-  }
-
-  static async findExistingRequest(phone: string) {
-    // certify there is no pending request with said phonenumber
-
-    // ATTACH REQUESTS TO VENDORS
-    // WHERE VENDOR_PHONE === 'phone'
-    const existingRequest = await RequestModel.findOne({
-      where: {
-        phone,
-        status: "pending",
-      },
-    });
-
-    return existingRequest;
+    return {
+      response,
+    };
   }
 }
 
-export default ReceiverService;
-
-export const computeItemDetails = (keys: CarPartDetails) => {
-  const { carBrandAndModel, carYear, carGeneration, carPartName } = keys;
-  const str = `${carPartName} for a ${carBrandAndModel}`;
-  const yearOrGen = carYear || carGeneration;
-  if (!yearOrGen) return `${str}. Unknown year/gen`;
-  const str2 =
-    [carGeneration, carYear].filter((i) => i !== null && i !== "").join(" ") +
-    " ";
-  return [str, str2].join(". ");
+export const computeItemDetails = (details: Partial<CapturedDetails>) => {
+  return [
+    CarPartDetailEnum.PART_NAME,
+    CarPartDetailEnum.CAR_BRAND,
+    CarPartDetailEnum.CAR_MODEL,
+    CarPartDetailEnum.CAR_YEAR,
+  ]
+    .map((i) => details[i] ?? `[missing ${i}]`)
+    .splice(1, 0, "for a")
+    .join(" ");
 };
+
+export default ReceiverService;
