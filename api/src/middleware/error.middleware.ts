@@ -1,9 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
+  // eslint-disable-next-line
+  next: NextFunction
 ) => {
   console.error(err.stack); // Log error for debugging
 
