@@ -15,7 +15,7 @@ const { dbName, userName, password } = dbConfig;
 
 export const sequelize = new Sequelize(dbName!, userName!, password, {
   host: process.env["DB_HOST"],
-  dialect: "mysql",
+  dialect: "postgres",
   logging: (msg) => console.log(msg),
 });
 

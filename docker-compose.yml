@@ -53,41 +53,72 @@ services:
     networks:
       - web
 
+
   db:
     container_name: ${APP_NAME}-db
-    image: mysql:8.0
+    image: postgres:15
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
     networks:
       - web
 
-  phpmyadmin:
-    image: phpmyadmin:latest
+  # db:
+  #   container_name: ${APP_NAME}-db
+  #   image: mysql:8.0
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: ${DB_DATABASE}
+  #     MYSQL_USER: ${DB_USERNAME}
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   networks:
+  #     - web
+
+  pgadmin:
+    image: dpage/pgadmin4
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    env_file: .env
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASS}
+    env_file:
+      - .env
+    depends_on:
+      - db
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.phpmyadmin.rule=Host(`db.autocare.localhost`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=web"
-    depends_on:
-      - db
     networks:
       - web
+  
+  # phpmyadmin:
+  #   image: phpmyadmin:latest
+  #   environment:
+  #     PMA_HOST: db
+  #     PMA_PORT: 3306
+  #     MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  #     MYSQL_USER: ${DB_USERNAME}
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   env_file: .env
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.phpmyadmin.rule=Host(`db.autocare.localhost`)"
+  #     - "traefik.http.routers.phpmyadmin.entrypoints=web"
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - web
     
 volumes:
-  db_data:
+  pgdata:
 
 networks:
   web:
