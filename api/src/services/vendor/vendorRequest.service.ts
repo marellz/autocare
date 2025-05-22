@@ -1,4 +1,5 @@
-import { VendorRequestModel } from "#db/sequelize.js";
+import { VendorRequestModel } from "../../db/sequelize";
+import type { NewVendorRequest, VendorRequest } from "../../db/models/vendorRequest.model";
 
 class VendorRequestService {
   static async findAll(where = {}) {
@@ -7,15 +8,15 @@ class VendorRequestService {
     });
   }
 
-  static async create(payload) {
+  static async create(payload: Partial<NewVendorRequest>) {
     return await VendorRequestModel.create(payload);
   }
 
-  static async findById(id) {
+  static async findById(id: string) {
     return await VendorRequestModel.findByPk(id);
   }
 
-  static async update(id, data) {
+  static async update(id: string, data: Partial<VendorRequest>) {
     const vendorRequest = await VendorRequestModel.update(data, {
       where: { id },
     });

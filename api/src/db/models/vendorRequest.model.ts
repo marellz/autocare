@@ -1,29 +1,47 @@
-import { Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 export default {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
   vendorId: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   requestId: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   condition: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   price: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   notes: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true,
   },
 };
+
+export interface VendorRequest {
+  id: number;
+  vendorId: string;
+  requestId: string;
+  condition: string | null;
+  price: string | null;
+  notes: string | null;
+}
+
+export interface NewVendorRequest {
+  id?: number;
+  vendorId: string;
+  requestId: string;
+  condition?: string | null;
+  price?: string | null;
+  notes?: string | null;
+}

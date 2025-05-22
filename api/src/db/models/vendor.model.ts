@@ -1,21 +1,40 @@
-import { Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 export default {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
   name: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   phone: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   dealor_in: {
-    type: Sequelize.STRING,
+    type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,
   },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 };
+
+export interface Vendor {
+  id: string;
+  name: string;
+  phone: string;
+  dealor_in: string[];
+  location: string | null;
+}
+
+export interface NewVendor {
+  name: string;
+  phone: string;
+  dealor_in: string[];
+  location?: string | null;
+}

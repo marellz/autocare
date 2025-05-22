@@ -4,17 +4,13 @@
   "description": "",
   "license": "ISC",
   "author": "davenjoroge10@gmail.com",
-  "type": "module",
   "main": "./src/index.js",
-  "imports": {
-    "#*": "./src/*"
-  },
   "scripts": {
-    "dev": "ts-node ./src/index.ts",
-    "build": "tsc",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
-    "seed": "node ./src/seeders/index.js",
-    "secrets": "node ./src/scripts/secrets.js",
+    "seed": "node dist/seeders/index.js",
+    "secrets": "node dist/scripts/secrets.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -34,6 +30,7 @@
     "mysql2": "^3.14.0",
     "openai": "^4.100.0",
     "sequelize": "^6.37.6",
+    "tsc-alias": "^1.8.16",
     "twilio": "^5.6.1"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
-import ReceiverService from "#services/receiver/receiver.service.js";
-
+import ReceiverService from "../services/receiver/receiver.service";
+import { Request, Response } from "express";
 export default class WebHookController {
-  static async receive(req, res) {
+  static async receive(req: Request, res: Response) {
     const { From: sender, Body, ProfileName: name, WaId: phone } = req.body;
 
     
@@ -18,7 +18,7 @@ export default class WebHookController {
       /**
        * HANDLE INPUT AS A VENDOR RESPONSE
        */
-      ReceiverService.handleVendorResponse(existingRequest);
+      ReceiverService.handleVendorResponse(existingRequest, Body);
     } else {
       /**
        * HANDLE REQUEST AS A CLIENT REQUEST

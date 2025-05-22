@@ -1,18 +1,17 @@
-import APIError from "#handlers/errors/api.error.js";
+import { Request, Response, NextFunction } from "express";
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   console.error(err.stack); // Log error for debugging
 
-  if (err instanceof APIError) {
-    return res.status(err.statusCode).json({ error: err.message });
-  }
-
-  res
-    .status(500)
-    .json({
-      message: "error",
-      error: err.message,
-    });
+  res.status(500).json({
+    message: "error",
+    error: err.message,
+  });
 };
 
 export default errorHandler;

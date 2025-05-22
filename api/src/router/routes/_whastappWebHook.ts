@@ -1,13 +1,12 @@
-import WebHookController from "#controllers/webhook.controller.js";
-import { sendWhatsapp } from "#services/twilio/twillio.service.js";
-import express from "express";
+import WebHookController from "../../controllers/webhook.controller";
+import { asyncHandler } from "../../handlers/async.handler";
+import express, { Request, Response } from "express";
 const router = express.Router();
 
-router.post('/', WebHookController.receive)
+router.post("/", asyncHandler(WebHookController.receive));
 
-router.post('/status', (req, res) => {
-  console.log('Status update:', req)
+router.post("/status", (req: Request, res: Response) => {
+  console.log("Status update:", req);
+});
 
-})
-
-export default router
+export default router;

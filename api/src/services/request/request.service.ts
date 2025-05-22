@@ -1,5 +1,5 @@
-import { RequestModel } from "#db/sequelize.js";
-
+import type { NewRequest, Request } from "../../db/models/request.model";
+import { RequestModel } from "../../db/sequelize";
 class RequestService {
   static async findAll(where = {}) {
     const requests = await RequestModel.findAll({ where });
@@ -11,17 +11,17 @@ class RequestService {
     return requests;
   }
 
-  static async findById(id) {
+  static async findById(id: string) {
     const request = await RequestModel.findByPk(id);
     return request;
   }
 
-  static async create(payload) {
+  static async create(payload: NewRequest) {
     const request = await RequestModel.create(payload);
     return request;
   }
 
-  static async update(id, data) {
+  static async update(id: string, data: Partial<Request>) {
     console.log({ id, data });
     const request = await RequestModel.update(data, {
       where: { id },
@@ -29,7 +29,7 @@ class RequestService {
     return request;
   }
 
-  static async delete(id) {
+  static async destroy(id: string) {
     const request = await RequestModel.destroy({
       where: { id },
     });

@@ -1,11 +1,12 @@
 import express from "express";
-import RequestsController from "#controllers/request.contoller.js";
+import RequestsController from "../../controllers/request.controller";
+import { asyncHandler } from "../../handlers/async.handler";
 
 const router = express.Router();
 
-router.get("/", RequestsController.findAll);
-router.post("/", RequestsController.create);
-router.get("/:id", RequestsController.findById);
-router.put("/:id", RequestsController.update);
+router.get("/", asyncHandler(RequestsController.findAll));
+router.post("/", asyncHandler(RequestsController.create));
+router.get("/:id", asyncHandler(RequestsController.findById));
+router.put("/:id", asyncHandler(RequestsController.update));
 
 export default router;

@@ -1,13 +1,19 @@
-import { Sequelize } from "sequelize";
-import dbConfig from "#config/db.js";
-import userModelDefinition from "#db/models/user.model.js";
-import requestModelDefinition from "#db/models/request.model.js";
-import vendorModelDefinition from "#db/models/vendor.model.js";
-import vendorRequestModelDefinition from "#db/models/vendorRequest.model.js";
+import { Model, Sequelize } from "sequelize";
+import dbConfig from "../config/db";
+import userModelDefinition, {
+  type User,
+  type NewUser,
+} from "../db/models/user.model";
+import requestModelDefinition, {
+  type NewRequest,
+  type Request,
+} from "../db/models/request.model";
+import vendorModelDefinition from "../db/models/vendor.model";
+import vendorRequestModelDefinition from "../db/models/vendorRequest.model";
 
 const { dbName, userName, password } = dbConfig;
 
-export const sequelize = new Sequelize(dbName, userName, password, {
+export const sequelize = new Sequelize(dbName!, userName!, password, {
   host: process.env["DB_HOST"],
   dialect: "mysql",
   logging: (msg) => console.log(msg),
@@ -18,7 +24,7 @@ export const syncModels = async () => {
     await sequelize.sync();
     console.log("Synced successfully");
   } catch (error) {
-    console.error("Sync failed", error.message);
+    console.error("Sync failed", error);
   }
 };
 
@@ -35,8 +41,8 @@ export const syncModels = async () => {
       syncModels();
 
       return; // success
-    } catch (error) {
-      console.error(`Attempt ${attempt} failed: ${error.message}`);
+    } catch (error: unknown) {
+      console.error(`Attempt ${attempt} failed: ${error}`);
 
       if (attempt === retries) {
         throw new Error("Could not connect to DB after multiple attempts.");
@@ -48,9 +54,12 @@ export const syncModels = async () => {
   }
 })();
 
-export const UserModel = sequelize.define("users", userModelDefinition);
+export const UserModel = sequelize.define<Model<User, NewUser>>(
+  "users",
+  userModelDefinition
+);
 export const VendorModel = sequelize.define("vendors", vendorModelDefinition);
-export const RequestModel = sequelize.define(
+export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
   "requests",
   requestModelDefinition
 );

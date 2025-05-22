@@ -9,7 +9,10 @@ const twillioWhatsappNumber = process.env["TWILIO_WHATSAPP_NUMBER"];
 
 export const client = twilio(accountSid, authToken);
 
-export const sendWhatsapp = async ({ to, body }) => {
+export const sendWhatsapp = async ({ to, body }: {
+  to: string,
+  body: string
+}) => {
   const from = `whatsapp:${twillioWhatsappNumber}`;
   client.messages
     .create({

@@ -1,23 +1,22 @@
-import { VendorModel } from "#db/sequelize.js";
-import { where } from "sequelize";
-
+import { VendorModel } from "../../db/sequelize";
+import type { Vendor, NewVendor } from "../../db/models/vendor.model";
 class VendorService {
   static async findAll(where = {}) {
     return await VendorModel.findAll({
-      where
+      where,
     });
   }
 
-  static async findById(id) {
+  static async findById(id: string) {
     const vendor = await VendorModel.findByPk(id);
     return vendor;
   }
 
-  static async create(data) {
+  static async create(data: Partial<NewVendor>) {
     return await VendorModel.create(data);
   }
 
-  static async update(id, data) {
+  static async update(id: string, data: Partial<Vendor>) {
     return await VendorModel.update(data, {
       where: {
         id,
@@ -25,17 +24,14 @@ class VendorService {
     });
   }
 
-  static async delete(id) {
+  static async destroy(id: string) {
     const vendor = await VendorModel.findByPk(id);
     if (!vendor) {
       return null;
     }
 
-    return vendor.destroy({
-      where : {
-        id,
-      },
-    });
+    return vendor.destroy()
+  
   }
 }
 

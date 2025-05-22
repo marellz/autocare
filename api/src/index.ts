@@ -3,13 +3,14 @@ import cors from "cors";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { Express } from "express";
 
-import registerRoutes from "./router/index.js";
-import errorMiddleware from "#middleware/error.middleware.js";
+import registerRoutes from "./router/index";
+import errorMiddleware from "./middleware/error.middleware";
 
 dotenv.config();
 
-const app = express();
+const app: Express = express();
 app.use(cookieParser());
 app.use(
   cors({
@@ -19,14 +20,14 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(errorMiddleware)
+app.use(errorMiddleware);
 
 registerRoutes(app);
 
 const appName = process.env.APP_NAME;
-const apiPort = process.env.API_PORT
+const apiPort = process.env.API_PORT;
 app.listen(apiPort, () => {
-  console.log(` ${[appName]} API listening on port ${apiPort}`);
+  console.log(` ${[appName]} API listening nicely on port ${apiPort}`);
 });
 
 export default app;

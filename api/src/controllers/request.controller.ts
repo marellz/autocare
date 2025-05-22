@@ -1,7 +1,8 @@
-import RequestService from "#services/request/request.service.js";
+import RequestService from "../services/request/request.service";
+import { Request, Response, NextFunction } from "express";
 
 class RequestsController {
-  static async findAll(req, res, next) {
+  static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const requests = await RequestService.findAll();
       res.json({ message: "ok", data: requests });
@@ -10,7 +11,7 @@ class RequestsController {
     }
   }
 
-  static async findById(req, res, next) {
+  static async findById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const request = await RequestService.findById(id);
@@ -23,13 +24,15 @@ class RequestsController {
     }
   }
 
-  static async create(req, res, next) {
+  static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, phone, item } = req.body;
+      const { name, phone, item, channel, status } = req.body;
       const request = await RequestService.create({
         name,
         phone,
         item,
+        channel,
+        status
       });
       res.json({ message: "ok", data: request });
     } catch (error) {
@@ -37,11 +40,11 @@ class RequestsController {
     }
   }
 
-  static async update(req, res, next) {
+  static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilled_at, item  } = req.body;
-      const request = await RequestService.update(id, { fulfilled_at, item });
+      const { fulfilled_at, item, status } = req.body;
+      const request = await RequestService.update(id, { fulfilled_at, item, status });
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }
@@ -51,10 +54,10 @@ class RequestsController {
     }
   }
 
-  static async delete(req, res, next) {
+  static async destroy(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const request = await RequestService.delete(id);
+      const request = await RequestService.destroy(id);
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }

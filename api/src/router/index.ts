@@ -1,9 +1,11 @@
-import homeRoutes from "./routes/_home.js";
-import authRoutes from "./routes/_auth.js";
-import requestRoutes from "./routes/_request.js";
-import vendorRoutes from "./routes/_vendor.js";
-import vendorRequestRoutes from "./routes/_vendorRequests.js";
-import whatsAppWebHookRoutes from "./routes/_whastappWebHook.js";
+import homeRoutes from "./routes/_home";
+import authRoutes from "./routes/_auth";
+import requestRoutes from "./routes/_request";
+import vendorRoutes from "./routes/_vendor";
+import vendorRequestRoutes from "./routes/_vendorRequests";
+import whatsAppWebHookRoutes from "./routes/_whastappWebHook";
+
+import { Express } from "express";
 
 const routes = new Map([
   ["/", homeRoutes],
@@ -14,7 +16,7 @@ const routes = new Map([
   ["/webhook/whatsapp", whatsAppWebHookRoutes]
 ]);
 
-const registerRoutes = (app) => {
+const registerRoutes = (app: Express) => {
   routes.forEach((value, key, map) => {
     app.use(key, value);
   });

@@ -1,41 +1,64 @@
-import { Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 export default {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
   name: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   phone: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   channel: { // communication channel
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   item: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   capturedDetails: {
     allowNull: true,
-    type: Sequelize.STRING
+    type: DataTypes.STRING
   },
   missingDetails:{ // array of details as string
     allowNull: true,
-    type: Sequelize.STRING
+    type: DataTypes.STRING
   },
   status: { // missing_details, pending, completed
     allowNull: false,
-    type: Sequelize.STRING
+    type: DataTypes.STRING
   },
   fulfilled_at: {
     allowNull: true,
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
   },
 };
+
+export interface Request {
+  id: string;
+  name: string|null;
+  phone: string;
+  channel: string;
+  item: string;
+  capturedDetails: string | null;
+  missingDetails: string | null;
+  status: string;
+  fulfilled_at: string | null;
+}
+
+export interface NewRequest {
+  name: string | null;
+  phone: string;
+  channel: string;
+  item: string;
+  capturedDetails?: string | null;
+  missingDetails?: string | null;
+  status: string;
+  fulfilled_at?: string | null;
+}

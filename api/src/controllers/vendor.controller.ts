@@ -1,7 +1,8 @@
-import VendorService from "#services/vendor/vendor.service.js";
+import VendorService from "../services/vendor/vendor.service";
+import { Request, Response, NextFunction } from "express";
 
 class VendorController {
-  static async findAll(req, res, next) {
+  static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const vendors = await VendorService.findAll();
       return res.status(200).json({ message: "ok", data: vendors });
@@ -10,7 +11,7 @@ class VendorController {
     }
   }
 
-  static async findById(req, res, next) {
+  static async findById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const vendor = await VendorService.findById(id);
@@ -23,13 +24,12 @@ class VendorController {
     }
   }
 
-  static async create(req, res, next) {
+  static async create(req: Request, res: Response, next: NextFunction) {
     const { name, phone, email, location, dealor_in } = req.body;
     try {
       const vendor = await VendorService.create({
         name,
         phone,
-        email,
         location,
         dealor_in,
       });
@@ -39,14 +39,13 @@ class VendorController {
     }
   }
 
-  static async update(req, res, next) {
+  static async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { name, phone, email, location, dealor_in } = req.body;
     try {
       const vendor = await VendorService.update(id, {
         name,
         phone,
-        email,
         location,
         dealor_in,
       });
@@ -59,7 +58,7 @@ class VendorController {
     }
   }
 
-  static async destroy(req, res, next) {
+  static async destroy(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
       const vendor = await VendorService.destroy(id);

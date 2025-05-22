@@ -5,7 +5,7 @@ dotenv.config();
 
 const SECRET_NOT_FOUND = "SECRET not found!";
 
-export const generateToken = async (id, email) => {
+export const generateToken = async (id: number, email: string) => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error(SECRET_NOT_FOUND);

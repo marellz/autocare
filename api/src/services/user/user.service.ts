@@ -1,11 +1,19 @@
-import { UserModel } from "#db/sequelize.js";
-import { hashPassword } from "#utils/password.js";
+import { UserModel } from "../../db/sequelize";
+import { hashPassword } from "../../utils/password";
 
-const get = async (id) => {
+const get = async (id: number) => {
   return await UserModel.findByPk(id);
 };
 
-const create = async ({ email, name, password: unsecurePassword }) => {
+const create = async ({
+  email,
+  name,
+  password: unsecurePassword,
+}: {
+  email: string;
+  name: string;
+  password: string;
+}) => {
   console.log({ email, name, unsecurePassword });
   const password = await hashPassword(unsecurePassword);
   const user = await UserModel.create({
@@ -17,17 +25,26 @@ const create = async ({ email, name, password: unsecurePassword }) => {
   return user;
 };
 
-const update = async ({ name, password: unsecurePassword }) => {
-  const { id } = req.params;
-  const user = await UserModel.findOne({ where: { id } });
-  user.name = name ?? user.name;
+interface UpdateUserPayload {
+  name: string;
+  password: string;
+}
 
+const update = async (
+  id: string,
+  { name, password: unsecurePassword }: UpdateUserPayload
+) => {
+  const _user = await UserModel.findOne({ where: { id } });
+  const user = _user?.get();
+  if (!user) return false;
+
+  let updateable: { password?: string; name?: string } = {};
+  if (name) updateable.name = name;
   if (unsecurePassword) {
-    user.password = hashPassword(unsecurePassword);
+    updateable.password = await hashPassword(unsecurePassword);
   }
 
-  await user.save();
-  await user.reload();
+  _user?.update(updateable);
 
   return true;
 };

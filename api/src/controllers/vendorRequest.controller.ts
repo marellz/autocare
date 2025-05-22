@@ -1,7 +1,7 @@
-import VendorRequestService from "#services/vendor/vendorRequest.service.js";
-
+import VendorRequestService from "../services/vendor/vendorRequest.service";
+import { Request, Response } from "express";
 class VendorRequestController {
-  static async findAll(req, res) {
+  static async findAll(req: Request, res: Response) {
     try {
       const { vendorId, requestId } = req.query;
       const vendorRequests = await VendorRequestService.findAll({
@@ -16,7 +16,7 @@ class VendorRequestController {
     }
   }
 
-  static async findById(req, res) {
+  static async findById(req: Request, res: Response) {
     try {
       const { id } = req.params;
       const vendorRequest = await VendorRequestService.findById(id);
@@ -29,7 +29,7 @@ class VendorRequestController {
     }
   }
 
-  static async create(req, res) {
+  static async create(req: Request, res: Response) {
     try {
       const { vendorId, requestId } = req.body;
       // todo: make sure vendorId and RequestId are not null, and no such combination exists
@@ -45,7 +45,7 @@ class VendorRequestController {
     }
   }
 
-  static async update(req, res) {
+  static async update(req: Request, res: Response) {
     try {
       const id = req.params.id;
       const vendorRequest = await VendorRequestService.findById(id);
