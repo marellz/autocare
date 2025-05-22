@@ -22,7 +22,6 @@ class RequestService {
   }
 
   static async update(id: string, data: Partial<Request>) {
-    console.log({ id, data });
     const request = await RequestModel.update(data, {
       where: { id },
     });

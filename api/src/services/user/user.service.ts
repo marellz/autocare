@@ -14,7 +14,6 @@ const create = async ({
   name: string;
   password: string;
 }) => {
-  console.log({ email, name, unsecurePassword });
   const password = await hashPassword(unsecurePassword);
   const user = await UserModel.create({
     email,
