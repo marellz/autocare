@@ -97,15 +97,24 @@ class ReceiverService {
 }
 
 export const computeItemDetails = (details: Partial<CapturedDetails>) => {
-  return [
-    CarPartDetailEnum.PART_NAME,
-    CarPartDetailEnum.CAR_BRAND,
+  console.log(details);
+  const result = [
     CarPartDetailEnum.CAR_MODEL,
     CarPartDetailEnum.CAR_YEAR,
+    CarPartDetailEnum.PART_NAME,
+    CarPartDetailEnum.CAR_BRAND,
+    CarPartDetailEnum.CAR_VARIANT,
+  ].map((i) => details[i] ?? `[missing ${i}]`);
+
+  const results2 = [
+    CarPartDetailEnum.ENGINE_SIZE,
+    CarPartDetailEnum.TRANSMISSION,
+    CarPartDetailEnum.BODY_TYPE,
   ]
-    .map((i) => details[i] ?? `[missing ${i}]`)
-    .splice(1, 0, "for a")
-    .join(" ");
+    .filter((i) => !!details[i])
+    .map((i) => (details[i] ? `${i} - ${details[i]}` : ""));
+
+  return result.join(" ") + ". " + results2.join(", ");
 };
 
 export default ReceiverService;
