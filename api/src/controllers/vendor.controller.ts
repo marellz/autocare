@@ -25,7 +25,7 @@ class VendorController {
   }
 
   static async create(req: Request, res: Response, next: NextFunction) {
-    const { name, phone, email, location, dealor_in } = req.body;
+    const { name, phone, location, dealor_in } = req.body;
     try {
       const vendor = await VendorService.create({
         name,
@@ -41,7 +41,7 @@ class VendorController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { name, phone, email, location, dealor_in } = req.body;
+    const { name, phone, location, dealor_in } = req.body;
     try {
       const vendor = await VendorService.update(id, {
         name,

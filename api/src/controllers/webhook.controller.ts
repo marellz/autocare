@@ -1,7 +1,7 @@
 import ReceiverService from "../services/receiver/receiver.service";
-import { Request, Response } from "express";
+import { Request } from "express";
 export default class WebHookController {
-  static async receive(req: Request, res: Response) {
+  static async receive(req: Request) {
     const { From: sender, Body, ProfileName: name, WaId: phone } = req.body;
 
     

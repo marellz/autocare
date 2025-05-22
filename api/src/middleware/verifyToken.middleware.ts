@@ -1,6 +1,5 @@
 import jwt, {
   JsonWebTokenError,
-  JwtPayload,
   TokenExpiredError,
 } from "jsonwebtoken";
 import dotenv from "dotenv";

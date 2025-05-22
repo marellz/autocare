@@ -33,7 +33,7 @@ class ReceiverService {
     });
 
     if (incompleteRequest) {
-      let _request = incompleteRequest.get();
+      const _request = incompleteRequest.get();
       // see if missing details align
       console.log(_request.id);
       console.log({
@@ -184,10 +184,10 @@ export default ReceiverService;
 
 export const computeItemDetails = (keys: CarPartDetails) => {
   const { carBrandAndModel, carYear, carGeneration, carPartName } = keys;
-  let str = `${carPartName} for a ${carBrandAndModel}`;
+  const str = `${carPartName} for a ${carBrandAndModel}`;
   const yearOrGen = carYear || carGeneration;
   if (!yearOrGen) return `${str}. Unknown year/gen`;
-  let str2 =
+  const str2 =
     [carGeneration, carYear].filter((i) => i !== null && i !== "").join(" ") +
     " ";
   return [str, str2].join(". ");

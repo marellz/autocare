@@ -12,6 +12,7 @@
     "seed": "node dist/seeders/index.js",
     "secrets": "node dist/scripts/secrets.js",
     "lint": "eslint 'src/**/*.ts'",
+    "lint-fix": "eslint 'src/**/*.ts' --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

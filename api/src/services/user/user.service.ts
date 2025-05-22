@@ -38,7 +38,7 @@ const update = async (
   const user = _user?.get();
   if (!user) return false;
 
-  let updateable: { password?: string; name?: string } = {};
+  const updateable: { password?: string; name?: string } = {};
   if (name) updateable.name = name;
   if (unsecurePassword) {
     updateable.password = await hashPassword(unsecurePassword);

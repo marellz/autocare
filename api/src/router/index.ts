@@ -17,7 +17,7 @@ const routes = new Map([
 ]);
 
 const registerRoutes = (app: Express) => {
-  routes.forEach((value, key, map) => {
+  routes.forEach((value, key) => {
     app.use(key, value);
   });
 };
