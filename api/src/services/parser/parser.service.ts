@@ -1,107 +1,143 @@
-import { openAiClient } from '../../services/openAI/openAI.service';
+// import { CarPartDetailEnum } from "../../db/models/request.model";
+import OpenAI from "openai";
+import { openAiClient } from "../../services/openAI/openAI.service";
 import {
-  ChatCompletionMessageParam,
-} from 'openai/resources/chat';
+  CapturedDetails,
+  CarPartDetail,
+  CarPartDetailEnum,
+} from "../../db/models/request.model";
+
+type CarProperties = Record<
+  CarPartDetail,
+  {
+    type: "string" | "number";
+    description: string;
+    nullable?: boolean;
+  }
+>;
+
+export interface ParserResponse {
+  capturedKeys: Partial<CapturedDetails>;
+}
+
+const carProperties: CarProperties = {
+  [CarPartDetailEnum.PART_NAME]: {
+    type: "string",
+    description: "The car part the user is looking for",
+  },
+  [CarPartDetailEnum.CAR_BRAND]: {
+    type: "string",
+    description: "The brand of the car (e.g. Toyota, Mazda)",
+  },
+  [CarPartDetailEnum.CAR_MODEL]: {
+    type: "string",
+    description: "The model of the car (e.g. Demio, Probox)",
+  },
+  [CarPartDetailEnum.CAR_YEAR]: {
+    type: "string",
+    description: "The year of the car (e.g. 2017)",
+  },
+  [CarPartDetailEnum.CAR_VARIANT]: {
+    type: "string",
+    description:
+      "Variant of the car (e.g. diesel, petrol, hybrid). Only include if mentioned or needed to clarify an ambiguous model.",
+    nullable: true,
+  },
+  [CarPartDetailEnum.ENGINE_SIZE]: {
+    type: "string",
+    description:
+      "Engine size if mentioned (e.g. 1.5L). Optional — include only if user specified or needed for clarity.",
+    nullable: true,
+  },
+  [CarPartDetailEnum.TRANSMISSION]: {
+    type: "string",
+    description:
+      "Transmission type (e.g. automatic, manual). Optional — include only if mentioned.",
+    nullable: true,
+  },
+  [CarPartDetailEnum.BODY_TYPE]: {
+    type: "string",
+    description: "Body type (e.g coupe, sedan, convertible)",
+  },
+};
+
+export const requiredKeys: CarPartDetail[] = [
+  CarPartDetailEnum.PART_NAME,
+  CarPartDetailEnum.CAR_BRAND,
+  CarPartDetailEnum.CAR_MODEL,
+  CarPartDetailEnum.CAR_YEAR,
+];
 
 class ParserService {
   static async parse(
     input: string,
-    { description, keys }: { description: string; keys: string[] },
+    properties: Partial<CarProperties> = carProperties,
   ) {
-    try {
-      const _input = `
-            Input: "${input}"
+    const functions: OpenAI.Chat.ChatCompletionTool[] = [
+      {
+        type: "function",
+        function: {
+          name: "extract_car_part_info",
+          description:
+            "Extracts car part and vehicle details from a user's message",
+          parameters: {
+            type: "object",
+            properties,
+            required: requiredKeys,
+          },
+        },
+      },
+    ];
 
-            Context: ${description}
-
-            Expected Output:
-            - Return a JSON object with "missingKeys" property(array) and/or "capturedKeys" prop(object):
-            - for capturedKeys, I would need a object with the keys ${keys.join(
-              ', ',
-            )} mapped to the values extracted
-            - If some keys are missing, respond with: { "missingKeys": [...], "capturedKeys": { ... } }
-            - If all keys are missing or the message is too vague, respond with: { "message": "Unable to decode your message" }
-
-            IMPORTANT: Do not wrap your response in backticks or say anything else. Respond with plain JSON only.
-        `;
-
-      const _prompt: ChatCompletionMessageParam = {
-        role: 'user',
-        content: _input,
-      };
-
-      const _instruction: ChatCompletionMessageParam = {
-        role: 'system',
-        content:
-          'You are a helpful assistant that extracts structured data from messages and returns clean, valid JSON. Do not add extra text or formatting.',
-      };
-      const response = await openAiClient.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [_instruction, _prompt],
-      });
-
-      const { choices } = response;
-      if (!choices.length) return { error: 'No content returned' };
-      const { content: _rawContent } = choices[0].message;
-
-      if (!_rawContent) return null;
-
-      return JSON.parse(_rawContent);
-
-      //   return {};
-    } catch (error) {
-      console.log({ error: 'Error getting openAI request', message: error });
+    const response = await openAiClient.chat.completions.create({
+      model: "gpt-4-1106-preview", // supports tool calling
+      messages: [
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+      tools: functions,
+      tool_choice: "auto",
+    });
+    const toolCall = response.choices[0].message.tool_calls?.[0];
+    
+    if (!toolCall) {
+      return { capturedKeys: {}, missingKeys: requiredKeys } as ParserResponse;
     }
+    const capturedKeys = JSON.parse(
+      toolCall.function.arguments,
+    ) as CapturedDetails;
+
+    const _keys = Object.keys(capturedKeys) as CarPartDetail[];
+
+    _keys.forEach((k) => {
+      if (!capturedKeys[k]) delete capturedKeys[k];
+    });
+
+    return {
+      capturedKeys,
+    };
   }
 
   static async parseNewRequest(input: string) {
-    const response = await this.parse(input, {
-      description:
-        'This is input from a new user looking for a particular part for their car.',
-      keys: [
-        'carPartName(string)',
-        'carBrandAndModel(string)',
-        'carYearOrGeneration(string)',
-      ],
-    });
-    console.log({ response });
-
-    return response;
+    return await this.parse(input);
   }
 
-  static async parseMissingDetails(
-    input: string,
-    keys: string[] = [],
-    context: string,
-  ) {
-    const response = await this.parse(input, {
-      description: `This is input from a user that has a current request but their original message was missing the following: ${keys.join(
-        ', ',
-      )}. Their original item message is ${context}`,
-      keys,
-    });
-
-    console.log({ response });
-    return response;
+  static async parseMissingDetails(input: string, missing: CarPartDetail[]) {
+    const missingProperties: Partial<CarProperties> = missing.reduce(
+      (prev, curr) => ({ ...prev, [curr]: carProperties[curr] }),
+      {},
+    );
+    return await this.parse(input, missingProperties);
   }
 
   static async parseVendorResponse(input: string) {
     // { availability, price }
-    const response = await this.parse(input, {
-      description:
-        'This is a response from a vendor about a car part that was requested by a client.',
-      keys: [
-        'availability(boolean)',
-        'price(string),',
-        "condition: 'new' or 'used' or 'ex-japan/uk' ",
-      ],
-    });
 
-    console.log({ response });
-    return response;
+    // todo: use separate parser for this
+    return await this.parse(input);
   }
-
-  static async parseResponse() {}
 }
 
 export default ParserService;
