@@ -8,8 +8,14 @@ import requestModelDefinition, {
   type NewRequest,
   type Request,
 } from "../db/models/request.model";
-import vendorModelDefinition from "../db/models/vendor.model";
-import vendorRequestModelDefinition from "../db/models/vendorRequest.model";
+import vendorModelDefinition, {
+  Vendor,
+  NewVendor,
+} from "../db/models/vendor.model";
+import vendorRequestModelDefinition, {
+  NewVendorRequest,
+  VendorRequest,
+} from "../db/models/vendorRequest.model";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -56,17 +62,19 @@ export const syncModels = async () => {
 
 export const UserModel = sequelize.define<Model<User, NewUser>>(
   "users",
-  userModelDefinition
+  userModelDefinition,
 );
-export const VendorModel = sequelize.define("vendors", vendorModelDefinition);
+export const VendorModel = sequelize.define<Model<Vendor, NewVendor>>(
+  "vendors",
+  vendorModelDefinition,
+);
 export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
   "requests",
-  requestModelDefinition
+  requestModelDefinition,
 );
-export const VendorRequestModel = sequelize.define(
-  "vendor_requests",
-  vendorRequestModelDefinition
-);
+export const VendorRequestModel = sequelize.define<
+  Model<VendorRequest, NewVendorRequest>
+>("vendor_requests", vendorRequestModelDefinition);
 
 VendorModel.hasMany(VendorRequestModel);
 RequestModel.hasMany(VendorRequestModel);

@@ -14,7 +14,7 @@ export default {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  dealor_in: {
+  brands: {
     type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,
   },
@@ -28,13 +28,13 @@ export interface Vendor {
   id: string;
   name: string;
   phone: string;
-  dealor_in: string[];
+  brands: string[];
   location: string | null;
 }
 
 export interface NewVendor {
   name: string;
   phone: string;
-  dealor_in: string[];
+  brands: string[];
   location?: string | null;
 }
