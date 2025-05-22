@@ -97,7 +97,6 @@ class ReceiverService {
 }
 
 export const computeItemDetails = (details: Partial<CapturedDetails>) => {
-  console.log(details);
   const result = [
     CarPartDetailEnum.CAR_MODEL,
     CarPartDetailEnum.CAR_YEAR,
