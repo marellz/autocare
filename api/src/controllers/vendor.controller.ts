@@ -25,13 +25,13 @@ class VendorController {
   }
 
   static async create(req: Request, res: Response, next: NextFunction) {
-    const { name, phone, location, dealor_in } = req.body;
+    const { name, phone, location, brands } = req.body;
     try {
       const vendor = await VendorService.create({
         name,
         phone,
         location,
-        dealor_in,
+        brands,
       });
       return res.status(201).json({ message: "ok", data: vendor });
     } catch (error) {
@@ -41,13 +41,13 @@ class VendorController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { name, phone, location, dealor_in } = req.body;
+    const { name, phone, location, brands } = req.body;
     try {
       const vendor = await VendorService.update(id, {
         name,
         phone,
         location,
-        dealor_in,
+        brands,
       });
       if (!vendor) {
         return res.status(404).json({ message: "Vendor not found" });

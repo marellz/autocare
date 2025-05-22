@@ -12,7 +12,7 @@ class VendorService {
     return vendor;
   }
 
-  static async create(data: Partial<NewVendor>) {
+  static async create(data: NewVendor) {
     return await VendorModel.create(data);
   }
 

@@ -8,7 +8,7 @@ class VendorRequestService {
     });
   }
 
-  static async create(payload: Partial<NewVendorRequest>) {
+  static async create(payload: NewVendorRequest) {
     return await VendorRequestModel.create(payload);
   }
 
