@@ -20,7 +20,7 @@ import vendorRequestModelDefinition, {
 const { dbName, userName, password } = dbConfig;
 
 export const sequelize = new Sequelize(dbName!, userName!, password, {
-  host: process.env["DB_HOST"],
+  host: process.env["DB_HOST"] || "localhost",
   dialect: "postgres",
   logging: (msg) => console.log(msg),
 });
@@ -63,18 +63,33 @@ export const syncModels = async () => {
 export const UserModel = sequelize.define<Model<User, NewUser>>(
   "users",
   userModelDefinition,
+  {
+    tableName: "users",
+    freezeTableName: true,
+  },
 );
 export const VendorModel = sequelize.define<Model<Vendor, NewVendor>>(
   "vendors",
   vendorModelDefinition,
+  {
+    tableName: "vendors",
+    freezeTableName: true,
+  },
 );
 export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
   "requests",
   requestModelDefinition,
+  {
+    tableName: "requests",
+    freezeTableName: true,
+  },
 );
 export const VendorRequestModel = sequelize.define<
   Model<VendorRequest, NewVendorRequest>
->("vendor_requests", vendorRequestModelDefinition);
+>("vendor_requests", vendorRequestModelDefinition, {
+  tableName: "vendor_requests",
+  freezeTableName: true,
+});
 
 VendorModel.hasMany(VendorRequestModel);
 VendorRequestModel.belongsTo(VendorModel);
