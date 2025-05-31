@@ -25,9 +25,9 @@ export const sequelize = new Sequelize(dbName!, userName!, password, {
   logging: (msg) => console.log(msg),
 });
 
-export const syncModels = async () => {
+export const syncModels = async (force: boolean = false) => {
   try {
-    await sequelize.sync();
+    await sequelize.sync({ force });
     console.log("Synced successfully");
   } catch (error) {
     console.error("Sync failed", error);
