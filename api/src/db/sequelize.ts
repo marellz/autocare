@@ -77,4 +77,7 @@ export const VendorRequestModel = sequelize.define<
 >("vendor_requests", vendorRequestModelDefinition);
 
 VendorModel.hasMany(VendorRequestModel);
+VendorRequestModel.belongsTo(VendorModel);
+
 RequestModel.hasMany(VendorRequestModel);
+VendorRequestModel.belongsTo(RequestModel);
