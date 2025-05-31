@@ -1,14 +1,21 @@
+import { cleanObject } from "../utils/object.utils";
 import VendorRequestService from "../services/vendor/vendorRequest.service";
 import { Request, Response } from "express";
 class VendorRequestController {
   static async findAll(req: Request, res: Response) {
     try {
-      const { vendorId, requestId } = req.query;
-      const vendorRequests = await VendorRequestService.findAll({
-        vendorId,
-        requestId,
+      // const { vendorId, requestId } = req.query;
+      const payload: {
+        vendorId?: string;
+        requestId?: string;
+      } = cleanObject(req.query);
+
+
+      const vendorRequests = await VendorRequestService.findAll(payload);
+      res.status(200).json({
+        message: "ok",
+        data: vendorRequests,
       });
-      res.status(200).json(vendorRequests);
     } catch (error) {
       res
         .status(500)
@@ -32,7 +39,15 @@ class VendorRequestController {
   static async create(req: Request, res: Response) {
     try {
       const { vendorId, requestId } = req.body;
-      // todo: make sure vendorId and RequestId are not null, and no such combination exists
+      // done: make sure vendorId and RequestId are not null, and no such combination exists
+      const exists = await VendorRequestService.findAll({
+        requestId,
+        vendorId,
+      });
+      if (exists.length)
+        throw new Error(
+          "This vendor has already been asked to serve the request",
+        );
       const newVendorRequest = await VendorRequestService.create({
         vendorId,
         requestId,
