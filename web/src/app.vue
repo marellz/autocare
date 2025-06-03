@@ -1,19 +1,23 @@
 <template>
   <div class="flex flex-col h-screen min-h-screen overflow-auto">
     <header>
-      <Container class="py-4">
+      <Container class="py-4 flex items-center">
         <NavigationMenu>
-          <NavigationMenuList>
-            <template v-for="({ path, label, asBtn }, index) in links" :key="index">
-              <RouterLink v-if="asBtn" :to="path">
-                <Button >{{label}}</Button>
+          <NavigationMenuList class="space-x-4">
+            <NavigationMenuItem v-for="({ path, label }, index) in links" :key="`links-${index}`">
+              <RouterLink :to="path">
+                {{ label }}
               </RouterLink>
-              <NavigationMenuItem v-else>
-                <NavigationMenuLink tag="router-link" :href="path">
-                  {{ label }}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </template>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+        <NavigationMenu class="ml-auto">
+          <NavigationMenuList>
+            <NavigationMenuItem v-for="({ path, label }, index) in actions" :key="`actions-${index}`">
+              <RouterLink :to="path">
+                <Button>{{ label }}</Button>
+              </RouterLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </Container>
@@ -38,6 +42,9 @@ import Button from './components/ui/button/Button.vue';
 const auth = useAuthStore()
 const links = [
   { path: '/', label: 'Requests' },
-  { path: '/request-form', label: 'Make a request', asBtn: true },
+  { path: '/vendors', label: 'Vendors' },
+]
+const actions = [
+  { path: '/request-form', label: 'Make a request' },
 ]
 </script>
