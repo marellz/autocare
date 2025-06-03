@@ -41,6 +41,21 @@ class VendorRequestService {
     return vendors;
   }
 
+  static async findOne(where: {
+    vendorId?: string;
+    requestId?: string;
+    status?: string;
+  }) {
+    // find vendorRequests where vendorPhone === phone
+    const vendorRequest = await VendorRequestModel.findOne({
+      where: {
+        ...where,
+      },
+    });
+
+    return vendorRequest;
+  }
+
   static async findAll(where: { vendorId?: string; requestId?: string } = {}) {
     // find vendorRequests where vendorPhone === phone
 

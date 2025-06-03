@@ -1,5 +1,6 @@
 import { VendorModel } from "../../db/sequelize";
 import type { Vendor, NewVendor } from "../../db/models/vendor.model";
+
 class VendorService {
   static async findAll(where = {}) {
     return await VendorModel.findAll({
@@ -9,6 +10,15 @@ class VendorService {
 
   static async findById(id: string) {
     const vendor = await VendorModel.findByPk(id);
+    return vendor;
+  }
+
+  static async findByPhone(phone: string) {
+    const vendor = await VendorModel.findOne({
+      where: {
+        phone,
+      },
+    });
     return vendor;
   }
 
@@ -30,8 +40,7 @@ class VendorService {
       return null;
     }
 
-    return vendor.destroy()
-  
+    return vendor.destroy();
   }
 }
 
