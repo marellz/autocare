@@ -45,3 +45,19 @@ export interface NewVendorRequest {
   price?: string | null;
   notes?: string | null;
 }
+
+export interface VendorRequestProperties {
+  available?: boolean;
+  condition: string;
+  price: string;
+  notes?: string | null;
+}
+
+export enum VendorResponseEnum {
+  AVAILABLE = "available",
+  CONDITION = "condition",
+  PRICE = "price",
+  NOTES = "notes",
+}
+
+export type VendorResponseKeys = `${VendorResponseEnum}`;

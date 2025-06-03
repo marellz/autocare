@@ -1,5 +1,4 @@
 import {
-  type Request,
   type CapturedDetails,
   CarPartDetailEnum,
   RequestStatusEnum,
@@ -8,6 +7,8 @@ import RequestService from "../../services/request/request.service";
 import { sendWhatsapp } from "../../services/twilio/twillio.service";
 import RequestProcessService from "../request/process.service";
 import ParserService from "../parser/parser.service";
+import VendorRequestService from "../vendor/vendorRequest.service";
+import { VendorRequest } from "src/db/models/vendorRequest.model";
 
 interface ClientRequest {
   sender: string;
@@ -84,15 +85,47 @@ class ReceiverService {
     }
   }
 
-  static async handleVendorResponse(existingRequest: Request, body: string) {
-    // updateRequest
-    // const {availability, condition, } = ParserService.parseVendorResponse(Body)
-    const response = await ParserService.parseVendorResponse(body);
-    // grab pending details, fill in. if missing, repeat. if not, close conversation.
+  static async findExistingRequests(phone: string) {
+    // find vendors phone
+    const vendors = await VendorRequestService.findPendingVendorRequests(phone);
 
-    return {
-      response,
-    };
+    return vendors;
+  }
+
+  static async disambiguateVendorResponse(
+    existingVendorRequests: VendorRequest[],
+    body: string,
+  ) {
+    /**
+     * FIND THE CORRECT VENDOR REQUEST,
+     * DISAMBIGUATE BODY WITH EXISTINBG
+     */
+    console.log({ existingVendorRequest: existingVendorRequests[0], body });
+    return existingVendorRequests[0];
+  }
+
+  static async handleVendorResponse(
+    existingRequest: VendorRequest,
+    body: string,
+  ) {
+    // updateRequest
+
+    console.log({ existingRequest, body });
+    const { available, condition, price } =
+      await ParserService.parseVendorResponse(body);
+
+    if (!available) {
+      console.log("No availability found in response, skipping update.");
+
+      return "No availability found in response, skipping update.";
+    }
+
+    await VendorRequestService.update(existingRequest.id, {
+      condition,
+      price: price?.toString(),
+    });
+
+    return "Updated vendor request successfully";
   }
 }
 

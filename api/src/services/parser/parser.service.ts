@@ -6,11 +6,15 @@ import {
   CarPartDetail,
   CarPartDetailEnum,
 } from "../../db/models/request.model";
+import {
+  VendorResponseEnum,
+  VendorResponseKeys,
+} from "../../db/models/vendorRequest.model";
 
 type CarProperties = Record<
   CarPartDetail,
   {
-    type: "string" | "number";
+    type: "string" | "number" | "boolean";
     description: string;
     nullable?: boolean;
   }
@@ -18,6 +22,13 @@ type CarProperties = Record<
 
 export interface ParserResponse {
   capturedKeys: Partial<CapturedDetails>;
+}
+
+export interface CapturedResponseDetails {
+  [VendorResponseEnum.AVAILABLE]?: boolean;
+  [VendorResponseEnum.CONDITION]?: string | null;
+  [VendorResponseEnum.PRICE]?: number | null;
+  [VendorResponseEnum.NOTES]?: string | null;
 }
 
 const carProperties: CarProperties = {
@@ -101,7 +112,7 @@ class ParserService {
       tool_choice: "auto",
     });
     const toolCall = response.choices[0].message.tool_calls?.[0];
-    
+
     if (!toolCall) {
       return { capturedKeys: {}, missingKeys: requiredKeys } as ParserResponse;
     }
@@ -136,7 +147,69 @@ class ParserService {
     // { availability, price }
 
     // todo: use separate parser for this
-    return await this.parse(input);
+    const properties = {
+      [VendorResponseEnum.AVAILABLE]: {
+        type: "boolean",
+        description:
+          "Availability of the part (e.g. false if 'not available/does not have', true if available, already quoted price/condition)",
+      },
+      [VendorResponseEnum.CONDITION]: {
+        type: "string",
+        description: "Condition of the part (e.g. new, used, refurbished)",
+      },
+      [VendorResponseEnum.PRICE]: {
+        type: "number",
+        description: "Price of the part in KES(e.g 1500, 2,000, 15k)",
+      },
+    };
+
+    const functions: OpenAI.Chat.ChatCompletionTool[] = [
+      {
+        type: "function",
+        function: {
+          name: "extract_vendor_response",
+          description:
+            "Extracts car part and vehicle details from a user's message",
+          parameters: {
+            type: "object",
+            properties,
+            required: requiredKeys,
+          },
+        },
+      },
+    ];
+
+    const response = await openAiClient.chat.completions.create({
+      model: "gpt-4-1106-preview", // supports tool calling
+      messages: [
+        {
+          role: "user",
+          content: input,
+        },
+      ],
+      tools: functions,
+      tool_choice: "auto",
+    });
+    const toolCall = response.choices[0].message.tool_calls?.[0];
+
+    if (!toolCall) {
+      return {
+        availabile: false,
+        condition: null,
+        price: null,
+      } as CapturedResponseDetails;
+    }
+    const capturedKeys = JSON.parse(
+      toolCall.function.arguments,
+    ) as CapturedResponseDetails;
+
+    const _keys = Object.keys(capturedKeys) as VendorResponseKeys[];
+
+    _keys.forEach((k) => {
+      if (!capturedKeys[k]) delete capturedKeys[k];
+    });
+
+    return capturedKeys;
   }
 }
 
