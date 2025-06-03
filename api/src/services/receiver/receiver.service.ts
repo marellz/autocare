@@ -8,7 +8,7 @@ import { sendWhatsapp } from "../../services/twilio/twillio.service";
 import RequestProcessService from "../request/process.service";
 import ParserService from "../parser/parser.service";
 import VendorRequestService from "../vendor/vendorRequest.service";
-import { VendorRequest } from "src/db/models/vendorRequest.model";
+import { VendorRequest } from "../../db/models/vendorRequest.model";
 
 interface ClientRequest {
   sender: string;
