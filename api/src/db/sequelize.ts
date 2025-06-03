@@ -16,6 +16,11 @@ import vendorRequestModelDefinition, {
   NewVendorRequest,
   VendorRequest,
 } from "../db/models/vendorRequest.model";
+import {
+  Interaction,
+  NewInteraction,
+  InteractionModelDefinition,
+} from "./models/interaction.model";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -91,8 +96,20 @@ export const VendorRequestModel = sequelize.define<
   freezeTableName: true,
 });
 
+export const InteractionModel = sequelize.define<
+  Model<Interaction, NewInteraction>
+>("interactions", InteractionModelDefinition, {
+  tableName: "interactions",
+  freezeTableName: true,
+});
+
 VendorModel.hasMany(VendorRequestModel);
 VendorRequestModel.belongsTo(VendorModel);
 
 RequestModel.hasMany(VendorRequestModel);
 VendorRequestModel.belongsTo(RequestModel);
+
+VendorModel.hasMany(InteractionModel);
+InteractionModel.belongsTo(VendorModel);
+RequestModel.hasMany(InteractionModel);
+InteractionModel.belongsTo(RequestModel);
