@@ -73,6 +73,7 @@ export const UserModel = sequelize.define<Model<User, NewUser>>(
     freezeTableName: true,
   },
 );
+
 export const VendorModel = sequelize.define<Model<Vendor, NewVendor>>(
   "vendors",
   vendorModelDefinition,
@@ -81,6 +82,7 @@ export const VendorModel = sequelize.define<Model<Vendor, NewVendor>>(
     freezeTableName: true,
   },
 );
+
 export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
   "requests",
   requestModelDefinition,
@@ -89,6 +91,7 @@ export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
     freezeTableName: true,
   },
 );
+
 export const VendorRequestModel = sequelize.define<
   Model<VendorRequest, NewVendorRequest>
 >("vendor_requests", vendorRequestModelDefinition, {
@@ -101,6 +104,7 @@ export const InteractionModel = sequelize.define<
 >("interactions", InteractionModelDefinition, {
   tableName: "interactions",
   freezeTableName: true,
+  timestamps: false
 });
 
 VendorModel.hasMany(VendorRequestModel);

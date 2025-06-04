@@ -46,6 +46,8 @@ export interface Interaction {
   requestId: string;
   vendorId: string | null;
   metadata: JSON;
+  updatedAt: Date;
+  createdAt: Date | null;
 }
 
 export interface NewInteraction {
@@ -56,6 +58,7 @@ export interface NewInteraction {
   requestId: string;
   vendorId?: string | null;
   metadata: JSON;
+  createdAt?: Date | null;
 }
 
 export const InteractionModelDefinition = {
@@ -99,6 +102,14 @@ export const InteractionModelDefinition = {
   },
   metadata: {
     type: DataTypes.JSONB,
+    allowNull: true,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
     allowNull: true,
   },
 };

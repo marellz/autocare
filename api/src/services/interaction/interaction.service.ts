@@ -1,4 +1,4 @@
-import { Interaction } from "../../db/models/interaction.model";
+import { Interaction, NewInteraction } from "../../db/models/interaction.model";
 import { InteractionModel } from "../../db/sequelize";
 
 class InteractionService {
@@ -9,7 +9,8 @@ class InteractionService {
     return item.get();
   }
 
-  static async create(interaction: Interaction): Promise<Interaction> {
+  static async create(interaction: NewInteraction): Promise<Interaction> {
+    interaction.createdAt = new Date();
     const item = await InteractionModel.create(interaction);
     if (!item) throw new Error(`Interaction not created.`);
     return item.get();
@@ -19,6 +20,7 @@ class InteractionService {
     id: string,
     interaction: Partial<Interaction>,
   ): Promise<[affectedCount: number]> {
+    interaction.createdAt = new Date(); // Ensure createdAt is set to current time
     const item = await InteractionModel.update(interaction, { where: { id } });
     return item;
   }
