@@ -143,11 +143,14 @@ class ParserService {
     return await this.parse(input, missingProperties);
   }
 
-  static async parseVendorResponse(input: string) {
-    // { availability, price }
-
+  static async parseVendorResponse(
+    input: string,
+    missingDetails: VendorResponseKeys[] = [],
+  ) {
     // todo: use separate parser for this
-    const properties = {
+    const properties: Partial<
+      Record<VendorResponseKeys, { type: string; description: string }>
+    > = {
       [VendorResponseEnum.AVAILABLE]: {
         type: "boolean",
         description:
@@ -163,17 +166,28 @@ class ParserService {
       },
     };
 
+    let required = properties;
+
+    if (missingDetails.length) {
+      required = missingDetails.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [curr]: properties[curr],
+        }),
+        {},
+      );
+    }
+
     const functions: OpenAI.Chat.ChatCompletionTool[] = [
       {
         type: "function",
         function: {
           name: "extract_vendor_response",
-          description:
-            "Extracts car part and vehicle details from a user's message",
+          description: "Extracts details from a seller message",
           parameters: {
             type: "object",
             properties,
-            required: requiredKeys,
+            required,
           },
         },
       },
@@ -194,10 +208,14 @@ class ParserService {
 
     if (!toolCall) {
       return {
-        availabile: false,
-        condition: null,
-        price: null,
-      } as CapturedResponseDetails;
+        capturedKeys: {
+          availabile: false,
+          condition: null,
+          price: null,
+        },
+      } as {
+        capturedKeys: CapturedResponseDetails;
+      };
     }
     const capturedKeys = JSON.parse(
       toolCall.function.arguments,
@@ -206,10 +224,12 @@ class ParserService {
     const _keys = Object.keys(capturedKeys) as VendorResponseKeys[];
 
     _keys.forEach((k) => {
-      if (!capturedKeys[k]) delete capturedKeys[k];
+      if (!capturedKeys[k]) {
+        delete capturedKeys[k];
+      }
     });
 
-    return capturedKeys;
+    return { capturedKeys };
   }
 }
 
