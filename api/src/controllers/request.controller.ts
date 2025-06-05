@@ -26,11 +26,10 @@ class RequestsController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, phone, item, channel, status, originalMessages, capturedDetails = {}, missingDetails = [] } = req.body;
+      const { name, phone, channel, status, originalMessages, capturedDetails = {}, missingDetails = [] } = req.body;
       const request = await RequestService.create({
         name,
         phone,
-        item,
         channel,
         capturedDetails,
         missingDetails,
@@ -46,8 +45,8 @@ class RequestsController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilled_at, item, status, originalMessages, capturedDetails  } = req.body;
-      const request = await RequestService.update(id, { fulfilled_at, item, status, originalMessages, capturedDetails });
+      const { fulfilled_at, status, originalMessages, capturedDetails  } = req.body;
+      const request = await RequestService.update(id, { fulfilled_at, status, originalMessages, capturedDetails });
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }

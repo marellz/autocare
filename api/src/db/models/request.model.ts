@@ -23,10 +23,6 @@ export default {
     allowNull: false,
     type: DataTypes.ARRAY(DataTypes.STRING),
   },
-  item: {
-    allowNull: false,
-    type: DataTypes.STRING,
-  },
   capturedDetails: {
     allowNull: false,
     type: DataTypes.JSONB,
@@ -88,7 +84,6 @@ export interface Request {
   name: string | null;
   phone: string;
   channel: string;
-  item: string;
   originalMessages: string[];
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
@@ -100,7 +95,6 @@ export interface NewRequest {
   name?: string | null;
   phone: string;
   channel: string;
-  item: string;
   originalMessages: string[];
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
