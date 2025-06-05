@@ -1,152 +1,182 @@
 import {
-  type CapturedDetails,
-  CarPartDetailEnum,
+  VendorRequest,
+  VendorResponseEnum,
+} from "../../db/models/vendorRequest.model";
+import RequestService from "../request/request.service";
+import {
+  CapturedDetails,
+  CarPartDetail,
+  Request,
   RequestStatusEnum,
 } from "../../db/models/request.model";
-import RequestService from "../../services/request/request.service";
-import { sendWhatsapp } from "../../services/twilio/twillio.service";
 import RequestProcessService from "../request/process.service";
 import ParserService from "../parser/parser.service";
 import VendorRequestService from "../vendor/vendorRequest.service";
-import { VendorRequest } from "../../db/models/vendorRequest.model";
-
-interface ClientRequest {
-  sender: string;
-  name: string;
-  Body: string;
-  phone: string;
-}
 
 class ReceiverService {
-  static async handleClientRequest({
-    sender,
-    name,
-    phone,
-    Body,
-  }: ClientRequest) {
-    // find an incomplete request from same number
+  static async handleNewRequest(
+    body: string,
+    user: { name: string; phone: string },
+  ) {
+    // create new Request
 
-    const incompleteRequest = await RequestService.findOne({
-      phone,
-      status: RequestStatusEnum.MISSING_DETAILS,
+    const { response, capturedKeys, missingKeys } =
+      await RequestProcessService.processNewRequest(body);
+
+    // if incomplete, request for more info
+    let status = RequestStatusEnum.COMPLETED;
+    if (missingKeys.length) {
+      status = RequestStatusEnum.MISSING_DETAILS;
+    }
+
+    const payload = {
+      ...user,
+      originalMessages: [body],
+      channel: "whatsapp",
+      status,
+      capturedDetails: capturedKeys,
+      missingDetails: missingKeys,
+    };
+
+    const _request = await RequestService.create(payload);
+    const request = _request.get();
+
+    // if complete, finalize and send to vendors
+
+    return {
+      response,
+      request,
+      missingDetails: missingKeys.length ? missingKeys : null,
+    };
+  }
+
+  static async handleRequestUpdate(request: Request, body: string) {
+    // get missing information
+    // parse body to get missing information
+    const { originalMessages, missingDetails } = request;
+    const { capturedKeys } = await ParserService.parseMissingDetails(
+      [...originalMessages, body].join(". "),
+      missingDetails as CarPartDetail[],
+    );
+
+    const _newMissingKeys = [...missingDetails];
+
+    Object.keys(capturedKeys).forEach((item, index) => {
+      // if key is in missingDetails, remove it
+      if (_newMissingKeys.includes(item)) delete _newMissingKeys[index];
     });
 
-    if (incompleteRequest) {
-      const _request = incompleteRequest.get();
-      const { response, status, missingKeys, capturedKeys } =
-        await RequestProcessService.processIncompleteRequest(Body, _request);
+    const payload: {
+      response: string;
+      missingDetails?: string[];
+      capturedKeys: Partial<CapturedDetails>;
+    } = {
+      response: "All is well now!",
+      capturedKeys,
+    };
 
-      await sendWhatsapp({
-        to: sender,
-        body: response,
-      });
-
-      const item = computeItemDetails(capturedKeys);
-
-      const originalMessages = new Set(_request.originalMessages);
-      originalMessages.add(Body);
-
-      await RequestService.update(_request.id, {
-        status,
-        item,
-        originalMessages: Array.from(originalMessages),
-        capturedDetails: capturedKeys,
-        missingDetails: missingKeys,
-      });
-
-      return { response };
-    } else {
-      const { response, capturedKeys, missingKeys } =
-        await RequestProcessService.processNewRequest(Body);
-
-      let status = RequestStatusEnum.MISSING_DETAILS;
-      if (!missingKeys.length) {
-        status = RequestStatusEnum.PENDING;
-      }
-
-      const item = computeItemDetails(capturedKeys);
-
-      const payload = {
-        name,
-        phone,
-        item,
-        originalMessages: [Body],
-        channel: "whatsapp",
-        status,
-        capturedDetails: capturedKeys,
-        missingDetails: missingKeys,
-      };
-
-      await RequestService.create(payload);
-
-      await sendWhatsapp({ to: sender, body: response });
-
-      return { response };
+    let status = RequestStatusEnum.COMPLETED;
+    if (_newMissingKeys.length) {
+      // still missing keys
+      payload.missingDetails = _newMissingKeys;
+      payload.response = "Still missing keys:" + _newMissingKeys.join(", ");
+      status = RequestStatusEnum.MISSING_DETAILS;
     }
-  }
 
-  static async findExistingRequests(phone: string) {
-    // find vendors phone
-    const vendors = await VendorRequestService.findPendingVendorRequests(phone);
+    // update request
 
-    return vendors;
-  }
+    await RequestService.update(request.id, {
+      status,
+      originalMessages: Array.from([...originalMessages, body]),
+      capturedDetails: capturedKeys,
+      missingDetails: _newMissingKeys,
+    });
 
-  static async disambiguateVendorResponse(
-    existingVendorRequests: VendorRequest[],
-    body: string,
-  ) {
-    /**
-     * FIND THE CORRECT VENDOR REQUEST,
-     * DISAMBIGUATE BODY WITH EXISTINBG
-     */
-    console.log({ existingVendorRequest: existingVendorRequests[0], body });
-    return existingVendorRequests[0];
+    return payload;
   }
 
   static async handleVendorResponse(
-    existingRequest: VendorRequest,
+    vendorRequest: VendorRequest,
     body: string,
   ) {
-    // updateRequest
+    // get request info from response
 
-    console.log({ existingRequest, body });
-    const { available, condition, price } =
+    const { capturedKeys } =
       await ParserService.parseVendorResponse(body);
 
-    if (!available) {
-      console.log("No availability found in response, skipping update.");
+    const missingDetails = [];
+    const { available, condition, price } = capturedKeys;
 
-      return "No availability found in response, skipping update.";
+    if (!available) {
+      // todo: kill vendor request.
+      return {
+        available,
+        response: "Not available from this vendor.",
+      };
     }
 
-    await VendorRequestService.update(existingRequest.id, {
+    if (!condition) missingDetails.push("condition");
+    if (!price) missingDetails.push("price");
+
+    if (missingDetails.length) {
+      return {
+        available: true,
+        missingDetails,
+        response: "Missing information: " + missingDetails.join(", "),
+      };
+    }
+
+    // todo: handle a situation where a vendor posts multiple offers
+    VendorRequestService.update(vendorRequest.id, {
       condition,
       price: price?.toString(),
     });
 
-    return "Updated vendor request successfully";
+    return {
+      available: true,
+      response: "Updated successfully!",
+    };
+  }
+
+  static async handleVendorRequestUpdate(
+    vendorRequest: VendorRequest,
+    body: string,
+  ) {
+    // find what's missing
+
+    const missingDetails: VendorResponseEnum[] = [];
+    if (!vendorRequest.price) missingDetails.push(VendorResponseEnum.PRICE);
+    if (!vendorRequest.condition)
+      missingDetails.push(VendorResponseEnum.CONDITION);
+
+    // parse for it from new body, + old body
+    const { capturedKeys } = await ParserService.parseVendorResponse(
+      body,
+      missingDetails,
+    );
+
+    const _missing = Object.keys(capturedKeys).filter(
+      (k) => !capturedKeys[k as VendorResponseEnum],
+    );
+
+    let response = "";
+    if (_missing.length) {
+      // there and back again
+
+      response = "Still missing: " + _missing.join(", ");
+    }
+
+    if (capturedKeys) {
+      VendorRequestService.update(vendorRequest.id, {
+        ...capturedKeys,
+        price: capturedKeys.price?.toString(),
+      });
+    }
+
+    return {
+      response,
+    };
   }
 }
-
-export const computeItemDetails = (details: Partial<CapturedDetails>) => {
-  const result = [
-    CarPartDetailEnum.CAR_MODEL,
-    CarPartDetailEnum.CAR_YEAR,
-    CarPartDetailEnum.PART_NAME,
-    CarPartDetailEnum.CAR_BRAND,
-    CarPartDetailEnum.CAR_VARIANT,
-  ].map((i) => details[i] ?? `[missing ${i}]`);
-
-  const results2 = [
-    CarPartDetailEnum.ENGINE_SIZE,
-    CarPartDetailEnum.TRANSMISSION,
-    CarPartDetailEnum.BODY_TYPE,
-  ]
-    .filter((i) => !!details[i])
-    .map((i) => (details[i] ? `${i} - ${details[i]}` : ""));
-
-  return result.join(" ") + ". " + results2.join(", ");
-};
 
 export default ReceiverService;
