@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Interaction } from "../../db/models/interaction.model";
 import { InteractionModel } from "../../db/sequelize";
 
@@ -26,13 +27,13 @@ export class InteractionCache {
     const recent = await InteractionModel.findAll({
       where: {
         createdAt: {
-          $gt: threeHoursAgo, // last 3 hrs
-        },
+          [Op.gt]: threeHoursAgo, // last 3 hrs
+        } as any,
       },
       order: [
-        ["created_at", "DESC"],
+        ["createdAt", "DESC"],
       ],
-      distinct: true, // this won't help group, just dedup rows if needed
+      attributes:['Distinct', 'phone', 'phone'],
     });
 
     this.cache = new Map(

@@ -4,7 +4,7 @@ export default class WebHookController {
   static async receive(req: Request) {
 
     // DATA FROM WHATSAPP
-    const { From: sender, Body, ProfileName: name, WaId: phone } = req.body;
+    const { Body, ProfileName: name, WaId: phone } = req.body;
 
     /**
      * FROM A VENDOR TO AN EXISTING REQUEST
@@ -24,7 +24,7 @@ export default class WebHookController {
        * HANDLE REQUEST AS A CLIENT REQUEST
        */
 
-      await ReceiverService.handleClientRequest({ sender, name, phone, Body });
+      await ReceiverService.handleNewRequest(Body, { name, phone });
       
     }
 
