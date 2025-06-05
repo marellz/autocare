@@ -45,7 +45,7 @@ export interface Interaction {
   message: string;
   requestId: string;
   vendorId: string | null;
-  metadata: JSON;
+  metadata?: Record<string, any> | null;
   updatedAt: Date;
   createdAt: Date | null;
 }
@@ -57,7 +57,7 @@ export interface NewInteraction {
   message: string;
   requestId: string;
   vendorId?: string | null;
-  metadata: JSON;
+  metadata?: Record<string, any> | null;
   createdAt?: Date | null;
 }
 
