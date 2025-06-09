@@ -1,10 +1,4 @@
-import { RequestStatusEnum } from "./models/request.model";
-import {
-  RequestModel as Request,
-  syncModels,
-  VendorModel as Vendor,
-  VendorRequestModel as VendorRequest,
-} from "./sequelize";
+import { syncModels, VendorModel as Vendor } from "./sequelize";
 import { faker } from "@faker-js/faker";
 import dotenv from "dotenv";
 
