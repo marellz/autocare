@@ -101,8 +101,7 @@ class ReceiverService {
   ) {
     // get request info from response
 
-    const { capturedKeys } =
-      await ParserService.parseVendorResponse(body);
+    const { capturedKeys } = await ParserService.parseVendorResponse(body);
 
     const missingDetails = [];
     const { available, condition, price } = capturedKeys;
@@ -122,19 +121,21 @@ class ReceiverService {
       return {
         available: true,
         missingDetails,
+        price,
         response: "Missing information: " + missingDetails.join(", "),
       };
     }
 
     // todo: handle a situation where a vendor posts multiple offers
-    VendorRequestService.update(vendorRequest.id, {
+    await VendorRequestService.update(vendorRequest.id, {
       condition,
       price: price?.toString(),
     });
 
     return {
       available: true,
-      response: "Updated successfully!",
+      price,
+      response: `Your quote for request for #${vendorRequest.requestId} has been received and will be forwared to the client`,
     };
   }
 
