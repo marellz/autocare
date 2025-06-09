@@ -166,16 +166,10 @@ class ParserService {
       },
     };
 
-    let required = properties;
+    let required = Object.keys(properties);
 
     if (missingDetails.length) {
-      required = missingDetails.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr]: properties[curr],
-        }),
-        {},
-      );
+      required = missingDetails
     }
 
     const functions: OpenAI.Chat.ChatCompletionTool[] = [
