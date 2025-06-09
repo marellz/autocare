@@ -2,11 +2,18 @@ import { Interaction, NewInteraction } from "../../db/models/interaction.model";
 import { InteractionModel } from "../../db/sequelize";
 
 class InteractionService {
+  static async findAll(
+    where: Partial<Record<keyof Interaction, string | number>> = {},
+  ) {
+    const items = await InteractionModel.findAll({ where });
+    return items;
+  }
+
   static async findByPhone(phone: string): Promise<Interaction | null> {
     // Simulate an async operation, e.g., fetching from a database
-    const item = await InteractionModel.findOne({ where: { phone } });
-    if (!item) throw new Error(`Interaction not found.`);
-    return item.get();
+    const params: any = { where: { phone }, order: [['createdAt', 'DESC']] };
+    const item = await InteractionModel.findOne(params);
+    return item ? item.get() : null;
   }
 
   static async create(interaction: NewInteraction): Promise<Interaction> {
