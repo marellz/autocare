@@ -16,13 +16,6 @@ export const sendWhatsapp = async ({
   to: string;
   body: string;
 }) => {
-  const from = `whatsapp:${twillioWhatsappNumber}`;
-  client.messages
-    .create({
-      from,
-      to,
-      body,
-    })
-    .then((message) => console.log(`Message sent!`, message.sid))
-    .catch((err) => console.error(`Error sending: ${err}`));
+  if (!to.includes("whatsapp:+")) to = `whatsapp:+${to}`;
+
 };
