@@ -111,24 +111,33 @@ class ParserService {
       tools: functions,
       tool_choice: "auto",
     });
-    const toolCall = response.choices[0].message.tool_calls?.[0];
 
-    if (!toolCall) {
-      return { capturedKeys: {}, missingKeys: requiredKeys } as ParserResponse;
+    try {
+      const toolCall = response.choices[0].message.tool_calls?.[0];
+  
+      if (!toolCall) {
+        return { capturedKeys: {}, missingKeys: requiredKeys } as ParserResponse;
+      }
+      const capturedKeys = JSON.parse(
+        toolCall.function.arguments,
+      ) as CapturedDetails;
+  
+      const _keys = Object.keys(capturedKeys) as CarPartDetail[];
+  
+      _keys.forEach((k) => {
+        if (!capturedKeys[k]) delete capturedKeys[k];
+      });
+  
+      return {
+        capturedKeys,
+      };
+      
+    } catch (error) {
+      console.log('Error occurred parsing client details.', error)
+      return {
+        capturedKeys: {},
+      }
     }
-    const capturedKeys = JSON.parse(
-      toolCall.function.arguments,
-    ) as CapturedDetails;
-
-    const _keys = Object.keys(capturedKeys) as CarPartDetail[];
-
-    _keys.forEach((k) => {
-      if (!capturedKeys[k]) delete capturedKeys[k];
-    });
-
-    return {
-      capturedKeys,
-    };
   }
 
   static async parseNewRequest(input: string) {
@@ -169,7 +178,7 @@ class ParserService {
     let required = Object.keys(properties);
 
     if (missingDetails.length) {
-      required = missingDetails
+      required = missingDetails;
     }
 
     const functions: OpenAI.Chat.ChatCompletionTool[] = [
@@ -187,43 +196,55 @@ class ParserService {
       },
     ];
 
-    const response = await openAiClient.chat.completions.create({
-      model: "gpt-4-1106-preview", // supports tool calling
-      messages: [
-        {
-          role: "user",
-          content: input,
-        },
-      ],
-      tools: functions,
-      tool_choice: "auto",
-    });
-    const toolCall = response.choices[0].message.tool_calls?.[0];
+    try {
+      const response = await openAiClient.chat.completions.create({
+        model: "gpt-4-1106-preview", // supports tool calling
+        messages: [
+          {
+            role: "user",
+            content: input,
+          },
+        ],
+        tools: functions,
+        tool_choice: "auto",
+      });
+      const toolCall = response.choices[0].message.tool_calls?.[0];
 
-    if (!toolCall) {
+      if (!toolCall) {
+        return {
+          capturedKeys: {
+            availabile: false,
+            condition: null,
+            price: null,
+          },
+        } as {
+          capturedKeys: CapturedResponseDetails;
+        };
+      }
+      const capturedKeys = JSON.parse(
+        toolCall.function.arguments,
+      ) as CapturedResponseDetails;
+
+      const _keys = Object.keys(capturedKeys) as VendorResponseKeys[];
+
+      _keys.forEach((k) => {
+        if (!capturedKeys[k]) {
+          delete capturedKeys[k];
+        }
+      });
+
+      return { capturedKeys };
+    } catch (error) {
+      console.log("Error parsing vendor response", error);
+
       return {
         capturedKeys: {
-          availabile: false,
+          available: false,
           condition: null,
           price: null,
         },
-      } as {
-        capturedKeys: CapturedResponseDetails;
       };
     }
-    const capturedKeys = JSON.parse(
-      toolCall.function.arguments,
-    ) as CapturedResponseDetails;
-
-    const _keys = Object.keys(capturedKeys) as VendorResponseKeys[];
-
-    _keys.forEach((k) => {
-      if (!capturedKeys[k]) {
-        delete capturedKeys[k];
-      }
-    });
-
-    return { capturedKeys };
   }
 }
 
