@@ -1,4 +1,7 @@
-import { Interaction, InteractionTypes } from "src/db/models/interaction.model";
+import {
+  Interaction,
+  InteractionTypes,
+} from "../../db/models/interaction.model";
 import ReceiverService from "../receiver/receiver.service";
 import { validateVendorRequest } from "../vendor/validateVendorRequest";
 
