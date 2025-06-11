@@ -1,31 +1,33 @@
-interface Notification {
-  from: string;
-  to: string;
+import { InteractionDirectionEnum, InteractionTypes } from "../../db/models/interaction.model";
+import InteractionService from "../interaction/interaction.service";
+import { sendWhatsapp } from "../twilio/twillio.service";
+
+interface SendMessageAndLogInteractionPayload {
+  phone: string;
   message: string;
-  channel: "sms" | "whatsapp";
+  vendorId?: string;
+  requestId: string;
+  type: InteractionTypes;
+  metadata?: JSON;
 }
 
-class NotifyService {
-  static async sendToVendor(notification: Notification) {
-    // send notification to vendor
-    const { from, to, message, channel } = notification;
+export const sendMessageAndLogInteraction = async ({
+  phone,
+  message,
+  vendorId,
+  requestId,
+  type,
+  metadata,
+}: SendMessageAndLogInteractionPayload) => {
+  await sendWhatsapp({ to: phone, body: message });
 
-    console.log({from, to, message, channel})
-  }
-  
-  static async sendToClient(notification: Notification) {
-    // send notification to client
-    const { from, to, message, channel } = notification;
-
-    console.log({from, to, message, channel})
-  }
-  
-  static async alertAdmin(notification: Notification) {
-    // alert admin that something happened
-    const { from, message } = notification;
-
-    console.log({from, message})
-  }
-}
-
-export default NotifyService
+  await InteractionService.create({
+    direction: InteractionDirectionEnum.OUTBOUND,
+    phone,
+    type,
+    message,
+    vendorId,
+    metadata,
+    requestId,
+  });
+};
