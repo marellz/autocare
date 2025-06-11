@@ -1,4 +1,7 @@
-import { VendorRequest } from "../../db/models/vendorRequest.model";
+import {
+  VendorRequest,
+  VendorRequestStatusEnum,
+} from "../../db/models/vendorRequest.model";
 import RequestService from "../request/request.service";
 import {
   CarPartDetail,
@@ -202,13 +205,17 @@ class ReceiverService {
     const { available, condition, price } = capturedKeys;
 
     if (!available) {
-      // do nothing
-      // todo: acknowlegde their response and withdraw request?
-      // todo: update vendorRequest model, + "status", update this instead
+      // mark the vendor-request as unavailable
+      VendorRequestService.update(vendorRequest.id, {
+        status: VendorRequestStatusEnum.UNAVAILABLE
+      })
       return {
         message: "Vendor does not have the said part in stock",
       };
     }
+
+    // vendor-request status
+    let status = VendorRequestStatusEnum.PENDING;
 
     (Object.keys(capturedKeys) as (keyof CapturedResponseDetails)[]).forEach(
       (k: keyof CapturedResponseDetails) => {
@@ -249,6 +256,8 @@ class ReceiverService {
       });
 
       message = `Your quote for request for #${requestId} has been received and will be forwared to the client`;
+
+      status = VendorRequestStatusEnum.QUOTED
     } else {
       message =
         "Some details were missing. Please resend and also include: " +
@@ -269,6 +278,7 @@ class ReceiverService {
     await VendorRequestService.update(vendorRequest.id, {
       condition,
       price: price?.toString(),
+      status
     });
 
     return {

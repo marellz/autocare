@@ -4,6 +4,7 @@ import VendorRequestService from "../vendor/vendorRequest.service";
 import { InteractionTypes } from "../../db/models/interaction.model";
 import { sendMessageAndLogInteraction } from "../notification/notify.service";
 import { Op } from "sequelize";
+import { VendorRequestStatusEnum } from "../../db/models/vendorRequest.model";
 
 export const sendRequestToVendors = async (request: Request) => {
   const requestBrand = request.capturedDetails.carBrand;
@@ -42,6 +43,7 @@ export const sendRequestToVendors = async (request: Request) => {
       await VendorRequestService.create({
         vendorId: _vendor.id,
         requestId: request.id,
+        status: VendorRequestStatusEnum.PENDING
       });
     }),
   );

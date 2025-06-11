@@ -1,6 +1,7 @@
 import { cleanObject } from "../utils/object.utils";
 import VendorRequestService from "../services/vendor/vendorRequest.service";
 import { Request, Response } from "express";
+import { VendorRequestStatusEnum } from "../db/models/vendorRequest.model";
 class VendorRequestController {
   static async findAll(req: Request, res: Response) {
     try {
@@ -9,7 +10,6 @@ class VendorRequestController {
         vendorId?: string;
         requestId?: string;
       } = cleanObject(req.query);
-
 
       const vendorRequests = await VendorRequestService.findAll(payload);
       res.status(200).json({
@@ -51,6 +51,7 @@ class VendorRequestController {
       const newVendorRequest = await VendorRequestService.create({
         vendorId,
         requestId,
+        status: VendorRequestStatusEnum.PENDING,
       });
       res.status(201).json(newVendorRequest);
     } catch (error) {
@@ -67,11 +68,12 @@ class VendorRequestController {
       if (!vendorRequest) {
         return res.status(404).json({ message: "Vendor request not found" });
       }
-      const { condition, price, notes } = req.body;
+      const { condition, price, notes, status } = req.body;
       await VendorRequestService.update(id, {
         condition,
         price,
         notes,
+        status
       });
       res.status(200).json({ message: "Vendor request updated successfully" });
     } catch (error) {
