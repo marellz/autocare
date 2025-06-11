@@ -26,7 +26,20 @@ export default {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 };
+
+export enum VendorRequestStatusEnum {
+  PENDING = "pending",
+  QUOTED = "quoted",
+  UNAVAILABLE = "unavailable",
+  PROPOSED = "proposed",
+}
+
+export type VendorRequestStatus = `${VendorRequestStatusEnum}`;
 
 export interface VendorRequest {
   id: number;
@@ -35,6 +48,7 @@ export interface VendorRequest {
   condition: string | null;
   price: string | null;
   notes: string | null;
+  status: VendorRequestStatus;
 }
 
 export interface NewVendorRequest {
@@ -44,6 +58,7 @@ export interface NewVendorRequest {
   condition?: string | null;
   price?: string | null;
   notes?: string | null;
+  status: VendorRequestStatus;
 }
 
 export interface VendorRequestProperties {
