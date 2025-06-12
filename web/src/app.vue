@@ -13,10 +13,8 @@
         </NavigationMenu>
         <NavigationMenu class="ml-auto">
           <NavigationMenuList>
-            <NavigationMenuItem v-for="({ path, label }, index) in actions" :key="`actions-${index}`">
-              <RouterLink :to="path">
-                <Button>{{ label }}</Button>
-              </RouterLink>
+            <NavigationMenuItem>
+              <RequestForm></RequestForm>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -38,13 +36,13 @@ import NavigationMenuLink from './components/ui/navigation-menu/NavigationMenuLi
 import NavigationMenuItem from './components/ui/navigation-menu/NavigationMenuItem.vue';
 import NavigationMenuList from './components/ui/navigation-menu/NavigationMenuList.vue';
 import Button from './components/ui/button/Button.vue';
-
+import RequestForm from './components/partials/forms/request.form.vue'
 const auth = useAuthStore()
 const links = [
   { path: '/', label: 'Requests' },
-  { path: '/vendors', label: 'Vendors' },
+  { path: '/dashboard/vendors', label: 'Vendors' },
 ]
-const actions = [
-  { path: '/request-form', label: 'Make a request' },
-]
+// const actions = [
+//   { path: '/request-form', label: 'Make a request' },
+// ]
 </script>
