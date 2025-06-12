@@ -9,15 +9,15 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    // {
+    //   path: '/request-form',
+    //   name: 'requests',
+    //   component: () => import('@/views/request-form.vue'),
+    // },
     {
-      path: '/request-form',
-      name: 'requests',
-      component: () => import('@/views/request-form.vue'),
-    },
-    {
-      path: '/vendors',
+      path: '/dashboard/vendors',
       name: 'vendors',
-      component: () => import('@/views/vendors.vue'),
+      component: () => import('@/views/dashboard/vendors.vue'),
     },
     {
       path: '/login',

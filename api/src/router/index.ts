@@ -5,6 +5,7 @@ import vendorRoutes from "./routes/_vendor";
 import vendorRequestRoutes from "./routes/_vendorRequests";
 import whatsAppWebHookRoutes from "./routes/_whatsappWebhook";
 import fakeWhatsappWebhookRoutes from "./routes/_whatsappWebhook.fake";
+import interactionRoutes from "./routes/_interactions";
 
 import { Express } from "express";
 
@@ -13,6 +14,7 @@ const routes = new Map([
   ["/auth", authRoutes],
   ["/requests", requestRoutes],
   ["/vendors", vendorRoutes],
+  ["/interactions", interactionRoutes],
   ["/vendor-requests", vendorRequestRoutes],
   ["/webhook/whatsapp", whatsAppWebHookRoutes],
   ["/fake-webhook", fakeWhatsappWebhookRoutes],
