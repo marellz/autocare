@@ -1,9 +1,13 @@
+import DefaultLayout from '../layouts/Default'
+
 const Home = () => {
   return (
-    <div>
-      <h1>Welcome!</h1>
-      <p>Hello this is home</p>
-    </div>
+    <DefaultLayout>
+      <div>
+        <h1>Welcome!</h1>
+        <p>Hello this is home</p>
+      </div>
+    </DefaultLayout>
   )
 }
 
