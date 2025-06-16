@@ -16,6 +16,16 @@ const DefaultLayout = ({ children }: Props) => {
       path: '/about',
       label: 'About',
     },
+
+    // soon to be dash-only
+    {
+      path: '/dashboard/requests',
+      label: 'Requests',
+    },
+    {
+      path: '/dashboard/vendors',
+      label: 'Vendors',
+    },
   ]
   return (
     <>
@@ -38,11 +48,6 @@ const DefaultLayout = ({ children }: Props) => {
             </button>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
-                {/* <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="#">
-                    Home
-                  </a>
-                </li> */}
                 {headerLinks.map((link, i) => (
                   <li className="nav-item" key={i}>
                     <NavLink
@@ -67,18 +72,6 @@ const DefaultLayout = ({ children }: Props) => {
                   </button>
                 </li>
               </ul>
-
-              {/* <form className="d-flex" role="search">
-                <input
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
-                <button className="btn btn-outline-success" type="submit">
-                  Search
-                </button>
-              </form> */}
             </div>
           </div>
         </nav>
