@@ -84,7 +84,7 @@ const DefaultLayout = ({ children }: Props) => {
         </nav>
         <RequestForm></RequestForm>
       </header>
-      <main>
+      <main className='flex-grow-1'>
         <div className="container">{children}</div>
       </main>
       <footer>

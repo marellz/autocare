@@ -1,2 +1,14 @@
 // Import all of Bootstrap’s CSS
-@import "bootstrap/scss/bootstrap";
+@import 'bootstrap/scss/bootstrap';
+
+html,
+body,
+#root {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
