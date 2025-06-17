@@ -73,6 +73,7 @@ export const carPartDetailLables: Record<keyof CapturedDetails, string> = {
 export type CapturedDetails = Record<CarPartDetail, string | null>;
 
 export enum RequestStatusEnum {
+  SUBMITTED = 'submitted', // via web
   MISSING_DETAILS = "missing_details",
   PENDING = "pending",
   COMPLETED = "completed",

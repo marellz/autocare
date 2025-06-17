@@ -1,3 +1,4 @@
+import { RequestStatusEnum } from "../db/models/request.model";
 import RequestService from "../services/request/request.service";
 import { Request, Response, NextFunction } from "express";
 
@@ -26,7 +27,12 @@ class RequestsController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, phone, channel, status, originalMessages, capturedDetails = {}, missingDetails = [] } = req.body;
+      const { name, phone, item, capturedDetails = {}, missingDetails = [] } = req.body;
+
+      const status = RequestStatusEnum.SUBMITTED
+      const originalMessages = [item]
+      const channel = 'web'
+
       const request = await RequestService.create({
         name,
         phone,
@@ -36,7 +42,11 @@ class RequestsController {
         originalMessages,
         status
       });
+      
       res.json({ message: "ok", data: request });
+
+      // todo, do processing and update this request.
+      
     } catch (error) {
       next(error);
     }
