@@ -75,5 +75,9 @@ export const useVendorService = () => {
     }
   }
 
+  useEffect(() => {
+      getVendors()
+    }, [])
+
   return { vendors, loading, error, getVendors, createVendor }
 }
