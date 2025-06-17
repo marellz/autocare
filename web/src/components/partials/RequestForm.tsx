@@ -2,16 +2,27 @@ import { useState, type FormEvent } from 'react'
 import Input from '../form/Input'
 import Text from '../form/Text'
 
-const RequestForm = () => {
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    console.log('submitting form')
+import { useRequestService } from '../../services/useRequestService'
 
-    console.log({
-      name,
+const RequestForm = () => {
+  const { createRequest, error } = useRequestService()
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+
+    
+    await createRequest({
       phone,
+      name,
+      channel:"web",
       item,
     })
+    
+
+    if (error) {
+      // throw error
+    } else {
+      // close modal
+    }
   }
 
   const [name, setName] = useState<string>('')
