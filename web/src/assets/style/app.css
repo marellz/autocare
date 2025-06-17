@@ -118,3 +118,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+#root{
+  @apply flex flex-col h-screen;
+}
