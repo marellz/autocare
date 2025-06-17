@@ -7,7 +7,9 @@ export interface Request {
   name: string
   createdAt: string
   channel: 'web' | 'whatsapp'
+  status: string
   updatedAt: string | null
+  originalMessages: string[]
 }
 
 export interface NewRequest {
@@ -20,7 +22,7 @@ export interface NewRequest {
 export const useRequestService = () => {
   const [requests, setRequests] = useState<Request[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<unknown>()
+  const [error, setError] = useState<string>()
 
   const api = ky.create({
     prefixUrl: import.meta.env.VITE_API_URL + '/requests',
@@ -45,7 +47,7 @@ export const useRequestService = () => {
       return data
     } catch (error) {
       console.error('Failed to fetch requests:', error)
-      setError(error)
+      setError(error as string)
     } finally {
       setLoading(false)
     }
@@ -69,7 +71,7 @@ export const useRequestService = () => {
       return data
     } catch (error) {
       console.error('Failed to create request:', error)
-      setError(error)
+      setError(error as string)
     } finally {
       setLoading(true)
     }

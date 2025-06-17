@@ -1,5 +1,5 @@
 import ky from 'ky'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface Vendor {
   id: number
@@ -20,7 +20,7 @@ export interface NewVendor {
 export const useVendorService = () => {
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<unknown>()
+  const [error, setError] = useState<string>()
   const api = ky.create({
     prefixUrl: import.meta.env.VITE_API_URL + '/vendors',
     headers: {
@@ -42,7 +42,7 @@ export const useVendorService = () => {
       return data
     } catch (error) {
       console.error('Failed to fetch vendors:', error)
-      setError(error)
+      setError(error as string)
       return null
     } finally {
       setLoading(false)
@@ -68,7 +68,7 @@ export const useVendorService = () => {
       return data
     } catch (error) {
       console.error('Failed to create vendor:', error)
-      setError(error)
+      setError(error as string)
       return null
     } finally {
       setLoading(true)
