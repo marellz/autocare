@@ -1,4 +1,6 @@
 import { useId, type InputHTMLAttributes } from 'react'
+import { Textarea } from '../ui/textarea'
+import { Label } from '../ui/label'
 
 interface Props extends InputHTMLAttributes<HTMLTextAreaElement> {
   rows?: number
@@ -16,19 +18,18 @@ const Input = ({
   const id = useId()
 
   return (
-    <div className="mb-3">
+    <div className="mb-4 space-y-2">
       {label && (
-        <label className="form-label" htmlFor={id}>
+        <Label htmlFor={id}>
           {label}
-        </label>
+        </Label>
       )}
-      <textarea
-        className="form-control"
+      <Textarea
         rows={rows}
         id={id}
         {...props}
       />
-      {text && <p className="form-text">{text}</p>}
+      {text && <p className="text-sm text-gray-500">{text}</p>}
     </div>
   )
 }

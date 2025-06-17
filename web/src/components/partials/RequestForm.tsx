@@ -1,22 +1,30 @@
 import { useState, type FormEvent } from 'react'
 import Input from '../form/Input'
 import Text from '../form/Text'
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { useRequestService } from '../../services/useRequestService'
+import { Button } from '../ui/button'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 
 const RequestForm = () => {
   const { createRequest, error } = useRequestService()
   const handleSubmit = async (e: FormEvent) => {
+
     e.preventDefault()
 
-    
     await createRequest({
       phone,
       name,
-      channel:"web",
+      channel: 'web',
       item,
     })
-    
 
     if (error) {
       // throw error
@@ -30,60 +38,56 @@ const RequestForm = () => {
   const [item, setItem] = useState<string>('')
 
   return (
-    <div
-      className="modal fade"
-      id="requestFormModal"
-      tabIndex={-1}
-      aria-labelledby="requestFormModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Make request</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Make a new request</DialogTitle>
+          <DialogDescription>
+            Leave your details and the details for the part you would like, and we will follow up.
+          </DialogDescription>
+        </DialogHeader>
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertTitle>Problem submitting request</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit}>
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="requestFormModalLabel">
-                Make request
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Input
-                label="Name"
-                required
-                defaultValue={name}
-                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-              />
-              <Input
-                label="Phone"
-                prefix="254"
-                required
-                defaultValue={phone}
-                onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-              />
-              <Text
-                label="Item description"
-                required
-                defaultValue={item}
-                onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => setItem(e.target.value)}
-              ></Text>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </div>
+          <div>
+            <Input
+              label="Name"
+              required
+              defaultValue={name}
+              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            />
+            <Input
+              label="Phone"
+              placeholder="254XXXXXXXXXX"
+              required
+              defaultValue={phone}
+              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+            />
+            <Text
+              label="Item description"
+              required
+              defaultValue={item}
+              onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => setItem(e.target.value)}
+            ></Text>
+          </div>
+          <div className="flex items-center space-x-3">
+            <Button type="button" variant="secondary">
+              Cancel
+            </Button>
+            <Button type="submit">Submit</Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 export default RequestForm
