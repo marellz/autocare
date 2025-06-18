@@ -1,24 +1,28 @@
-import { useId, type InputHTMLAttributes, type ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
+import { Checkbox as CustomCheckbox } from '../ui/checkbox'
+import { Label } from '../ui/label'
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   text?: string
+  disabled?: boolean
+  required?: boolean
+  onCheckedChange: () => void
+  checked: boolean
   children: ReactNode
 }
 
-const Input = ({ children, text, ...props }: Props) => {
+const Checkbox = ({ children, text, ...props }: Props) => {
   const id = useId()
 
   return (
-    <div className="mb-3">
-      <div className="form-check">
-        <input className="form-check-input" type="radio" {...props} id={id} />
-        <label className="form-check-label" htmlFor={id}>
-          {children}
-        </label>
+    <div className="flex items-center space-x-2">
+      <CustomCheckbox {...props} id={id} />
+      <div className="grid gap-2">
+        <Label htmlFor={id}>{children}</Label>
+        {text && <p className="text-muted-foreground text-sm">{text}</p>}
       </div>
-      {text && <p className="form-text">{text}</p>}
     </div>
   )
 }
 
-export default Input
+export default Checkbox
