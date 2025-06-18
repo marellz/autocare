@@ -5,6 +5,7 @@ class VendorService {
   static async findAll(where = {}) {
     return await VendorModel.findAll({
       where,
+      order: [["id", "DESC"]],
     });
   }
 
