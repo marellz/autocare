@@ -8,12 +8,13 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '../ui/button'
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
-import { useVendorService, type NewVendor } from '@/services/useVendorService'
 import Input from '../form/Input'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Label } from '../ui/label'
 import Checkbox from '../form/Checkbox'
 import { Plus } from 'lucide-react'
+import useVendorStore from '@/stores/useVendorStore'
+import type { NewVendor } from '@/services/useVendorService'
 
 interface Props {
   id?: number | null
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
-  const { error, createVendor, vendors, updateVendor } = useVendorService()
+  const { error, createVendor, vendors, updateVendor } = useVendorStore()
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
