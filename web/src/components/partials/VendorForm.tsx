@@ -38,11 +38,9 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
   }
 
   useEffect(() => {
-    console.log(id ? 'has id! fetch!' : 'no id, create')
     if (id) {
       const vendor = vendors.find((v) => v.id === id)
       if (!vendor) return
-      console.log({ vendor })
       setForm(vendor)
       setShowDialog(true)
     }
