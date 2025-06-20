@@ -18,27 +18,17 @@ import { useEffect, useState } from 'react'
 import useVendorStore from '@/stores/useVendorStore'
 
 const Vendors = () => {
-  const { vendors, createVendor, getVendors, deleteVendor } = useVendorStore()
+  const { vendors, getVendors, deleteVendor } = useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
   useEffect(() => {
     getVendors()
   }, [])
 
-  const mimick = async () => {
-    await createVendor({
-      name: "Daudi",
-      phone: "012312312",
-      location: "Somali",
-      brands: ['BMW', 'Nissan']
-    })
-  }
-
   return (
     <DefaultLayout>
       <div className="py-4 flex justify-between items-center">
         <h1 className="text-4xl">Vendors</h1>
-        <Button onClick={mimick}>Mimick adding a vendor</Button>
         <VendorForm id={id} onSubmit={() => setId(null)} onCancel={() => setId(null)} />
       </div>
       <div className="mt-4">
