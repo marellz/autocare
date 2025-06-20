@@ -1,4 +1,4 @@
-import ky from 'ky'
+import { createKyInstance } from '@/utils/kyCreator'
 
 export interface Vendor {
   id: number
@@ -15,13 +15,7 @@ export interface NewVendor {
   location?: string | null
 }
 
-const api = ky.create({
-  prefixUrl: import.meta.env.VITE_API_URL + '/vendors',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-})
+const api = createKyInstance('/vendors')
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
   if (!response.ok) {
