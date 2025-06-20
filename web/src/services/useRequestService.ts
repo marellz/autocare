@@ -1,5 +1,4 @@
-import ky from 'ky'
-import { useEffect, useState } from 'react'
+import { createKyInstance } from '@/utils/kyCreator'
 
 export interface Request {
   id: number
@@ -19,67 +18,43 @@ export interface NewRequest {
   name: string
 }
 
-export const useRequestService = () => {
-  const [requests, setRequests] = useState<Request[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
+const api = createKyInstance('/requests')
 
-  const api = ky.create({
-    prefixUrl: import.meta.env.VITE_API_URL + '/requests',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-  })
-
-  const getRequests = async () => {
-    setLoading(true)
-    try {
-      const response = await api.get('')
-      if (!response.ok) {
-        throw new Error('API response was not ok')
-      }
-
-      const { data } = await response.json<{ messsage: 'ok'; data: Request[] }>()
-
-      setRequests(data)
-
-      return data
-    } catch (error) {
-      console.error('Failed to fetch requests:', error)
-      setError(error as string)
-    } finally {
-      setLoading(false)
+export const useRequestService = {
+  async getRequests() {
+    const response = await api.get('')
+    if (!response.ok) {
+      throw new Error('API response was not ok')
     }
-  }
 
-  const createRequest = async (request: NewRequest) => {
-    setLoading(true)
-    try {
-      const response = await api.post('', {
-        json: request,
-      })
+    const { data } = await response.json<{ messsage: 'ok'; data: Request[] }>()
 
-      if (!response.ok) {
-        throw new Error('API response was not ok')
-      }
+    return data
+  },
 
-      const { data } = await response.json<{ message: 'ok'; data: Request }>()
+  async createRequest(request: NewRequest) {
+    const response = await api.post('', {
+      json: request,
+    })
 
-      setRequests([...requests, data])
-
-      return data
-    } catch (error) {
-      console.error('Failed to create request:', error)
-      setError(error as string)
-    } finally {
-      setLoading(true)
+    if (!response.ok) {
+      throw new Error('API response was not ok')
     }
-  }
 
-  useEffect(() => {
-    getRequests()
-  }, [])
+    const { data } = await response.json<{ message: 'ok'; data: Request }>()
+    return data
+  },
 
-  return { requests, error, loading, getRequests, createRequest }
+  async updateRequest(id: number, updated: Partial<Request>) {
+    const response = await api.put(id.toString(), {
+      json: updated,
+    })
+
+    if (!response.ok) {
+      throw new Error('API response was not ok')
+    }
+
+    const { message } = await response.json<{ message: 'ok' | 'error' }>()
+    return message === 'ok'
+  },
 }

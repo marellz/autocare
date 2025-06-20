@@ -9,12 +9,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { useRequestService } from '../../services/useRequestService'
 import { Button } from '../ui/button'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import useRequestStore from '@/stores/useRequestStore'
 
 const RequestForm = () => {
-  const { createRequest, error } = useRequestService()
+  const { createRequest, error, loading } = useRequestStore()
+
+  const [open, setOpen] = useState<boolean>(false)
   const handleSubmit = async (e: FormEvent) => {
 
     e.preventDefault()
@@ -30,6 +32,7 @@ const RequestForm = () => {
       // throw error
     } else {
       // close modal
+      setOpen(false)
     }
   }
 
@@ -38,9 +41,9 @@ const RequestForm = () => {
   const [item, setItem] = useState<string>('')
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={(v)=>setOpen(v)}>
       <DialogTrigger asChild>
-        <Button>Make request</Button>
+        <Button onClick={() => setOpen(true)}>Make request</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -83,7 +86,7 @@ const RequestForm = () => {
             <Button type="button" variant="secondary">
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={loading}>Submit</Button>
           </div>
         </form>
       </DialogContent>
