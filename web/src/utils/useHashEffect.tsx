@@ -17,5 +17,5 @@ export const useClearHash = () => {
   const location = useLocation()
 
   //   remove hash
-  navigate(location.pathname + location.search, { replace: true })
+  return () => navigate(location.pathname + location.search, { replace: true })
 }
