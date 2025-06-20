@@ -23,7 +23,7 @@ interface Props {
 }
 
 const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
-  const { error, createVendor, vendors, updateVendor } = useVendorStore()
+  const { error, loading, createVendor, vendors, updateVendor } = useVendorStore()
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -166,7 +166,7 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
             <Button type="button" variant="secondary" onClick={() => setShowDialog(false)}>
               Cancel
             </Button>
-            <Button>Save vendor details</Button>
+            <Button disabled={loading}>Save vendor details</Button>
           </div>
         </form>
       </DialogContent>
