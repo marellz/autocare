@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
-import DefaultLayout from '../../layouts/Default'
 import useRequestStore from '@/stores/useRequestStore'
+import DashboardLayout from '@/layouts/Dashboard'
 import { useEffect } from 'react'
 
 const Requests = () => {
@@ -12,7 +12,7 @@ const Requests = () => {
 
   // getRequests
   return (
-    <DefaultLayout>
+    <DashboardLayout>
       <div>
         <div className="py-4">
           <h1 className="text-4xl">Requests</h1>
@@ -44,7 +44,7 @@ const Requests = () => {
           </ul>
         </div>
       </div>
-    </DefaultLayout>
+    </DashboardLayout>
   )
 }
 

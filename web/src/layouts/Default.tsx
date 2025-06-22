@@ -13,14 +13,6 @@ const DefaultLayout = ({ children }: Props) => {
     },
 
     // soon to be dash-only
-    {
-      path: '/dashboard/requests',
-      label: 'Requests',
-    },
-    {
-      path: '/dashboard/vendors',
-      label: 'Vendors',
-    },
   ]
   return (
     <>

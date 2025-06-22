@@ -1,4 +1,4 @@
-import DefaultLayout from '../../layouts/Default'
+import DashboardLayout from '@/layouts/Dashboard'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
 import { Edit, X } from 'lucide-react'
@@ -26,7 +26,7 @@ const Vendors = () => {
   }, [])
 
   return (
-    <DefaultLayout>
+    <DashboardLayout>
       <div className="py-4 flex justify-between items-center">
         <h1 className="text-4xl">Vendors</h1>
         <VendorForm id={id} onSubmit={() => setId(null)} onCancel={() => setId(null)} />
@@ -85,7 +85,7 @@ const Vendors = () => {
           ))}
         </ul>
       </div>
-    </DefaultLayout>
+    </DashboardLayout>
   )
 }
 
