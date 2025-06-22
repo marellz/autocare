@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar'
+import { NavLink } from 'react-router-dom'
 
 const DashSidebar = () => {
   const links = [
@@ -41,10 +42,10 @@ const DashSidebar = () => {
               {links.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild>
-                    <a href={item.path}>
+                    <NavLink to={item.path}>
                       <item.icon />
                       <span>{item.label}</span>
-                    </a>
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
