@@ -15,6 +15,11 @@ export interface NewVendor {
   location?: string | null
 }
 
+export type FindVendorParams= {
+  name?: string
+  brand?: string
+}
+
 const api = createKyInstance('/vendors')
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
@@ -22,21 +27,29 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     const { error } = await response.json()
     throw new Error(error || 'Network response was not ok')
   }
-  
+
   return response.json()
 }
 
 export const useVendorService = {
-  async getVendors(): Promise<Vendor[]> {
-    return handleResponse<{ message: 'ok'; data: Vendor[] }>(await api.get('')).then((res) => res.data)
+  async getVendors(query: FindVendorParams): Promise<Vendor[]> {
+    return handleResponse<{ message: 'ok'; data: Vendor[] }>(await api.get('', {
+      searchParams: query,
+    })).then(
+      (res) => res.data,
+    )
   },
 
   async createVendor(vendorData: NewVendor): Promise<Vendor> {
-    return handleResponse<{ message: 'ok'; data: Vendor }>(await api.post('', { json: vendorData })).then((res) => res.data)
+    return handleResponse<{ message: 'ok'; data: Vendor }>(
+      await api.post('', { json: vendorData }),
+    ).then((res) => res.data)
   },
 
   async updateVendor(id: number, update: Partial<Vendor>): Promise<boolean> {
-    await handleResponse<{ message: 'ok' | 'error' }>(await api.put(id.toString(), { json: update }))
+    await handleResponse<{ message: 'ok' | 'error' }>(
+      await api.put(id.toString(), { json: update }),
+    )
     return true
   },
 

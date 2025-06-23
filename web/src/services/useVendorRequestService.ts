@@ -2,8 +2,8 @@ import { createKyInstance } from "@/utils/kyCreator"
 
 export interface VendorRequest {
   id: number
-  vendor_id: number
-  request_id: number
+  vendorId: number
+  requestId: number
 }
 
 export interface NewVendorRequest {
@@ -29,6 +29,7 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
 export const useVendorRequestService = {
   async getVendorRequests(query: FindVendorRequestParams = {}): Promise<VendorRequest[]> {
+    if (Object.keys(query).length === 0) return []
     return handleResponse<{ message: 'ok'; data: VendorRequest[] }>(
       await api.get('', { searchParams: query }),
     ).then((res) => res.data)

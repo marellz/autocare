@@ -1,5 +1,6 @@
 import {
   useVendorService as service,
+  type FindVendorParams,
   type NewVendor,
   type Vendor,
 } from '@/services/useVendorService'
@@ -10,7 +11,7 @@ interface Store {
   loading: boolean
   error: string | undefined
 
-  getVendors: () => Promise<void>
+  getVendors: (query?: FindVendorParams) => Promise<void>
   createVendor: (payload: NewVendor) => Promise<void>
   deleteVendor: (id: number) => Promise<void>
   updateVendor: (id: number, updated: Partial<Vendor>) => Promise<void>
@@ -22,10 +23,10 @@ const useVendorStore = create<Store>((set) => {
   const loading: boolean = false
   const error: string | undefined = undefined
 
-  const getVendors = async () => {
+  const getVendors = async (query: FindVendorParams = {}) => {
     try {
       set({ loading: true })
-      const vendors = await service.getVendors()
+      const vendors = await service.getVendors(query)
       set({ vendors })
     } catch (error) {
       console.error('Error fetching vendors:', error)
@@ -34,6 +35,7 @@ const useVendorStore = create<Store>((set) => {
       set({ loading: false })
     }
   }
+
   const createVendor = async (vendor: NewVendor) => {
     try {
       set({ loading: true })
