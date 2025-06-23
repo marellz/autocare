@@ -88,6 +88,13 @@ const RequestDisplay = ({ request, hideDrawer }: Props) => {
                   </Alert>
                 </li>
               )}
+
+              {/**
+               * TODO:
+               * 1. display vendor requests
+               * 2. display potential vendors
+               * 3. offer search for other vendors
+               */}
               {vendors.map((vendor) => (
                 <li key={vendor.id}>
                   <Checkbox
