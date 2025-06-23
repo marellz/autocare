@@ -3,7 +3,6 @@ import VendorService from "../vendor/vendor.service";
 import VendorRequestService from "../vendor/vendorRequest.service";
 import { InteractionTypes } from "../../db/models/interaction.model";
 import { sendMessageAndLogInteraction } from "../notification/notify.service";
-import { Op } from "sequelize";
 import { VendorRequestStatusEnum } from "../../db/models/vendorRequest.model";
 
 export const sendRequestToVendors = async (request: Request) => {
@@ -12,10 +11,9 @@ export const sendRequestToVendors = async (request: Request) => {
 
   // automatically send to brand Vendors
   const vendors = await VendorService.findAll({
-    brands: {
-      // todo: convert to lowercase before checking
-      [Op.contains]: [requestBrand],
-    },
+    where: {
+      brands: requestBrand
+    }
   });
 
   if (!vendors.length) {
