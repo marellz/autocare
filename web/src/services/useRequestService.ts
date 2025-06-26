@@ -1,36 +1,60 @@
-import { useRequestStore } from '@/stores/requests.store'
+import { createKyInstance } from '@/utils/kyCreator'
 
-export const userRequestService = () => {
-  const requestStore = useRequestStore()
-  const baseUrl = import.meta.env.VITE_API_URL
-  const token = localStorage.getItem('token')
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
+export interface Request {
+  id: number
+  phone: string
+  name: string
+  createdAt: string
+  channel: 'web' | 'whatsapp'
+  status: string
+  updatedAt: string | null
+  originalMessages: string[]
+}
 
-  const getRequests = async () => {
-    const response = await fetch(`${baseUrl}/requests`, {
-      method: 'GET',
-      headers,
-    })
-    const { data } = await response.json()
+export interface NewRequest {
+  phone: string
+  item: string
+  channel: 'web'
+  name: string
+}
 
-    // store
-    requestStore.setRequests(data)
+const api = createKyInstance('/requests')
+
+export const useRequestService = {
+  async getRequests() {
+    const response = await api.get('')
+    if (!response.ok) {
+      throw new Error('API response was not ok')
+    }
+
+    const { data } = await response.json<{ messsage: 'ok'; data: Request[] }>()
+
     return data
-  }
+  },
 
-  const createRequest = async (request: any) => {
-    const response = await fetch(`${baseUrl}/requests`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(request),
+  async createRequest(request: NewRequest) {
+    const response = await api.post('', {
+      json: request,
     })
-    const { data } = await response.json()
-    requestStore.addRequest(data)
-    return data
-  }
 
-  return { getRequests, createRequest }
+    if (!response.ok) {
+      throw new Error('API response was not ok')
+    }
+
+    const { data } = await response.json<{ message: 'ok'; data: Request }>()
+    return data
+  },
+
+  async updateRequest(id: number, updated: Partial<Request>) {
+    const response = await api.put(id.toString(), {
+      json: updated,
+    })
+
+    if (!response.ok) {
+      throw new Error('API response was not ok')
+    }
+
+    const { message } = await response.json<{ message: 'ok' | 'error' }>()
+    return message === 'ok'
+  },
 }

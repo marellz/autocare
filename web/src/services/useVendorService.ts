@@ -1,46 +1,60 @@
-import type { Vendor } from '@/stores/vendors'
-import ky from 'ky'
+import { createKyInstance } from '@/utils/kyCreator'
 
-export const useVendorService = () => {
-  const api = ky.create({
-    prefixUrl: import.meta.env.VITE_API_URL + '/vendors',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-  })
+export interface Vendor {
+  id: number
+  name: string
+  phone: string
+  brands: string[]
+  location: string | null
+}
 
-  const getVendors = async () => {
-    try {
-      const response = await api.get('')
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      return await response.json<{ message: 'ok'; data: Vendor[] }>()
-    } catch (error) {
-      console.error('Failed to fetch vendors:', error)
-      throw error
-    }
+export interface NewVendor {
+  name: string
+  phone: string
+  brands: string[]
+  location?: string | null
+}
+
+export type FindVendorParams= {
+  name?: string
+  brand?: string
+}
+
+const api = createKyInstance('/vendors')
+
+const handleResponse = async <T>(response: Response): Promise<T> => {
+  if (!response.ok) {
+    const { error } = await response.json()
+    throw new Error(error || 'Network response was not ok')
   }
 
-  const createVendor = async (vendorData: any) => {
-    try {
-      const response = await api.get('/vendors', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(vendorData),
-      })
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      return await response.json()
-    } catch (error) {
-      console.error('Failed to create vendor:', error)
-      throw error
-    }
-  }
+  return response.json()
+}
 
-  return { getVendors, createVendor }
+export const useVendorService = {
+  async getVendors(query: FindVendorParams): Promise<Vendor[]> {
+    return handleResponse<{ message: 'ok'; data: Vendor[] }>(await api.get('', {
+      searchParams: query,
+    })).then(
+      (res) => res.data,
+    )
+  },
+
+  async createVendor(vendorData: NewVendor): Promise<Vendor> {
+    return handleResponse<{ message: 'ok'; data: Vendor }>(
+      await api.post('', { json: vendorData }),
+    ).then((res) => res.data)
+  },
+
+  async updateVendor(id: number, update: Partial<Vendor>): Promise<boolean> {
+    await handleResponse<{ message: 'ok' | 'error' }>(
+      await api.put(id.toString(), { json: update }),
+    )
+    return true
+  },
+
+  async deleteVendor(id: number): Promise<boolean> {
+    await handleResponse<{ message: 'ok' | 'error' }>(await api.delete(id.toString()))
+    return true
+  },
 }

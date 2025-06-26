@@ -1,10 +1,12 @@
+import { cleanObject } from "../utils/object.utils";
 import VendorService from "../services/vendor/vendor.service";
 import { Request, Response, NextFunction } from "express";
 
 class VendorController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const vendors = await VendorService.findAll();
+      const whereParams = { name: req.query.name, brand: req.query.brand };
+      const vendors = await VendorService.findAll({ where: cleanObject(whereParams) });
       return res.status(200).json({ message: "ok", data: vendors });
     } catch (error) {
       next(error);
@@ -33,6 +35,7 @@ class VendorController {
         location,
         brands,
       });
+      
       return res.status(201).json({ message: "ok", data: vendor });
     } catch (error) {
       next(error);
@@ -50,7 +53,7 @@ class VendorController {
         brands,
       });
       if (!vendor) {
-        return res.status(404).json({ message: "Vendor not found" });
+        return res.status(404);
       }
       return res.status(200).json({ message: "ok", data: vendor });
     } catch (error) {
@@ -63,9 +66,9 @@ class VendorController {
     try {
       const vendor = await VendorService.destroy(id);
       if (!vendor) {
-        return res.status(404).json({ message: "Vendor not found" });
+        return res.status(404);
       }
-      return res.status(204).json({ message: "Vendor deleted successfully" });
+      return res.json({ message: "Vendor deleted successfully" });
     } catch (error) {
       next(error);
     }
