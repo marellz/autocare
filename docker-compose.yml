@@ -71,6 +71,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: ${APP_NAME}-dbadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASS}
