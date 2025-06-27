@@ -1,4 +1,5 @@
 import { createKyInstance } from '@/utils/kyCreator'
+import type { VendorRequest } from './useVendorRequestService'
 
 export interface Vendor {
   id: number
@@ -6,6 +7,7 @@ export interface Vendor {
   phone: string
   brands: string[]
   location: string | null
+  vendor_requests?: VendorRequest[]
 }
 
 export interface NewVendor {
