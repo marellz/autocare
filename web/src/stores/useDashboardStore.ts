@@ -34,15 +34,14 @@ const useDashboardStore = create<Store>((set) => {
   const getData = async () => {
     try {
       set({ loading: true, error: undefined })
-      const { stats, newRequests, topVendors, chartData } = await service.getData()
+      const { stats, newRequests, topVendors, chartData, lastSyncedAt } = await service.getData()
       set({
         stats,
         newRequests,
         topVendors,
         chartData,
+        lastSyncedAt,
       })
-
-      set({ lastSyncedAt: new Date().toISOString() })
     } catch (error) {
       set({ error: error as string })
     } finally {

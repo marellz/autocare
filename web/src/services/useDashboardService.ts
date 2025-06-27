@@ -22,6 +22,7 @@ export interface DashboardData {
   newRequests: Request[]
   topVendors: Vendor[]
   chartData: DashboardChartItem[] // last x months
+  lastSyncedAt?: string
 }
 
 export const useDashboardService = {

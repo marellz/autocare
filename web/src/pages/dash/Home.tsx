@@ -66,7 +66,7 @@ const DashHome = () => {
         <div className="pb-4 flex items-center">
           <div className="flex-auto">
             <h1 className="text-4xl">Dashboard</h1>
-            <p className="text-muted-foreground">Last synced at {lastSyncedAt}</p>
+            <p className="text-muted-foreground text-sm">Last synced at {lastSyncedAt}</p>
           </div>
           <Button onClick={getData} disabled={loading}>
             <span>Sync</span>

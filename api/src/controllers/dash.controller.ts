@@ -110,6 +110,9 @@ class DashboardController {
       const topVendors: Vendor[] = await VendorService.getTopVendors();
       const chartData = await getChartData(6);
       const quoteQuery = await getQuotedRequestsCount();
+      const lastSyncedAt = moment().zone("+03:00").format('hh:mm A'
+
+      )
       const data = {
         stats: {
           vendors: await VendorModel.count(),
@@ -120,6 +123,7 @@ class DashboardController {
         newRequests,
         topVendors,
         chartData,
+        lastSyncedAt
       };
 
       res.json({
