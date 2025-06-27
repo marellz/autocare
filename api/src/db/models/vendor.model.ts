@@ -40,6 +40,7 @@ export interface Vendor {
   phone: string;
   brands: string[];
   location: string | null;
+  vendor_requests?: VendorRequest[];
   createdAt: Date;
   updatedAt: Date | null;
 }

@@ -1,4 +1,4 @@
-import { VendorModel } from "../../db/sequelize";
+import { VendorModel, VendorRequestModel } from "../../db/sequelize";
 import type { Vendor, NewVendor } from "../../db/models/vendor.model";
 import { Op } from "sequelize";
 
@@ -63,6 +63,23 @@ class VendorService {
     }
 
     return vendor.destroy();
+  }
+
+  static async getTopVendors(limit: number = 5) {
+    const _vendors = await VendorModel.findAll({
+      include: [VendorRequestModel],
+      limit,
+    });
+
+    const vendors = _vendors.map((vendor) => vendor.get()).filter(v=>v.vendor_requests && v.vendor_requests.length > 0);
+    
+    // sort
+
+    return vendors.sort((a, b) => {
+      const aRequests = a.vendor_requests?.length || 0;
+      const bRequests = b.vendor_requests?.length || 0;
+      return bRequests - aRequests;
+    });
   }
 }
 
