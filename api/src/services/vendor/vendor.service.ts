@@ -48,6 +48,7 @@ class VendorService {
   }
 
   static async update(id: string, data: Partial<Vendor>) {
+    data.updatedAt = new Date();
     return await VendorModel.update(data, {
       where: {
         id,

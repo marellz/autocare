@@ -30,6 +30,15 @@ export default {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 };
 
 export enum VendorRequestStatusEnum {
@@ -49,6 +58,8 @@ export interface VendorRequest {
   price: string | null;
   notes: string | null;
   status: VendorRequestStatus;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export interface NewVendorRequest {
@@ -59,6 +70,7 @@ export interface NewVendorRequest {
   price?: string | null;
   notes?: string | null;
   status: VendorRequestStatus;
+  createdAt?: Date;
 }
 
 export interface VendorRequestProperties {
