@@ -1,12 +1,13 @@
 import { createKyInstance } from '@/utils/kyCreator'
 
+export type RequestStatus = 'missing_details' | 'pending' | 'completed' | 'submitted'
 export interface Request {
   id: number
   phone: string
   name: string
   createdAt: string
   channel: 'web' | 'whatsapp'
-  status: string
+  status: RequestStatus
   updatedAt: string | null
   originalMessages: string[]
 }
