@@ -1,6 +1,7 @@
 import { createKyInstance } from '@/utils/kyCreator'
 
-export type RequestStatus = 'missing_details' | 'pending' | 'completed' | 'submitted'
+export const requestStatuses = ['missing_details', 'submitted', 'pending', 'completed']
+export type RequestStatus = (typeof requestStatuses)[number]
 export interface Request {
   id: number
   phone: string
