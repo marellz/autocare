@@ -4,9 +4,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onClickRow: (id: number) => void
 }
 
-const DataTable = <TData, TValue>({ columns, data }: Props<TData, TValue>) => {
+const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TValue>) => {
   const table = useReactTable({
     data,
     columns,
@@ -31,7 +32,11 @@ const DataTable = <TData, TValue>({ columns, data }: Props<TData, TValue>) => {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                onClick={() => onClickRow(Number(row.id))}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
