@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import DashboardLayout from '@/layouts/Dashboard'
 import useRequestStore from '@/stores/useRequestStore'
 import type { Request } from '@/services/useRequestService'
-import RequestDisplay from '@/components/partials/RequestDisplay'
-import { Drawer, DrawerContent } from '@/components/ui/drawer'
+import VendorAssign from '@/components/partials/requests/VendorAssign'
 import { Badge } from '@/components/ui/badge'
-/*
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +13,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+/**/
 
-*/
 import DataTable from '@/components/custom/DataTable'
 import StatusBadge from '@/components/custom/requests/StatusBadge'
 import { type ColumnDef } from '@tanstack/react-table'
-// import { useClearHash, useHashEffect } from '@/utils/useHashEffect'
 
 const Requests = () => {
   const { requests, getRequests } = useRequestStore()
@@ -29,37 +26,14 @@ const Requests = () => {
     getRequests()
   }, [])
 
-  const [open, setOpen] = useState<boolean>(false)
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
-  /*
-  useHashEffect((id) => {
-    if (id) {
-      const request = requests.find((r) => r.id === id)
-      if (!request) return
-      setOpen(true)
-      setDisplayRequest(request)
-    } else {
-      console.log('no id')
-      // if(open) setOpen(false)
-    }
-  })
-
-  const clearHash = useClearHash()
-*/
-  const hideDrawer = () => {
-    setOpen(false)
-    setDisplayRequest(undefined)
-  }
-
-  const showRequest = (id: number) => {
-    const request = requests.find((r) => r.id === id)
-    if (!request) return
-    setOpen(true)
-    setDisplayRequest(request)
-  }
-
   const columns: ColumnDef<Request>[] = [
+    {
+      accessorKey: 'id',
+      header: 'ID #',
+      cell: ({ row }) => <p className="font-bold px-2">{row.original.id}</p>,
+    },
     {
       accessorKey: 'name',
       header: 'Client',
@@ -103,14 +77,12 @@ const Requests = () => {
 
     {
       accessorKey: 'actions',
-      header: () => (<p className='text-right pr-4'>Actions</p>),
-      cell: () => (<p className="text-center">***</p>)
-      /*
+      header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
-        const { id } = row.original
+        // const { id } = row.original
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild className='flex justify-center'>
+            <DropdownMenuTrigger asChild className="flex justify-center">
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
@@ -118,22 +90,35 @@ const Requests = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => showRequest(id)}>Show request</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
+                Assign to vendors
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
       },
 
-      * Todo: Implement:
-      * assign(to vendors)
-      * see available offers(if any)
-      * respond to client
-      * refund(if nothing)
-      * change status
-      */
+      /*
+       * Todo: Implement:
+       * assign(to vendors) ✅
+       * see available offers(if any)
+       * respond to client
+       * refund(if nothing)
+       * change status
+       */
     },
   ]
 
+  //
+  const handleVendorAssign = (request: Request) => {
+    setShowVendorAssign(true)
+    setDisplayRequest(request)
+  }
+  const [showVendorAssign, setShowVendorAssign] = useState<boolean>(false)
+  const hideVendorAssign = () => {
+    setShowVendorAssign(false)
+    setDisplayRequest(undefined)
+  }
   // getRequests
   return (
     <DashboardLayout>
@@ -142,14 +127,25 @@ const Requests = () => {
           <h1 className="text-4xl font-bold">Requests</h1>
         </div>
         <div className="mt-4">
-          <DataTable columns={columns} data={requests} onClickRow={(id) => showRequest(id)}/>
+          <DataTable columns={columns} data={requests} />
         </div>
       </div>
-      <Drawer open={open}>
-        <DrawerContent>
-          <RequestDisplay request={displayRequest} hideDrawer={hideDrawer}></RequestDisplay>
-        </DrawerContent>
-      </Drawer>
+
+      {/**
+       * VendorAssign
+       * show vendors to assign to
+       */}
+
+      <VendorAssign
+        open={showVendorAssign}
+        request={displayRequest}
+        hideDialog={hideVendorAssign}
+      ></VendorAssign>
+
+      {/**
+       * RequestOffers
+       * show offers for the request
+       */}
     </DashboardLayout>
   )
 }
