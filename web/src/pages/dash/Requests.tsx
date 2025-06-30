@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/layouts/Dashboard'
 import useRequestStore from '@/stores/useRequestStore'
-import type { Request } from '@/services/useRequestService'
+import { requestStatuses, type Request, type RequestStatus } from '@/services/useRequestService'
 import VendorAssign from '@/components/partials/requests/VendorAssign'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -9,9 +9,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal } from 'lucide-react'
+import { Check, ChevronDown, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 /**/
 
@@ -20,7 +21,7 @@ import StatusBadge from '@/components/custom/requests/StatusBadge'
 import { type ColumnDef } from '@tanstack/react-table'
 
 const Requests = () => {
-  const { requests, getRequests } = useRequestStore()
+  const { requests, getRequests, updateRequest } = useRequestStore()
 
   useEffect(() => {
     getRequests()
@@ -58,21 +59,54 @@ const Requests = () => {
       accessorKey: 'originalMessages',
       header: 'Item',
       cell: ({ row }) => {
-        const { originalMessages: texts, status, createdAt } = row.original
+        const { originalMessages: texts, createdAt } = row.original
         return (
-          <div>
-            <div className="flex items-center space-x-2 pb-2">
-              <StatusBadge status={status} />
-              <p className="text-xs text-muted-foreground">{createdAt}</p>
-            </div>
+          <div className="space-y-2">
             <div className="flex flex-wrap text-sm">
               {texts.map((text, i) => (
                 <span key={`text-${i}`}>{text}</span>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground">{createdAt}</p>
           </div>
         )
       },
+    },
+    {
+      accessorKey: 'status',
+      header: () => <p>Status</p>,
+      cell: ({ row }) => (
+        <>
+          <div className="flex">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="ghost">
+                  <StatusBadge status={row.original.status}></StatusBadge>
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Change status</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {requestStatuses.map((status) => (
+                  <DropdownMenuItem asChild key={status}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      disabled={row.original.status === 'missing_details'}
+                      className="w-full justify-between"
+                      onClick={() => changeRequestStatus(row.original.id, status)}
+                    >
+                      <StatusBadge status={status}></StatusBadge>
+                      {row.original.status === status && <Check size={16}></Check>}
+                    </Button>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </>
+      ),
     },
 
     {
@@ -119,6 +153,12 @@ const Requests = () => {
     setShowVendorAssign(false)
     setDisplayRequest(undefined)
   }
+  // Status
+
+  const changeRequestStatus = async (id: number, status: RequestStatus) => {
+    await updateRequest(id, { status })
+  }
+
   // getRequests
   return (
     <DashboardLayout>
