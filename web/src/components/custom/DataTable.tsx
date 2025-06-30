@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  onClickRow: (id: number) => void
+  onClickRow?: (id: number) => void
 }
 
 const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TValue>) => {
@@ -13,6 +13,11 @@ const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TV
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
+
+  const handleRowClick = (id: string) => {
+    const numberId = Number(id)
+    if(onClickRow && numberId) onClickRow(numberId)
+  }
   return (
     <div className="rounded-md border">
       <Table>
@@ -35,7 +40,7 @@ const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TV
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                onClick={() => onClickRow(Number(row.id))}
+                onClick={() => handleRowClick(row.id)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
