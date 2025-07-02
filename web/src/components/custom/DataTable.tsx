@@ -1,5 +1,6 @@
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table'
+import { flexRender, getCoreRowModel, useReactTable, getPaginationRowModel, type ColumnDef } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
+import { DataTablePagination } from './DataTablePagination'
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -12,12 +13,14 @@ const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TV
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
   })
 
   const handleRowClick = (id: string) => {
     const numberId = Number(id)
     if(onClickRow && numberId) onClickRow(numberId)
   }
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -56,6 +59,7 @@ const DataTable = <TData, TValue>({ columns, data, onClickRow }: Props<TData, TV
           )}
         </TableBody>
       </Table>
+      <DataTablePagination table={table}></DataTablePagination>
     </div>
   )
 }
