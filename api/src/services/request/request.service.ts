@@ -1,11 +1,60 @@
 import type { NewRequest, Request } from "../../db/models/request.model";
 import { RequestModel } from "../../db/sequelize";
+import { FindAllParams } from "src/types/pagination";
+
 class RequestService {
-  static async findAll(where = {}) {
-    const requests = await RequestModel.findAll({ where });
-    return requests;
+  /**
+   * todo:
+   * sort by [id | 'status|, desc] >sort_by="id", sort_order ="desc"
+   * pagination, default 10, page_size=20, page=1
+   * page default page=1
+   *
+   *  */
+
+  static async paginate({
+    where,
+    sort_by,
+    sort_order,
+    page,
+    page_size: limit,
+  }: FindAllParams<Request>) {
+    const offset = (page - 1) * limit;
+    const { rows, count } = await RequestModel.findAndCountAll({
+      where,
+      order: [[sort_by, sort_order]],
+      limit,
+      offset,
+    });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        pages: Math.ceil(count / limit),
+        sort_by,
+        sort_order,
+        page,
+        limit,
+      },
+    };
   }
-  
+
+  static async findAll({
+    where,
+    sort_by,
+    sort_order,
+    page,
+    page_size: limit,
+  }: FindAllParams<Request>) {
+    const offset = (page - 1) * limit;
+    return await RequestModel.findAll({
+      where,
+      order: [[sort_by, sort_order]],
+      limit,
+      offset,
+    });
+  }
+
   static async findOne(where = {}) {
     const requests = await RequestModel.findOne({ where });
     return requests;
