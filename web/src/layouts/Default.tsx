@@ -11,6 +11,10 @@ const DefaultLayout = ({ children }: Props) => {
       path: '/about',
       label: 'About',
     },
+    {
+      path: '/dashboard',
+      label: 'Admin',
+    },
 
     // soon to be dash-only
   ]
