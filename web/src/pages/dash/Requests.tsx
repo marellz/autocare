@@ -19,6 +19,8 @@ import { Button } from '@/components/ui/button'
 import DataTable from '@/components/custom/DataTable'
 import StatusBadge from '@/components/custom/requests/StatusBadge'
 import { type ColumnDef } from '@tanstack/react-table'
+import RequestOffers from '@/components/partials/requests/Offers'
+import ClientResponse from '@/components/partials/requests/ClientResponse'
 
 const Requests = () => {
   const { requests, getRequests, updateRequest } = useRequestStore()
@@ -127,6 +129,12 @@ const Requests = () => {
               <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
                 Assign to vendors
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
+                View offers
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleShowClientResponse(row.original)}>
+                Respond to client
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
@@ -137,13 +145,13 @@ const Requests = () => {
        * assign(to vendors) ✅
        * see available offers(if any)
        * respond to client
-       * refund(if nothing)
-       * change status
+          > refund(if nothing)
+       * change status 
        */
     },
   ]
 
-  //
+  // VendorAssign
   const handleVendorAssign = (request: Request) => {
     setShowVendorAssign(true)
     setDisplayRequest(request)
@@ -153,6 +161,34 @@ const Requests = () => {
     setShowVendorAssign(false)
     setDisplayRequest(undefined)
   }
+
+  // RequestOffers
+  const [showOffers, setShowOffers] = useState<boolean>(false)
+
+  const handleShowOffers = (request: Request) => {
+    setShowOffers(true)
+    setDisplayRequest(request)
+  }
+
+  const hideOffers = () => {
+    setShowOffers(false)
+    setDisplayRequest(undefined)
+  }
+
+  // Client Response
+
+  const [showClientResponse, setShowClientResponse] = useState<boolean>(false)
+
+  const handleShowClientResponse = (request: Request) => {
+    setShowClientResponse(true)
+    setDisplayRequest(request)
+  }
+
+  const hideClientResponse = () => {
+    setShowClientResponse(false)
+    setDisplayRequest(undefined)
+  }
+
   // Status
 
   const changeRequestStatus = async (id: number, status: RequestStatus) => {
@@ -186,6 +222,23 @@ const Requests = () => {
        * RequestOffers
        * show offers for the request
        */}
+
+      <RequestOffers
+        open={showOffers}
+        request={displayRequest}
+        hideDialog={hideOffers}
+      ></RequestOffers>
+
+      {/**
+       * ClientResponse
+       * respond to the client
+       */}
+
+      <ClientResponse
+        open={showClientResponse}
+        request={displayRequest}
+        hideDialog={hideClientResponse}
+      ></ClientResponse>
     </DashboardLayout>
   )
 }
