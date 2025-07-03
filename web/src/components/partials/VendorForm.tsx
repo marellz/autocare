@@ -18,8 +18,8 @@ import type { NewVendor } from '@/services/useVendorService'
 
 interface Props {
   id?: number | null
-  onCancel: () => void
-  onSubmit: () => void
+  onCancel?: () => void
+  onSubmit?: () => void
   btnProps?: {
     variant: "secondary" | "outline" | 'default'
   }
@@ -94,7 +94,7 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
         createVendor(payload).then(() => setShowDialog(false))
       }
       
-      onSubmit()
+      if(onSubmit)onSubmit()
     } catch (error) {
       console.error(error)
     }
@@ -103,7 +103,7 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
   const [showDialog, setShowDialog] = useState(false)
   useEffect(() => {
     if (!showDialog) {
-      onCancel()
+      if(onCancel) onCancel()
       setForm({ name: '', phone: '', location: '', brands: [] })
     }
   }, [showDialog])

@@ -1,3 +1,4 @@
+import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,24 +20,13 @@ import {
 import DashboardLayout from '@/layouts/Dashboard'
 import type { DashboardStats } from '@/services/useDashboardService'
 import useDashboardStore from '@/stores/useDashboardStore'
-import { Plus, RefreshCcw } from 'lucide-react'
+import { RefreshCcw } from 'lucide-react'
 import { useEffect } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 const DashHome = () => {
-  const addNewVendor = () => {
-    console.log('Add new vendor!')
-  }
-
   const { lastSyncedAt, newRequests, topVendors, chartData, stats, getData, loading } =
     useDashboardStore()
-
-  const quickActions = [
-    {
-      label: 'Add new vendor',
-      action: addNewVendor,
-    },
-  ]
 
   const chartConfig = {
     requests: {
@@ -51,9 +41,9 @@ const DashHome = () => {
 
   const statLabels: Record<keyof DashboardStats, string> = {
     uniqueInteractions: 'Unique interactions',
-    vendors: "Vendors",
-    requests: "Requests",
-    quotes: "Quotes",
+    vendors: 'Vendors',
+    requests: 'Requests',
+    quotes: 'Quotes',
   }
 
   useEffect(() => {
@@ -74,12 +64,7 @@ const DashHome = () => {
           </Button>
         </div>
         <div className="flex border-b pb-4">
-          {quickActions.map(({ label, action }, i) => (
-            <Button variant="outline" onClick={action} key={`actions-${i}`}>
-              <span>{label}</span>
-              <Plus></Plus>
-            </Button>
-          ))}
+          <VendorForm btnProps={{ variant: 'outline' }} />
         </div>
         <div className="mt-4 grid grid-cols-4 gap-x-10 gap-y-4">
           <div className="col-span-4">
