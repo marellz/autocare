@@ -20,9 +20,12 @@ interface Props {
   id?: number | null
   onCancel: () => void
   onSubmit: () => void
+  btnProps?: {
+    variant: "secondary" | "outline" | 'default'
+  }
 }
 
-const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
+const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
   const { error, loading, createVendor, vendors, updateVendor } = useVendorStore()
 
   const [name, setName] = useState('')
@@ -108,9 +111,9 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
   return (
     <Dialog open={showDialog} onOpenChange={(value) => setShowDialog(value)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setShowDialog(true)}>
+        <Button onClick={() => setShowDialog(true)} {...btnProps}>
+          <span>Add new vendor</span>
           <Plus />
-          <span>New vendor</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

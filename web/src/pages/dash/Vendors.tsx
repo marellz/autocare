@@ -29,7 +29,7 @@ const Vendors = () => {
     <DashboardLayout>
       <div className="py-4 flex justify-between items-center">
         <h1 className="text-4xl">Vendors</h1>
-        <VendorForm id={id} onSubmit={() => setId(null)} onCancel={() => setId(null)} />
+        <VendorForm btnProps={{variant: "outline"}} id={id} onSubmit={() => setId(null)} onCancel={() => setId(null)} />
       </div>
       <div className="mt-4">
         <ul className="space-y-4">
