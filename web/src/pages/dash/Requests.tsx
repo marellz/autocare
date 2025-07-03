@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import DashboardLayout from '@/layouts/Dashboard'
 import useRequestStore from '@/stores/useRequestStore'
 import { requestStatuses, type Request, type RequestStatus } from '@/services/useRequestService'
@@ -23,11 +23,7 @@ import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 
 const Requests = () => {
-  const { requests, getRequests, updateRequest } = useRequestStore()
-
-  useEffect(() => {
-    getRequests()
-  }, [])
+  const { requests, resultParams, handlePaginationChange, updateRequest } = useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
@@ -203,7 +199,12 @@ const Requests = () => {
           <h1 className="text-4xl font-bold">Requests</h1>
         </div>
         <div className="mt-4">
-          <DataTable columns={columns} data={requests} />
+          <DataTable
+            columns={columns}
+            data={requests}
+            pagination={resultParams}
+            onPaginationChange={handlePaginationChange}
+          />
         </div>
       </div>
 
