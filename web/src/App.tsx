@@ -4,7 +4,7 @@ import Home from './pages/Home'
 import About from './pages/About'
 import Requests from './pages/dash/Requests'
 import Vendors from './pages/dash/Vendors'
-import DashHome from './pages/dash/Home'
+import DashHome from './pages/dash/Main'
 
 export default function App() {
   return (
