@@ -1,3 +1,4 @@
+import type { RequestParams, ResultParams } from '@/types/pagination'
 import { createKyInstance } from '@/utils/kyCreator'
 
 export const requestStatuses = ['missing_details', 'submitted', 'pending', 'completed']
@@ -23,13 +24,18 @@ export interface NewRequest {
 const api = createKyInstance('/requests')
 
 export const useRequestService = {
-  async getRequests() {
-    const response = await api.get('')
+  async getRequests(params: RequestParams<Request>) {
+    const response = await api.get('', {
+      searchParams: params as Record<keyof ResultParams<Request>, string | number>,
+    })
     if (!response.ok) {
       throw new Error('API response was not ok')
     }
 
-    const { data } = await response.json<{ messsage: 'ok'; data: Request[] }>()
+    const { data } = await response.json<{
+      messsage: 'ok'
+      data: { items: Request[]; pagination: RequestParams<Request> }
+    }>()
 
     return data
   },
