@@ -9,6 +9,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
 import { useState } from 'react'
@@ -38,8 +49,8 @@ const Vendors = () => {
         const { name, phone, location } = row.original
         return (
           <div>
-            <p>{name}</p>
-            <p>
+            <p className='font-medium'>{name}</p>
+            <p className='text-muted-foreground'>
               {phone} {location && `| ${location} `}
             </p>
           </div>
@@ -67,22 +78,49 @@ const Vendors = () => {
       accessorKey: 'actions',
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
-        // const { id } = row.original
+        const { id } = row.original
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild className="flex justify-center">
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
+            <DropdownMenuTrigger asChild>
+              <div className="flex justify-end mx-4">
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => handleVendorEdit(row.original)}>
                 Edit vendor details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => deleteVendor(row.original.id)}>
-                Delete vendor
+              <DropdownMenuItem asChild>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      className="w-full bg-red-100 text-red-500 hover:text-white mt-1"
+                    >
+                      <span>Delete vendor</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete vendor?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the vendor from
+                        your database.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction asChild onClick={() => deleteVendor(id)}>
+                        <Button variant="destructive">Yes, remove vendor</Button>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -78,10 +78,12 @@ const Requests = () => {
           <div className="flex">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button type="button" variant="ghost">
-                  <StatusBadge status={row.original.status}></StatusBadge>
-                  <ChevronDown size={16} />
-                </Button>
+                <div className="flex justify-end mx-4">
+                  <Button type="button" variant="ghost">
+                    <StatusBadge status={row.original.status}></StatusBadge>
+                    <ChevronDown size={16} />
+                  </Button>
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>Change status</DropdownMenuLabel>
