@@ -43,6 +43,16 @@ export default {
     allowNull: true,
     type: DataTypes.DATE,
   },
+
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 };
 
 export enum CarPartDetailEnum {
@@ -90,6 +100,8 @@ export interface Request {
   missingDetails: string[];
   status: RequestStatus;
   fulfilled_at: string | null;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export interface NewRequest {
@@ -101,4 +113,5 @@ export interface NewRequest {
   missingDetails: string[];
   status: RequestStatus;
   fulfilled_at?: string | null;
+  createdAt?: Date;
 }

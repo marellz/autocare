@@ -71,6 +71,7 @@ class RequestService {
   }
 
   static async update(id: string, data: Partial<Request>) {
+    data.updatedAt = new Date();
     const request = await RequestModel.update(data, {
       where: { id },
     });

@@ -4,7 +4,7 @@ import { verifyToken } from "../../middleware/verifyToken.middleware";
 import { User } from "../../db/models/user.model";
 import { asyncHandler } from "../../handlers/async.handler";
 export interface AuthenticatedRequest extends Request {
-  user?: Omit<User, "password">;
+  user?: Omit<User, "password" | "createdAt" | "updatedAt">; // Exclude password and timestamps
 }
 
 const router = express.Router();

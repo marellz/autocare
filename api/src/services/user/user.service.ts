@@ -27,6 +27,7 @@ const create = async ({
 interface UpdateUserPayload {
   name: string;
   password: string;
+  updatedAt?: Date;
 }
 
 const update = async (
@@ -37,11 +38,13 @@ const update = async (
   const user = _user?.get();
   if (!user) return false;
 
-  const updateable: { password?: string; name?: string } = {};
+  const updateable: Partial<UpdateUserPayload> = {};
   if (name) updateable.name = name;
   if (unsecurePassword) {
     updateable.password = await hashPassword(unsecurePassword);
   }
+
+  updateable.updatedAt = new Date();
 
   _user?.update(updateable);
 

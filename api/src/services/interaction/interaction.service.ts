@@ -1,3 +1,4 @@
+import { Model, Sequelize } from "sequelize";
 import { Interaction, NewInteraction } from "../../db/models/interaction.model";
 import { InteractionModel } from "../../db/sequelize";
 
@@ -9,9 +10,20 @@ class InteractionService {
     return items;
   }
 
+  static async findAllUniqueInteractions(): Promise<Model<Interaction, NewInteraction>[]> {
+    
+    return await InteractionModel.findAll({
+      attributes: [
+        'phone',
+        [Sequelize.fn('COUNT', Sequelize.col('id')), 'interactionCount'],
+      ],
+      group: ['phone'],
+    });
+  }
+
   static async findByPhone(phone: string): Promise<Interaction | null> {
     // Simulate an async operation, e.g., fetching from a database
-    const params: any = { where: { phone }, order: [['createdAt', 'DESC']] };
+    const params: any = { where: { phone }, order: [["createdAt", "DESC"]] };
     const item = await InteractionModel.findOne(params);
     return item ? item.get() : null;
   }

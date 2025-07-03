@@ -70,6 +70,7 @@ export const UserModel = sequelize.define<Model<User, NewUser>>(
   userModelDefinition,
   {
     tableName: "users",
+    timestamps: false,
     freezeTableName: true,
   },
 );
@@ -79,6 +80,7 @@ export const VendorModel = sequelize.define<Model<Vendor, NewVendor>>(
   vendorModelDefinition,
   {
     tableName: "vendors",
+    timestamps: false,
     freezeTableName: true,
   },
 );
@@ -88,6 +90,7 @@ export const RequestModel = sequelize.define<Model<Request, NewRequest>>(
   requestModelDefinition,
   {
     tableName: "requests",
+    timestamps: false,
     freezeTableName: true,
   },
 );
@@ -96,6 +99,7 @@ export const VendorRequestModel = sequelize.define<
   Model<VendorRequest, NewVendorRequest>
 >("vendor_requests", vendorRequestModelDefinition, {
   tableName: "vendor_requests",
+  timestamps: false,
   freezeTableName: true,
 });
 

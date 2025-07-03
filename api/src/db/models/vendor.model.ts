@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import { VendorRequest } from "./vendorRequest.model";
 export default {
   id: {
     type: DataTypes.INTEGER,
@@ -22,6 +23,15 @@ export default {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 };
 
 export interface Vendor {
@@ -30,6 +40,9 @@ export interface Vendor {
   phone: string;
   brands: string[];
   location: string | null;
+  vendor_requests?: VendorRequest[];
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export interface NewVendor {
@@ -37,4 +50,5 @@ export interface NewVendor {
   phone: string;
   brands: string[];
   location?: string | null;
+  createdAt?: Date;
 }
