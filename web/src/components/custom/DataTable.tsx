@@ -19,11 +19,11 @@ const DataTable = <TData, TValue>({
   onClickRow,
   onPaginationChange,
 }: Props<TData, TValue>) => {
-  const { page_count: pageCount, page, limit} = pagination
+  const { page_count: pageCount, page, limit } = pagination
 
   const [paginationData, setPaginationData] = useState<{ pageIndex: number; pageSize: number }>({
-    pageIndex: page? page - 1 : 0, //  compensate index vs actual
-    pageSize: limit??10,
+    pageIndex: page ? page - 1 : 0, //  compensate index vs actual
+    pageSize: limit ?? 10,
   })
 
   useEffect(() => {
@@ -45,6 +45,8 @@ const DataTable = <TData, TValue>({
     const numberId = Number(id)
     if (onClickRow && numberId) onClickRow(numberId)
   }
+
+  // todo: implement loading state
 
   return (
     <div className="rounded-md border">
@@ -79,7 +81,7 @@ const DataTable = <TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length}></TableCell>
+              <TableCell colSpan={columns.length}>No data</TableCell>
             </TableRow>
           )}
         </TableBody>
