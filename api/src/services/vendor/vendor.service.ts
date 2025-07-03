@@ -1,9 +1,38 @@
 import { VendorModel, VendorRequestModel } from "../../db/sequelize";
 import type { Vendor, NewVendor } from "../../db/models/vendor.model";
 import { Op } from "sequelize";
+import { FindAllParams } from "src/types/pagination";
 
 type FindVendorParams = Partial<Record<keyof Vendor, any>>;
 class VendorService {
+  static async paginate({
+    page,
+    limit,
+    where,
+    sort_by,
+    sort_order,
+  }: FindAllParams<Vendor>) {
+    const offset = (page - 1) * limit;
+    const { rows, count } = await VendorModel.findAndCountAll({
+      where,
+      order: [[sort_by, sort_order]],
+      limit,
+      offset,
+    });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        page_count: Math.ceil(count / limit),
+        sort_by,
+        sort_order,
+        limit,
+      },
+    };
+  }
+
   static async findAll({ where = {} }: { where?: FindVendorParams } = {}) {
     const whereParams = {} as Record<keyof Vendor, any>;
     if (where.brands) {
@@ -66,13 +95,17 @@ class VendorService {
   }
 
   static async getTopVendors(limit: number = 5) {
+
+    // defective. todo: implement sorting before limit
     const _vendors = await VendorModel.findAll({
       include: [VendorRequestModel],
       limit,
     });
 
-    const vendors = _vendors.map((vendor) => vendor.get()).filter(v=>v.vendor_requests && v.vendor_requests.length > 0);
-    
+    const vendors = _vendors
+      .map((vendor) => vendor.get())
+      .filter((v) => v.vendor_requests && v.vendor_requests.length > 0);
+
     // sort
 
     return vendors.sort((a, b) => {

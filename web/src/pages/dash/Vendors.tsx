@@ -1,89 +1,114 @@
 import DashboardLayout from '@/layouts/Dashboard'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
-import { Edit, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { MoreHorizontal } from 'lucide-react'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { useEffect, useState } from 'react'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+
+import { useState } from 'react'
 import useVendorStore from '@/stores/useVendorStore'
+import DataTable from '@/components/custom/DataTable'
+import type { ColumnDef } from '@tanstack/react-table'
+import type { Vendor } from '@/services/useVendorService'
 
 const Vendors = () => {
-  const { vendors, getVendors, deleteVendor } = useVendorStore()
+  const { vendors, resultParams, handlePaginationChange, deleteVendor } = useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
-  useEffect(() => {
-    getVendors()
-  }, [])
+  const handleVendorEdit = (vendor: Vendor) => {
+    setId(vendor.id)
+  }
+
+  const columns: ColumnDef<Vendor>[] = [
+    {
+      accessorKey: 'id',
+      header: 'ID #',
+      cell: ({ row }) => <p className="font-bold px-2">{row.original.id}</p>,
+    },
+    {
+      accessorKey: 'name',
+      header: 'Vendor',
+      cell: ({ row }) => {
+        const { name, phone, location } = row.original
+        return (
+          <div>
+            <p>{name}</p>
+            <p>
+              {phone} {location && `| ${location} `}
+            </p>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'brands',
+      header: 'Brands',
+      cell: ({ row }) => {
+        const { brands, id } = row.original
+        if (!brands.length) return <p>-</p>
+        return (
+          <ul className="flex items-center gap-2">
+            {brands.map((brand, i) => (
+              <li key={`${id}-${brand}-${i}`}>
+                <Badge>{brand}</Badge>
+              </li>
+            ))}
+          </ul>
+        )
+      },
+    },
+    {
+      accessorKey: 'actions',
+      header: () => <p className="text-right pr-4">Actions</p>,
+      cell: ({ row }) => {
+        // const { id } = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="flex justify-center">
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleVendorEdit(row.original)}>
+                Edit vendor details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteVendor(row.original.id)}>
+                Delete vendor
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
 
   return (
     <DashboardLayout>
       <div className="py-4 flex justify-between items-center">
         <h1 className="text-4xl">Vendors</h1>
-        <VendorForm btnProps={{variant: "outline"}} id={id} onSubmit={() => setId(null)} onCancel={() => setId(null)} />
+        <VendorForm
+          btnProps={{ variant: 'outline' }}
+          id={id}
+          onSubmit={() => setId(null)}
+          onCancel={() => setId(null)}
+        />
       </div>
       <div className="mt-4">
-        <ul className="space-y-4">
-          {!vendors.length && (
-            <li className="">
-              <h5 className="text-lg">No vendors atm.</h5>
-            </li>
-          )}
-          {vendors.map((vendor) => (
-            <li key={vendor.id}>
-              <a href={`#"${vendor.name}"`} className="border block rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-lg">{vendor.name}</p>
-
-                  <div className="flex items-center space-x-2">
-                    <Button type="button" variant="ghost" onClick={() => setId(vendor.id)}>
-                      <Edit />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button size="icon" variant="secondary">
-                          <X></X>
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete vendor?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the vendor
-                            from your database.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction asChild onClick={() => deleteVendor(vendor.id)}>
-                            <Button variant="destructive">Yes, remove vendor</Button>
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
-                <p className="text-gray-500">{vendor.phone}</p>
-                <ul className="flex items-center gap-2">
-                  {vendor.brands.map((brand) => (
-                    <li key={brand}>
-                      <Badge>{brand}</Badge>
-                    </li>
-                  ))}
-                </ul>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <DataTable
+          columns={columns}
+          data={vendors}
+          pagination={resultParams}
+          onPaginationChange={handlePaginationChange}
+        />
       </div>
     </DashboardLayout>
   )

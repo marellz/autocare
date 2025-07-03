@@ -1,20 +1,25 @@
 import {
   useVendorService as service,
-  type FindVendorParams,
   type NewVendor,
   type Vendor,
 } from '@/services/useVendorService'
+import type { RequestParams, ResultParams } from '@/types/pagination'
 import { create } from 'zustand'
 
+type VendorRequestParams = RequestParams<Vendor>
+type VendorResultParams = ResultParams<Vendor>
 interface Store {
   vendors: Vendor[]
   loading: boolean
   error: string | undefined
+  resultParams: VendorResultParams
 
-  getVendors: (query?: FindVendorParams) => Promise<void>
+  getVendors: (params: VendorRequestParams) => Promise<void>
   createVendor: (payload: NewVendor) => Promise<void>
   deleteVendor: (id: number) => Promise<void>
   updateVendor: (id: number, updated: Partial<Vendor>) => Promise<void>
+
+  handlePaginationChange: (page: number, limit: number) => void
 }
 
 const useVendorStore = create<Store>((set) => {
@@ -23,11 +28,33 @@ const useVendorStore = create<Store>((set) => {
   const loading: boolean = false
   const error: string | undefined = undefined
 
-  const getVendors = async (query: FindVendorParams = {}) => {
+  const resultParams: ResultParams<Vendor> = {
+    page_count: 1,
+    count: 0,
+  }
+
+  const handlePaginationChange = (page: number, limit: number) => {
+    getVendors({
+      page,
+      limit,
+    })
+  }
+
+  const getVendors = async ({
+    page = 1,
+    limit = 10,
+    sort_by = 'id',
+    sort_order = 'ASC',
+  }: VendorResultParams) => {
     try {
       set({ loading: true })
-      const vendors = await service.getVendors(query)
-      set({ vendors })
+      const { items: vendors, pagination } = await service.getVendors({
+        page,
+        limit,
+        sort_by,
+        sort_order,
+      })
+      set({ vendors, resultParams: pagination })
     } catch (error) {
       console.error('Error fetching vendors:', error)
       set({ error: error as string })
@@ -90,6 +117,9 @@ const useVendorStore = create<Store>((set) => {
     createVendor,
     deleteVendor,
     updateVendor,
+
+    resultParams,
+    handlePaginationChange,
   }
 })
 export default useVendorStore
