@@ -4,19 +4,19 @@ import { FindAllParams } from "src/types/pagination";
 
 class RequestService {
   /**
-   * todo:
+   * todo: ✅
    * sort by [id | 'status|, desc] >sort_by="id", sort_order ="desc"
    * pagination, default 10, page_size=20, page=1
    * page default page=1
    *
-   *  */
+   **/
 
   static async paginate({
     where,
     sort_by,
     sort_order,
     page,
-    page_size: limit,
+    limit,
   }: FindAllParams<Request>) {
     const offset = (page - 1) * limit;
     const { rows, count } = await RequestModel.findAndCountAll({
@@ -30,10 +30,10 @@ class RequestService {
       items: rows,
       pagination: {
         total: count,
-        pages: Math.ceil(count / limit),
+        page,
+        page_count: Math.ceil(count / limit),
         sort_by,
         sort_order,
-        page,
         limit,
       },
     };
@@ -44,7 +44,7 @@ class RequestService {
     sort_by,
     sort_order,
     page,
-    page_size: limit,
+    limit,
   }: FindAllParams<Request>) {
     const offset = (page - 1) * limit;
     return await RequestModel.findAll({

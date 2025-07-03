@@ -8,7 +8,7 @@ class RequestsController {
     try {
       const {
         page = 1,
-        page_size = 10,
+        limit = 10,
         sort_by = "createdAt",
         sort_order,
       } = req.query;
@@ -19,7 +19,7 @@ class RequestsController {
 
       const requests = await RequestService.paginate({
         page: page? Number(page) : 1,
-        page_size: page_size? Number(page_size): 10,
+        limit: limit? Number(limit): 10,
         sort_by: sort_by as PaginationSortBy ?? 'createdAt',
         sort_order: sort_order as PaginationSortOrder ?? 'DESC'
       });

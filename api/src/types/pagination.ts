@@ -6,5 +6,5 @@ export interface FindAllParams<T> {
   sort_by: PaginationSortBy;
   sort_order: PaginationSortOrder
   page: number;
-  page_size: number;
+  limit: number;
 }
