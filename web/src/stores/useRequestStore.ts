@@ -3,16 +3,28 @@ import {
   useRequestService as service,
   type NewRequest,
   type Request,
+  type RequestChannel,
+  type RequestStatus,
 } from '@/services/useRequestService'
 import type { RequestParams, ResultParams } from '@/types/pagination'
+
+type RequestRequestParams = RequestParams<Request> & {
+  status?: RequestStatus
+  channel?: RequestChannel
+}
+
+type RequestResultParams = ResultParams<Request> & {
+  status?: RequestStatus,
+  channel?: RequestChannel
+}
 
 interface Store {
   requests: Request[]
   loading: boolean
   error: string | undefined
-  resultParams: ResultParams<Request>
+  resultParams: RequestResultParams
 
-  getRequests: (params: RequestParams<Request>) => Promise<void>
+  getRequests: (params: RequestRequestParams) => Promise<void>
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
   // deleteRequest: (id: number) => Promise<void>;
@@ -25,9 +37,12 @@ const useRequestStore = create<Store>((set) => {
   const loading: boolean = false
   const error: string | undefined = undefined
 
-  const resultParams: ResultParams<Request> = {
+  const resultParams: RequestResultParams = {
     page_count: 1,
     count: 0,
+    channel: '',
+    status: '',
+    query: '',
   }
 
   const handlePaginationChange = (page: number, limit: number) => {
@@ -38,14 +53,21 @@ const useRequestStore = create<Store>((set) => {
   }
 
   const getRequests = async ({
+    query = '',
+    status = '',
+    channel = '',
+
     page = 1,
     limit = 10,
     sort_by = 'id',
     sort_order = 'ASC',
-  }: RequestParams<Request>) => {
+  }: RequestRequestParams) => {
     try {
       set({ loading: true })
       const params = {
+        query,
+        status,
+        channel,
         page,
         limit,
         sort_by,
@@ -119,8 +141,8 @@ const useRequestStore = create<Store>((set) => {
     updateRequest,
     // deleteRequest,
 
-    // 
-    handlePaginationChange
+    //
+    handlePaginationChange,
   }
 })
 

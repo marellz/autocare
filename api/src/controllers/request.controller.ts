@@ -2,11 +2,18 @@ import { PaginationSortBy, PaginationSortOrder } from "../types/pagination";
 import { RequestStatusEnum } from "../db/models/request.model";
 import RequestService from "../services/request/request.service";
 import { Request, Response, NextFunction } from "express";
-// import { Request as RequestModel } from "../db/models/request.model";
+import { Op, WhereOptions, Sequelize, fn, col } from "sequelize";
+import { Request as RequestModel } from "../db/models/request.model";
 class RequestsController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       const {
+        // filters
+        query,
+        status,
+        channel,
+
+        // pagination
         page = 1,
         limit = 10,
         sort_by = "createdAt",
@@ -18,13 +25,47 @@ class RequestsController {
       if (paginationError)
         throw new Error("Pagination error: " + paginationError);
 
+      let where: WhereOptions<RequestModel> = {};
+
+      if (query) {
+        where = {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${query}%` } },
+            { phone: { [Op.iLike]: `%${query}%` } },
+            Sequelize.where(
+              fn("array_to_string", col("originalMessages"), " "),
+              {
+                [Op.iLike]: `%${query}%`,
+              },
+            ),
+          ],
+        };
+      }
+
+      if (status)
+        where = {
+          ...where,
+          status: {
+            [Op.eq]: status as string,
+          },
+        };
+
+      if (channel)
+        where = {
+          ...where,
+          channel: {
+            [Op.eq]: channel as string,
+          },
+        };
+
       const requests = await RequestService.paginate({
-        page: page? Number(page) : 1,
-        limit: limit? Number(limit): 10,
-        sort_by: sort_by as PaginationSortBy ?? 'createdAt',
-        sort_order: sort_order as PaginationSortOrder ?? 'DESC'
+        page: page ? Number(page) : 1,
+        limit: limit ? Number(limit) : 10,
+        sort_by: (sort_by as PaginationSortBy) ?? "createdAt",
+        sort_order: (sort_order as PaginationSortOrder) ?? "DESC",
+        where,
       });
-      
+
       res.json({ message: "ok", data: requests });
     } catch (error) {
       next(error);
