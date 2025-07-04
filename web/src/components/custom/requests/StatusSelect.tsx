@@ -20,6 +20,7 @@ const StatusSelect = ({ status, onSelect, asFilter }: Props) => {
   const handleSelect = (currentValue: RequestStatus | '') => {
     if (!asFilter && currentValue === '') return
     onSelect(currentValue)
+    setOpen(false)
   }
 
   const statuses = asFilter ? [{ label: 'All', value: '' }, ...requestStatuses] : requestStatuses

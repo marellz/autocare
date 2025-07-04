@@ -18,9 +18,12 @@ import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
+import RequestFilters from '@/components/partials/requests/Filters'
 
-// todo: use popover/command for status ✅
-// filter_by: channel, status, brands etc. soon, paid_status
+// todo: 
+// use popover/command for status ✅
+// filter_by: channel, status, ✅
+// todo soon: filter brands, paid_status
 
 const Requests = () => {
   const { requests, resultParams, handlePaginationChange, updateRequest } = useRequestStore()
@@ -168,11 +171,12 @@ const Requests = () => {
   // getRequests
   return (
     <DashboardLayout>
-      <div>
-        <div className="py-4">
+      <div className="space-y-8">
+        <div>
           <h1 className="text-4xl font-bold">Requests</h1>
         </div>
-        <div className="mt-4">
+        <RequestFilters />
+        <div>
           <DataTable
             columns={columns}
             data={requests}
