@@ -103,7 +103,7 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      {!(loading && pageCount && pageCount > 1) ? (
+      {(!loading && pageCount && pageCount > 1) ? (
         <DataTablePagination table={table}></DataTablePagination>
       ) : (
         ''
