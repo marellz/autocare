@@ -30,9 +30,6 @@ const useVendorRequestStore = create<Store>((set) => {
     createVendorRequest: async (payload: NewVendorRequest) => {
       try {
         await service.createVendorRequest(payload)
-        // set((state) => ({
-        //   vendorRequests: [newRequest, ...state.vendorRequests],
-        // }))
       } catch (error) {
         console.error('Error creating vendor request:', error)
       }

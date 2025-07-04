@@ -29,7 +29,7 @@ const RequestForm = () => {
     })
 
     if (error) {
-      // throw error
+      // todo: throw error
     } else {
       // close modal
       setOpen(false)

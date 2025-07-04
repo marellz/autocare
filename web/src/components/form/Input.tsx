@@ -8,30 +8,13 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   prefix?: string
 }
 
-const Input = ({
-  type = 'text',
-  label,
-  text,
-  // prefix,
-  // todo: implement prefix
-
-  ...props
-}: Props) => {
+const Input = ({ type = 'text', label, text, ...props }: Props) => {
   const id = useId()
 
   return (
     <div className="mb-4 space-y-2">
-      {label && (
-        <Label htmlFor={id}>
-          {label}
-        </Label>
-      )}
-      <div className="">
-        {/* {prefix && (
-          <span className="input-group-text" id="basic-addon1">
-            {prefix}
-          </span>
-        )} */}
+      {label && <Label htmlFor={id}>{label}</Label>}
+      <div>
         <CustomInput type={type} id={id} {...props} />
       </div>
       {text && <p className="text-sm text-gray-500">{text}</p>}

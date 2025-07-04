@@ -20,9 +20,6 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
 
-// todo: 
-// use popover/command for status ✅
-// filter_by: channel, status, ✅
 // todo soon: filter brands, paid_status
 
 const Requests = () => {
@@ -88,7 +85,6 @@ const Requests = () => {
       accessorKey: 'actions',
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
-        // const { id } = row.original
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex justify-center">
@@ -114,12 +110,10 @@ const Requests = () => {
       },
 
       /*
-       * Todo: Implement:
-       * assign(to vendors) ✅
+       * todo: Implement:
        * see available offers(if any)
        * respond to client
           > refund(if nothing)
-       * change status ✅
        */
     },
   ]

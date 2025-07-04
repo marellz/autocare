@@ -7,7 +7,6 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
-// import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { brandOptions } from '@/stores/useVendorStore'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Check, ChevronsUpDown } from 'lucide-react'

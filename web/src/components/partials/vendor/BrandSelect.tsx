@@ -1,14 +1,11 @@
 import { Button } from '@/components/ui/button'
 import {
   Command,
-  // CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  //   CommandSeparator,
-  // CommandShortcut,
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { brandOptions } from '@/stores/useVendorStore'

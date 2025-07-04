@@ -60,7 +60,6 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
     }
   }
 
-  // todo: create toast! ✅
   const handleSubmit = async () => {
     try {
       await Promise.all(
@@ -105,7 +104,7 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
 
   // proposition
   const proposeQuote = (id: number) => {
-    // update VendorRequest with status "proposed"
+    // todo: update VendorRequest with status "proposed"
     console.log(`propose vendor-request id ${id}`)
   }
 
@@ -208,11 +207,8 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
             </Command>
 
             {/**
-             * TODO:
-             * 1. display current vendor requests, or bring up in the list ✅
-             * 2. display recommended vendors ✅
-             * 3. offer search for other vendors ✅
-             * 4. Create an API endpoint to send proposals using `proposeQuote`
+             * todo:
+             * 1. Create an API endpoint to send proposals using `proposeQuote`
              */}
           </div>
           <DialogFooter>
