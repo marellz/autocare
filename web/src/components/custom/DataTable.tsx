@@ -90,7 +90,12 @@ const DataTable = <TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length}>No data</TableCell>
+              <TableCell colSpan={columns.length}>
+                <p className="text-center text-base pt-4">
+                  <span className="font-medium">Empty. </span>
+                  <span className='text-muted-foreground'>No data/rows.</span>
+                </p>
+              </TableCell>
             </TableRow>
           )}
         </TableBody>
