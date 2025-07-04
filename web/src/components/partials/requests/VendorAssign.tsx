@@ -30,7 +30,7 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
   const [filteredVendors, setFilteredVendors] = useState<Vendor[]>(vendors)
 
   const initiate = async (/*brand: string*/) => {
-    await getVendors()
+    await getVendors({})
     await getVendorRequests({
       // will not run if request is null.
       requestId: request!.id,

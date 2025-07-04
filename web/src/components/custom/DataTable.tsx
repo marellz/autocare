@@ -49,8 +49,6 @@ const DataTable = <TData, TValue>({
     if (onClickRow && numberId) onClickRow(numberId)
   }
 
-  // todo: implement loading state
-
   return (
     <div className="rounded-md border">
       <Table>
