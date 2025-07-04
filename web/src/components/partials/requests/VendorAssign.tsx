@@ -27,6 +27,7 @@ import type { Request, RequestStatus } from '@/services/useRequestService'
 import type { Vendor } from '@/services/useVendorService'
 import { Info } from 'lucide-react'
 import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 
 interface Props {
   request?: Request
@@ -102,6 +103,12 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
   const recommended = unrequestedVendors.filter((vendor) => vendor.brands.includes(requestBrand))
   const otherVendors = unrequestedVendors.filter((vendor) => !vendor.brands.includes(requestBrand))
 
+  // proposition
+  const proposeQuote = (id: number) => {
+    // update VendorRequest with status "proposed"
+    console.log(`propose vendor-request id ${id}`)
+  }
+
   useEffect(() => {
     if (!request) return
     initiate()
@@ -157,8 +164,42 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
                   <>
                     <CommandSeparator />
                     <CommandGroup heading="Current">
-                      {vendorRequests.map(({ id, vendorId }) => (
-                        <CommandItem key={id}>Vendor #{vendorId}</CommandItem>
+                      {vendorRequests.map(({ id, vendor, status, price, condition }) => (
+                        <CommandItem key={id}>
+                          <div className="flex-auto space-y-1 py-1">
+                            <div className="flex items-center space-x-2">
+                              <p className="font-medium">{vendor.name}</p>
+                              {status === 'proposed' && (
+                                <Badge variant="default" className="bg-green-500 text-white">
+                                  {status}
+                                </Badge>
+                              )}
+                              {status === 'quoted' && (
+                                <Badge
+                                  variant="outline"
+                                  className="border-current text-green-500/90"
+                                >
+                                  {status}
+                                </Badge>
+                              )}
+                              {!['proposed', 'quoted'].includes(status) && (
+                                <Badge variant="secondary">{status}</Badge>
+                              )}
+                            </div>
+                            {price && condition && (
+                              <p className="text-muted-foreground">
+                                Ksh. {Number(price).toLocaleString()} | {condition}
+                              </p>
+                            )}
+                          </div>
+                          <div></div>
+                          {status === 'quoted' && (
+                            <Button size="sm" variant="outline" onClick={() => proposeQuote(id)}>
+                              <span>Propose</span>
+                            </Button>
+                          )}
+                          {status === 'proposed' && <Badge>Proposed</Badge>}
+                        </CommandItem>
                       ))}
                     </CommandGroup>
                   </>
@@ -171,6 +212,7 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
              * 1. display current vendor requests, or bring up in the list ✅
              * 2. display recommended vendors ✅
              * 3. offer search for other vendors ✅
+             * 4. Create an API endpoint to send proposals using `proposeQuote`
              */}
           </div>
           <DialogFooter>
@@ -179,7 +221,7 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
                 Cancel
               </Button>
               <Button disabled={selected.length === 0} onClick={handleSubmit}>
-                Submit
+                Send request
               </Button>
             </div>
           </DialogFooter>
