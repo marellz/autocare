@@ -2,6 +2,8 @@ import {
   useVendorService as service,
   type NewVendor,
   type Vendor,
+  type VendorRequestParams,
+  type VendorResultParams,
 } from '@/services/useVendorService'
 import { create } from 'zustand'
 
@@ -43,7 +45,7 @@ const useVendorStore = create<Store>((set) => {
   const loading: boolean = false
   const error: string | undefined = undefined
 
-  const resultParams: ResultParams<Vendor> = {
+  const resultParams: VendorResultParams = {
     page_count: 1,
     count: 0,
   }
@@ -56,6 +58,8 @@ const useVendorStore = create<Store>((set) => {
   }
 
   const getVendors = async ({
+    query = '',
+    brand = '',
     page = 1,
     limit = 10,
     sort_by = 'id',
@@ -64,6 +68,8 @@ const useVendorStore = create<Store>((set) => {
     try {
       set({ loading: true })
       const { items: vendors, pagination } = await service.getVendors({
+        query,
+        brand,
         page,
         limit,
         sort_by,

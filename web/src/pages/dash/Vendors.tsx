@@ -1,7 +1,7 @@
 import DashboardLayout from '@/layouts/Dashboard'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal, Search } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+
 import { Button } from '@/components/ui/button'
 
 import { useState } from 'react'
@@ -27,9 +28,12 @@ import useVendorStore from '@/stores/useVendorStore'
 import DataTable from '@/components/custom/DataTable'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Vendor } from '@/services/useVendorService'
+import { Input } from '@/components/ui/input'
+import BrandSelect from '@/components/partials/vendor/BrandSelect'
 
 const Vendors = () => {
-  const { vendors, resultParams, handlePaginationChange, deleteVendor } = useVendorStore()
+  const { vendors, resultParams, getVendors, handlePaginationChange, deleteVendor } =
+    useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
   const handleVendorEdit = (vendor: Vendor) => {
@@ -49,8 +53,8 @@ const Vendors = () => {
         const { name, phone, location } = row.original
         return (
           <div>
-            <p className='font-medium'>{name}</p>
-            <p className='text-muted-foreground'>
+            <p className="font-medium">{name}</p>
+            <p className="text-muted-foreground">
               {phone} {location && `| ${location} `}
             </p>
           </div>
@@ -129,10 +133,24 @@ const Vendors = () => {
     },
   ]
 
+  const [query, setQuery] = useState<string>('')
+  const handleQueryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setQuery(val)
+  }
+
+  const handleQueryFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    //
+
+    console.log('searching ' + query)
+    getVendors({ query })
+  }
+
   return (
     <DashboardLayout>
       <div className="py-4 flex justify-between items-center">
-        <h1 className="text-4xl">Vendors</h1>
+        <h1 className="text-4xl font-bold">Vendors</h1>
         <VendorForm
           btnProps={{ variant: 'outline' }}
           id={id}
@@ -140,7 +158,24 @@ const Vendors = () => {
           onCancel={() => setId(null)}
         />
       </div>
-      <div className="mt-4">
+      <div className="mt-4 space-y-8">
+        <div className="flex space-x-4">
+          <form onSubmit={handleQueryFormSubmit}>
+            <div className="flex gap-2">
+              <Input onInput={handleQueryInput} placeholder="Search for a name, phone" />
+              <Button type="submit">
+                <span>Search</span>
+                <Search />
+              </Button>
+            </div>
+          </form>
+
+          <div>
+            <BrandSelect
+              onSelect={(brand: string | null) => getVendors({ query: '', brand: brand ?? '' })}
+            />
+          </div>
+        </div>
         <DataTable
           columns={columns}
           data={vendors}
