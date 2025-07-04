@@ -1,9 +1,24 @@
-import { createKyInstance } from "@/utils/kyCreator"
+import { createKyInstance } from '@/utils/kyCreator'
+import type { Vendor } from './useVendorService'
+
+export const vendorRequestStatuses = ['pending', 'quoted', 'unavailable', 'proposed']
+export const vendorRequestConditions = ['new', 'refurbished', 'used']
+
+export type VendorRequestStatus = (typeof vendorRequestStatuses)[number]
+export type VendorRequestCondition = (typeof vendorRequestConditions)[number]
 
 export interface VendorRequest {
   id: number
   vendorId: number
   requestId: number
+  notes: string | null
+  condition: VendorRequestCondition | null
+  price: string | number | null
+  status: VendorRequestStatus
+  updatedAt: string
+  createdAt: string
+  vendor: Vendor
+  request: Vendor
 }
 
 export interface NewVendorRequest {

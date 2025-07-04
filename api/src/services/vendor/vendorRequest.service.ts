@@ -51,6 +51,10 @@ class VendorRequestService {
       where: {
         ...where,
       },
+      include: [
+        VendorModel,
+        RequestModel
+      ]
     });
 
     return vendorRequest;
@@ -58,12 +62,12 @@ class VendorRequestService {
 
   static async findAll(where: { vendorId?: string; requestId?: string } = {}) {
     // find vendorRequests where vendorPhone === phone
-
     // find where price === null && condition === null && availability === null
     const vendorRequests = await VendorRequestModel.findAll({
       where: {
         ...where,
       },
+      include: [VendorModel, RequestModel],
     });
 
     return vendorRequests;
