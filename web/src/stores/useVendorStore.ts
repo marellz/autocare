@@ -6,8 +6,24 @@ import {
 import type { RequestParams, ResultParams } from '@/types/pagination'
 import { create } from 'zustand'
 
-type VendorRequestParams = RequestParams<Vendor>
-type VendorResultParams = ResultParams<Vendor>
+export const brandOptions = [
+  'Toyota',
+  'Honda',
+  'Nissan',
+  'Ford',
+  'Chevrolet',
+  'Volkswagen',
+  'Hyundai',
+  'Kia',
+  'Mazda',
+  'Subaru',
+  'Mercedes-Benz',
+  'BMW',
+  'Audi',
+  'Lexus',
+  'Porsche',
+]
+
 interface Store {
   vendors: Vendor[]
   loading: boolean

@@ -15,6 +15,7 @@ import Checkbox from '../form/Checkbox'
 import { Plus } from 'lucide-react'
 import useVendorStore from '@/stores/useVendorStore'
 import type { NewVendor } from '@/services/useVendorService'
+import { brandOptions } from '@/stores/useVendorStore'
 
 interface Props {
   id?: number | null
@@ -48,24 +49,6 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
       setShowDialog(true)
     }
   }, [id])
-
-  const brandOptions = [
-    'Toyota',
-    'Honda',
-    'Nissan',
-    'Ford',
-    'Chevrolet',
-    'Volkswagen',
-    'Hyundai',
-    'Kia',
-    'Mazda',
-    'Subaru',
-    'Mercedes-Benz',
-    'BMW',
-    'Audi',
-    'Lexus',
-    'Porsche',
-  ]
 
   const handleBrandSelect = (brand: string) => {
     if (brands.includes(brand)) {
