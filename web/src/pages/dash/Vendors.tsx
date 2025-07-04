@@ -149,7 +149,7 @@ const Vendors = () => {
 
   return (
     <DashboardLayout>
-      <div className="py-4 flex justify-between items-center">
+      <div className="py-4 flex items-center">
         <h1 className="text-4xl font-bold">Vendors</h1>
         <VendorForm
           btnProps={{ variant: 'outline' }}

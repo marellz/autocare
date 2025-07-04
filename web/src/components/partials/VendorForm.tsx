@@ -97,7 +97,7 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
     <>
       <Dialog open={showDialog} onOpenChange={(value) => setShowDialog(value)}>
         <DialogTrigger asChild>
-          <Button onClick={() => setShowDialog(true)} {...btnProps}>
+          <Button className="ml-auto" onClick={() => setShowDialog(true)} {...btnProps}>
             <span>Add new vendor</span>
             <Plus />
           </Button>
