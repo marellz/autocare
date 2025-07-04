@@ -1,4 +1,6 @@
 export interface RequestParams<T> {
+  query?: string;
+  where?: Record<string, string|number>
   page?: number
   limit?: number
   sort_by?: keyof T

@@ -1,12 +1,41 @@
-import { cleanObject } from "../utils/object.utils";
 import VendorService from "../services/vendor/vendor.service";
 import { Request, Response, NextFunction } from "express";
+import { Op, WhereOptions } from "sequelize";
+import { Vendor } from "src/db/models/vendor.model";
+import { PaginationSortBy, PaginationSortOrder } from "src/types/pagination";
 
 class VendorController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const whereParams = { name: req.query.name, brand: req.query.brand };
-      const vendors = await VendorService.findAll({ where: cleanObject(whereParams) });
+      const {
+        brand,
+        query,
+        page = 1,
+        limit = 10,
+        sort_by = "createdAt",
+        sort_order,
+      } = req.query;
+
+      const where: WhereOptions<Vendor> = {};
+
+      if (query)
+        where.name = {
+          [Op.iLike]: `%${query}%` as string,
+        };
+
+      if (brand)
+        where.brands = {
+          [Op.contains]: [brand as string],
+        };
+
+      const vendors = await VendorService.paginate({
+        page: page ? Number(page) : 1,
+        limit: limit ? Number(limit) : 10,
+        sort_by: (sort_by as PaginationSortBy) ?? "createdAt",
+        sort_order: (sort_order as PaginationSortOrder) ?? "DESC",
+        where,
+      });
+
       return res.status(200).json({ message: "ok", data: vendors });
     } catch (error) {
       next(error);
@@ -35,7 +64,7 @@ class VendorController {
         location,
         brands,
       });
-      
+
       return res.status(201).json({ message: "ok", data: vendor });
     } catch (error) {
       next(error);

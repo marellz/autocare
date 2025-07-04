@@ -15,14 +15,18 @@ import Checkbox from '../form/Checkbox'
 import { Plus } from 'lucide-react'
 import useVendorStore from '@/stores/useVendorStore'
 import type { NewVendor } from '@/services/useVendorService'
+import { brandOptions } from '@/stores/useVendorStore'
 
 interface Props {
   id?: number | null
-  onCancel: () => void
-  onSubmit: () => void
+  onCancel?: () => void
+  onSubmit?: () => void
+  btnProps?: {
+    variant: "secondary" | "outline" | 'default'
+  }
 }
 
-const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
+const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
   const { error, loading, createVendor, vendors, updateVendor } = useVendorStore()
 
   const [name, setName] = useState('')
@@ -45,24 +49,6 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
       setShowDialog(true)
     }
   }, [id])
-
-  const brandOptions = [
-    'Toyota',
-    'Honda',
-    'Nissan',
-    'Ford',
-    'Chevrolet',
-    'Volkswagen',
-    'Hyundai',
-    'Kia',
-    'Mazda',
-    'Subaru',
-    'Mercedes-Benz',
-    'BMW',
-    'Audi',
-    'Lexus',
-    'Porsche',
-  ]
 
   const handleBrandSelect = (brand: string) => {
     if (brands.includes(brand)) {
@@ -91,7 +77,7 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
         createVendor(payload).then(() => setShowDialog(false))
       }
       
-      onSubmit()
+      if(onSubmit)onSubmit()
     } catch (error) {
       console.error(error)
     }
@@ -100,7 +86,7 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
   const [showDialog, setShowDialog] = useState(false)
   useEffect(() => {
     if (!showDialog) {
-      onCancel()
+      if(onCancel) onCancel()
       setForm({ name: '', phone: '', location: '', brands: [] })
     }
   }, [showDialog])
@@ -108,9 +94,9 @@ const VendorForm = ({ id, onSubmit, onCancel }: Props) => {
   return (
     <Dialog open={showDialog} onOpenChange={(value) => setShowDialog(value)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setShowDialog(true)}>
+        <Button onClick={() => setShowDialog(true)} {...btnProps}>
+          <span>Add new vendor</span>
           <Plus />
-          <span>New vendor</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
