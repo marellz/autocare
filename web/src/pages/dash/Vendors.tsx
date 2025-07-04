@@ -1,7 +1,7 @@
 import DashboardLayout from '@/layouts/Dashboard'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal, Search } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,11 +28,10 @@ import useVendorStore from '@/stores/useVendorStore'
 import DataTable from '@/components/custom/DataTable'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Vendor } from '@/services/useVendorService'
-import { Input } from '@/components/ui/input'
-import BrandSelect from '@/components/partials/vendor/BrandSelect'
+import VendorFilters from '@/components/partials/vendor/Filters'
 
 const Vendors = () => {
-  const { vendors, resultParams, loading, getVendors, handlePaginationChange, deleteVendor } =
+  const { vendors, resultParams, loading, handlePaginationChange, deleteVendor } =
     useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
@@ -133,20 +132,6 @@ const Vendors = () => {
     },
   ]
 
-  const [query, setQuery] = useState<string>('')
-  const handleQueryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setQuery(val)
-  }
-
-  const handleQueryFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    //
-
-    console.log('searching ' + query)
-    getVendors({ query })
-  }
-
   return (
     <DashboardLayout>
       <div className="py-4 flex items-center">
@@ -159,23 +144,7 @@ const Vendors = () => {
         />
       </div>
       <div className="mt-4 space-y-8">
-        <div className="flex space-x-4">
-          <form onSubmit={handleQueryFormSubmit}>
-            <div className="flex gap-2">
-              <Input onInput={handleQueryInput} placeholder="Search for a name, phone" />
-              <Button type="submit">
-                <span>Search</span>
-                <Search />
-              </Button>
-            </div>
-          </form>
-
-          <div>
-            <BrandSelect
-              onSelect={(brand: string | null) => getVendors({ query: '', brand: brand ?? '' })}
-            />
-          </div>
-        </div>
+        <VendorFilters />
         <DataTable
           columns={columns}
           data={vendors}

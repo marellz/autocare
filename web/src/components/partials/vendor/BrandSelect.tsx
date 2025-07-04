@@ -16,11 +16,12 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 
 interface Props {
+  brand: string | null;
   onSelect: (brand: string | null) => void
 }
-const BrandSelect = ({ onSelect }: Props) => {
+const BrandSelect = ({ onSelect, brand }: Props) => {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState<string | null>()
+  const [value, setValue] = useState<string | null>(brand)
 
   const handleSelect = (brand: string | null) => {
     setValue(brand)
