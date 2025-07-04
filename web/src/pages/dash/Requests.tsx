@@ -22,6 +22,9 @@ import { type ColumnDef } from '@tanstack/react-table'
 import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 
+// todo: use popover/command for status
+// filter_by: channel, status, brands etc. soon, paid_status
+
 const Requests = () => {
   const { requests, resultParams, handlePaginationChange, updateRequest } = useRequestStore()
 
@@ -43,7 +46,7 @@ const Requests = () => {
             <div className="flex items-center space-x-1">
               <h2 className="font-medium">{name}</h2>
               <Badge variant="outline" className="text-gray-500">
-                {channel}{' '}
+                {channel}
               </Badge>
             </div>
             <a className="text-muted-foreground" href={`tel:${phone}`}>
