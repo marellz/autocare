@@ -1,7 +1,7 @@
 import { VendorModel, VendorRequestModel } from "../../db/sequelize";
 import type { Vendor, NewVendor } from "../../db/models/vendor.model";
-import { Op } from "sequelize";
 import { FindAllParams } from "src/types/pagination";
+import { Op } from "sequelize";
 
 type FindVendorParams = Partial<Record<keyof Vendor, any>>;
 class VendorService {
