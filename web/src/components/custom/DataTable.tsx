@@ -4,6 +4,7 @@ import { DataTablePagination } from './DataTablePagination'
 import { useEffect, useState } from 'react'
 import type { ResultParams } from '@/types/pagination'
 import Loader from './Loader'
+import { CircleSlash } from 'lucide-react'
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -89,18 +90,23 @@ const DataTable = <TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <p className="text-center text-base pt-4">
-                  <span className="font-medium">Empty. </span>
-                  <span className='text-muted-foreground'>No data/rows.</span>
-                </p>
+                <div className="flex space-x-4 items-center justify-center">
+                  <CircleSlash className='opacity-30' />
+                  <p className="text-center text-base py-4">
+                    <span className="font-medium">Empty. </span>
+                    <span className="text-muted-foreground">No data/rows.</span>
+                  </p>
+                </div>
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
 
-      {!loading && pageCount && pageCount > 1 && (
+      {!loading && pageCount && pageCount > 1 ? (
         <DataTablePagination table={table}></DataTablePagination>
+      ) : (
+        ''
       )}
     </div>
   )
