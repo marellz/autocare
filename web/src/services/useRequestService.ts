@@ -8,7 +8,10 @@ export const requestStatuses = [
   { label: "Pending", value: 'pending' },
   { label: "Completed", value: 'completed' },
 ]
-export const requestStatuses = ['missing_details', 'submitted', 'pending', 'completed']
+export const requestChannels = [
+  { label: 'Web', value: 'web' },
+  { label: 'Whatsapp', value: 'whatsapp' },
+]
 export const requestStatusLabels: Record<RequestStatus, string> = {
   missing_details: 'Missing details',
   submitted: 'Submitted',
@@ -16,7 +19,7 @@ export const requestStatusLabels: Record<RequestStatus, string> = {
   completed: 'Completed',
 }
 
-export type RequestStatus = (typeof requestStatuses)[number]
+export type RequestChannel = (typeof requestChannels)[number]['value']
 export type RequestStatus = (typeof requestStatuses)[number]['value']
 export interface Request {
   id: number
