@@ -22,11 +22,10 @@ import { type ColumnDef } from '@tanstack/react-table'
 import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 
-// todo: use popover/command for status
 // filter_by: channel, status, brands etc. soon, paid_status
 
 const Requests = () => {
-  const { requests, resultParams, handlePaginationChange, updateRequest } = useRequestStore()
+  const { requests, resultParams, loading, handlePaginationChange, updateRequest } = useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
@@ -206,6 +205,7 @@ const Requests = () => {
         <div className="mt-4">
           <DataTable
             columns={columns}
+            loading={loading}
             data={requests}
             pagination={resultParams}
             onPaginationChange={handlePaginationChange}

@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { DataTablePagination } from './DataTablePagination'
 import { useEffect, useState } from 'react'
 import type { ResultParams } from '@/types/pagination'
+import Loader from './Loader'
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -10,6 +11,7 @@ interface Props<TData, TValue> {
   pagination: ResultParams<TData>
   onPaginationChange: (page: number, page_size: number) => void
   onClickRow?: (id: number) => void
+  loading?: boolean
 }
 
 const DataTable = <TData, TValue>({
@@ -18,6 +20,7 @@ const DataTable = <TData, TValue>({
   pagination,
   onClickRow,
   onPaginationChange,
+  loading,
 }: Props<TData, TValue>) => {
   const { page_count: pageCount, page, limit } = pagination
 
@@ -65,7 +68,13 @@ const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <Loader />
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -87,7 +96,9 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      {pageCount && pageCount > 1 && <DataTablePagination table={table}></DataTablePagination>}
+      {!loading && pageCount && pageCount > 1 && (
+        <DataTablePagination table={table}></DataTablePagination>
+      )}
     </div>
   )
 }

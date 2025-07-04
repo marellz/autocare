@@ -32,7 +32,7 @@ import { Input } from '@/components/ui/input'
 import BrandSelect from '@/components/partials/vendor/BrandSelect'
 
 const Vendors = () => {
-  const { vendors, resultParams, getVendors, handlePaginationChange, deleteVendor } =
+  const { vendors, resultParams, loading, getVendors, handlePaginationChange, deleteVendor } =
     useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
@@ -179,6 +179,7 @@ const Vendors = () => {
         <DataTable
           columns={columns}
           data={vendors}
+          loading={loading}
           pagination={resultParams}
           onPaginationChange={handlePaginationChange}
         />
