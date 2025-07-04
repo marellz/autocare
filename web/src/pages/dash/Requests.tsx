@@ -26,7 +26,7 @@ import RequestFilters from '@/components/partials/requests/Filters'
 // todo soon: filter brands, paid_status
 
 const Requests = () => {
-  const { requests, resultParams, handlePaginationChange, updateRequest } = useRequestStore()
+  const { requests, resultParams, loading, handlePaginationChange, updateRequest } = useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
@@ -179,6 +179,7 @@ const Requests = () => {
         <div>
           <DataTable
             columns={columns}
+            loading={loading}
             data={requests}
             pagination={resultParams}
             onPaginationChange={handlePaginationChange}
