@@ -91,7 +91,7 @@ const DataTable = <TData, TValue>({
             <TableRow>
               <TableCell colSpan={columns.length}>
                 <div className="flex space-x-4 items-center justify-center">
-                  <CircleSlash className='opacity-30' />
+                  <CircleSlash className="opacity-30" />
                   <p className="text-center text-base py-4">
                     <span className="font-medium">Empty. </span>
                     <span className="text-muted-foreground">No data/rows.</span>
@@ -103,7 +103,7 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      {!loading && pageCount && pageCount > 1 ? (
+      {!(loading && pageCount && pageCount > 1) ? (
         <DataTablePagination table={table}></DataTablePagination>
       ) : (
         ''
