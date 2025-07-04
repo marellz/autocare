@@ -2,8 +2,22 @@ import type { RequestParams } from '@/types/pagination'
 import { createKyInstance } from '@/utils/kyCreator'
 import type { SearchParamsOption } from 'ky'
 
+export const requestStatuses = [
+  { label: "Missing details", value: 'missing_details' },
+  { label: "Submitted", value: 'submitted' },
+  { label: "Pending", value: 'pending' },
+  { label: "Completed", value: 'completed' },
+]
 export const requestStatuses = ['missing_details', 'submitted', 'pending', 'completed']
+export const requestStatusLabels: Record<RequestStatus, string> = {
+  missing_details: 'Missing details',
+  submitted: 'Submitted',
+  pending: 'Pending',
+  completed: 'Completed',
+}
+
 export type RequestStatus = (typeof requestStatuses)[number]
+export type RequestStatus = (typeof requestStatuses)[number]['value']
 export interface Request {
   id: number
   phone: string

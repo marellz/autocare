@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import DashboardLayout from '@/layouts/Dashboard'
 import useRequestStore from '@/stores/useRequestStore'
-import { requestStatuses, type Request, type RequestStatus } from '@/services/useRequestService'
+import { type Request, type RequestStatus } from '@/services/useRequestService'
 import VendorAssign from '@/components/partials/requests/VendorAssign'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -9,20 +9,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Check, ChevronDown, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-/**/
-
 import DataTable from '@/components/custom/DataTable'
-import StatusBadge from '@/components/custom/requests/StatusBadge'
-import { type ColumnDef } from '@tanstack/react-table'
+import StatusSelect from '@/components/custom/requests/StatusSelect'
 import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
+import { type ColumnDef } from '@tanstack/react-table'
+import { MoreHorizontal } from 'lucide-react'
 
-// todo: use popover/command for status
+// todo: use popover/command for status ✅
 // filter_by: channel, status, brands etc. soon, paid_status
 
 const Requests = () => {
@@ -77,38 +74,10 @@ const Requests = () => {
       accessorKey: 'status',
       header: () => <p>Status</p>,
       cell: ({ row }) => (
-        <>
-          <div className="flex">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex justify-end mx-4">
-                  <Button type="button" variant="ghost">
-                    <StatusBadge status={row.original.status}></StatusBadge>
-                    <ChevronDown size={16} />
-                  </Button>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Change status</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {requestStatuses.map((status) => (
-                  <DropdownMenuItem asChild key={status}>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      disabled={row.original.status === 'missing_details'}
-                      className="w-full justify-between"
-                      onClick={() => changeRequestStatus(row.original.id, status)}
-                    >
-                      <StatusBadge status={status}></StatusBadge>
-                      {row.original.status === status && <Check size={16}></Check>}
-                    </Button>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </>
+        <StatusSelect
+          status={row.original.status}
+          onSelect={(status: RequestStatus) => changeRequestStatus(row.original.id, status)}
+        />
       ),
     },
 
@@ -147,7 +116,7 @@ const Requests = () => {
        * see available offers(if any)
        * respond to client
           > refund(if nothing)
-       * change status 
+       * change status ✅
        */
     },
   ]
