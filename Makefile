@@ -21,3 +21,9 @@ seed:
 
 refresh:
 	docker exec -ti autocare-api npm run refresh
+
+front-install:
+	docker exec -ti autocare-front npm i
+
+front-restart:
+	docker container restart autocare-front
