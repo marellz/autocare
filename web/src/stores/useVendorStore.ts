@@ -3,7 +3,6 @@ import {
   type NewVendor,
   type Vendor,
 } from '@/services/useVendorService'
-import type { RequestParams, ResultParams } from '@/types/pagination'
 import { create } from 'zustand'
 
 export const brandOptions = [

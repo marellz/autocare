@@ -1,6 +1,7 @@
 import { createKyInstance } from '@/utils/kyCreator'
 import type { VendorRequest } from './useVendorRequestService'
 import type { RequestParams, ResultParams } from '@/types/pagination'
+import type { SearchParamsOption } from 'ky'
 
 export interface Vendor {
   id: number
@@ -17,11 +18,8 @@ export interface NewVendor {
   brands: string[]
   location?: string | null
 }
-type VendorRequestParams = RequestParams<Vendor>
-// export type FindVendorParams= {
-//   name?: string
-//   brand?: string
-// }
+export type VendorRequestParams = RequestParams<Vendor> & { brand?: string }
+export type VendorResultParams = ResultParams<Vendor> & { brand?: string }
 
 const api = createKyInstance('/vendors')
 
@@ -34,8 +32,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   return response.json()
 }
 
-type VendorResultParams = ResultParams<Vendor>
-
 export const useVendorService = {
   async getVendors(
     params: VendorRequestParams,
@@ -45,7 +41,7 @@ export const useVendorService = {
       data: { items: Vendor[]; pagination: VendorResultParams }
     }>(
       await api.get('', {
-        searchParams: params as Record<keyof VendorRequestParams, string | number>,
+        searchParams: params as SearchParamsOption,
       }),
     ).then((res) => res.data)
   },
