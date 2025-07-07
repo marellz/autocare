@@ -30,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import { ModeToggle } from '../theme/Toggler'
 // import { Button } from '../ui/button'
 
 interface LinkItem {
@@ -90,9 +91,10 @@ const DashSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <ModeToggle />
+                  {/* <SidebarMenuButton>
                     <span>Dark mode</span>
-                  </SidebarMenuButton>
+                  </SidebarMenuButton> */}
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
