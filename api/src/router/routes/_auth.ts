@@ -1,16 +1,38 @@
-import express, { Request } from "express";
+import express, { RequestHandler } from "express";
+import passport from "passport";
 import AuthController from "../../controllers/auth.controller";
-import { verifyToken } from "../../middleware/verifyToken.middleware";
 import { User } from "../../db/models/user.model";
-import { asyncHandler } from "../../handlers/async.handler";
-export interface AuthenticatedRequest extends Request {
-  user?: Omit<User, "password" | "createdAt" | "updatedAt">; // Exclude password and timestamps
-}
+
+const { register, logout, getUser } = AuthController();
 
 const router = express.Router();
-router.post("/login", asyncHandler(AuthController.login));
-router.post("/register", asyncHandler(AuthController.register));
-router.post("/logout", asyncHandler(AuthController.logout));
-router.get("/user", [verifyToken], asyncHandler(AuthController.user));
+
+router.post("/login", (req, res, next) => {
+  passport.authenticate(
+    "local",
+    (
+      err: string | null,
+      user: User | false,
+      info: { message: string } | null,
+    ) => {
+      if (err) return next(err);
+      if (!user) {
+        return res.status(401).json({
+          message: "error",
+          error: info?.message ?? "Failed login",
+        });
+      }
+
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        return res.json({ message: "ok", data: { user } });
+      });
+    },
+  )(req, res, next);
+});
+
+router.post("/register", register);
+router.post("/logout", logout as RequestHandler);
+router.get("/user", getUser);
 
 export default router;
