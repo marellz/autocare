@@ -12,7 +12,7 @@
     "cp-env": "cp .env dist/.env -f",
     "refresh": "tsc && tsc-alias && node dist/db/refresh.js ",
     "seed": "tsc && tsc-alias && node dist/db/seeder/index.js",
-    "secrets": "node dist/scripts/secrets.js",
+    "secrets": "tsc && tsc-alias && node dist/scripts/secrets.js",
     "lint": "eslint 'src/**/*.ts'",
     "lint-fix": "eslint 'src/**/*.ts' --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
