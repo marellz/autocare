@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
 import {
   DropdownMenu,
@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { ModeToggle } from '../theme/Toggler'
+import useAuthStore from '@/stores/useAuthStore'
 // import { Button } from '../ui/button'
 
 interface LinkItem {
@@ -40,6 +41,14 @@ interface LinkItem {
 }
 
 const DashSidebar = () => {
+  const { logout, user } = useAuthStore()
+
+  const navigate = useNavigate()
+  const onLogout =  async () => {
+    await logout() // todo: fix glitch when there is error
+    navigate('/')
+
+  }
   const links: LinkItem[] = [
     {
       path: '/dashboard/',
@@ -71,8 +80,6 @@ const DashSidebar = () => {
     },
   ]
 
-  const logout = () => {}
-
   return (
     <Sidebar>
       <SidebarHeader></SidebarHeader>
@@ -92,9 +99,6 @@ const DashSidebar = () => {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <ModeToggle />
-                  {/* <SidebarMenuButton>
-                    <span>Dark mode</span>
-                  </SidebarMenuButton> */}
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
@@ -113,24 +117,24 @@ const DashSidebar = () => {
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
-        <SidebarMenu>
+        {user && <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> <span>Username</span>
+                  <User2 /> <span>{user.name}</span>
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent side="top" className="w-[var(--radix-popper-anchor-width)]">
-                <DropdownMenuItem onClick={logout} className="justify-between">
+                <DropdownMenuItem onClick={onLogout} className="justify-between">
                   <span>Sign out</span>
                   <LogOut />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
-        </SidebarMenu>
+        </SidebarMenu>}
       </SidebarFooter>
     </Sidebar>
   )
