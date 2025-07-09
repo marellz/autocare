@@ -132,7 +132,7 @@ const Vendors = () => {
 
   return (
     <>
-      <div className="py-4 flex items-center">
+      <div className="flex items-center">
         <h1 className="text-4xl font-bold">Vendors</h1>
         <VendorForm
           btnProps={{ variant: 'outline' }}

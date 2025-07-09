@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  // CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -53,7 +52,7 @@ const DashHome = () => {
     <div className="space-y-8">
       <div className="pb-4 flex items-center">
         <div className="flex-auto">
-          <h1 className="text-4xl">Dashboard</h1>
+          <h1 className="text-4xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground text-sm">Last synced at {lastSyncedAt}</p>
         </div>
         <Button onClick={getData} disabled={loading}>
