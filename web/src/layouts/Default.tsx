@@ -64,6 +64,11 @@ const DefaultLayout = () => {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 ))}
+                {location.pathname === '/' && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink href="#faqs">Faqs</NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
               </NavigationMenuList>
             </NavigationMenu>
             {user === null ? (
