@@ -36,6 +36,7 @@ const useAuthStore = create<Store>((set) => {
   const logout = async () => {
     set({ loading: true })
     set({ error: null })
+    set({ user: null })
 
     const response = await service.logout()
     if (response) {
@@ -49,7 +50,6 @@ const useAuthStore = create<Store>((set) => {
       set({ error: error ?? 'Error logging out' })
       return false
     } else {
-      set({ user: null })
       return true
     }
   }
