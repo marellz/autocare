@@ -1,11 +1,7 @@
-import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import RequestForm from '../components/partials/RequestForm'
-interface Props {
-  children: ReactNode
-}
 
-const DefaultLayout = ({ children }: Props) => {
+const DefaultLayout = () => {
   const headerLinks = [
     {
       path: '/about',
@@ -21,7 +17,7 @@ const DefaultLayout = ({ children }: Props) => {
   return (
     <>
       <header>
-        <div className="container mx-auto py-4">
+        <div className="container mx-auto py-4 px-4">
           <ul className="flex items-center space-x-2">
             <li>
               <NavLink to="/" className="text-lg font-bold">Autocare</NavLink>
@@ -29,7 +25,7 @@ const DefaultLayout = ({ children }: Props) => {
             {headerLinks.map((link, i) => (
               <li className="" key={i}>
                 <NavLink
-                  className={({ isActive }) => ['py-2 px-2', isActive && 'bg-gray-100'].join(' ')}
+                  className={({ isActive }) => ['py-2 px-2', isActive && 'bg-gray-100 dark:bg-gray-800'].join(' ')}
                   to={link.path}
                 >
                   {link.label}
@@ -44,10 +40,12 @@ const DefaultLayout = ({ children }: Props) => {
         </div>
       </header>
       <main className="flex-auto">
-        <div className="container mx-auto">{children}</div>
+        <div className="container mx-auto px-4">
+          <Outlet />
+        </div>
       </main>
       <footer>
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4">
           <p>Footer</p>
         </div>
       </footer>

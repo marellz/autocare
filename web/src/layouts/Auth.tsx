@@ -1,19 +1,25 @@
-import type { ReactNode } from "react"
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import { Link, Outlet } from 'react-router-dom'
 
-interface Props{
-    children: ReactNode
-}
-
-const AuthLayout = ({children}:Props) => {
+const AuthLayout = () => {
   return (
     <>
-      <header>
-        <div className="text-center py-8">
-            <h1 className="font-bold text-xl">Autocare</h1>
+      <header className="border-b">
+        <div className="py-4 px-12 flex items-center container mx-auto relative">
+          <Link to="/">
+            <Button variant="ghost">
+              <ArrowLeft />
+              <span>Go back</span>
+            </Button>
+          </Link>
+          <h1 className="font-bold text-xl mx-aut absolute left-1/2 -translate-x-1/2">Autocare</h1>
         </div>
       </header>
       <main className="flex-auto mt-12">
-        <div className="container mx-auto">{children}</div>
+        <div className="container mx-auto">
+          <Outlet />
+        </div>
       </main>
       <footer>
         <div className="container mx-auto py-4">
