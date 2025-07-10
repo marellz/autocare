@@ -18,6 +18,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Blocks, ChevronDown, LogOut, User } from 'lucide-react'
+import DefaultLayoutToggler from '@/components/theme/DefaultLayoutToggler'
+
 
 const DefaultLayout = () => {
   const { user, logout } = useAuthStore()
@@ -71,6 +73,8 @@ const DefaultLayout = () => {
                 )}
               </NavigationMenuList>
             </NavigationMenu>
+            <div className='flex space-x-2'>
+              <DefaultLayoutToggler />
             {user === null ? (
               <RequestForm />
             ) : (
@@ -98,6 +102,8 @@ const DefaultLayout = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+
+            </div>
           </div>
         </div>
       </header>

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { MonitorCog, Moon, Sun, type LucideIcon } from 'lucide-react'
 
 export type Theme = 'dark' | 'light' | 'system'
 
@@ -69,3 +70,22 @@ export const useTheme = () => {
 
   return context
 }
+
+
+export const themeOptions: { value: Theme; label: string; icon: LucideIcon }[] = [
+  {
+    value: 'light',
+    label: 'Light',
+    icon: Sun,
+  },
+  {
+    value: 'dark',
+    label: 'Dark',
+    icon: Moon,
+  },
+  {
+    value: 'system',
+    label: 'System',
+    icon: MonitorCog,
+  },
+]

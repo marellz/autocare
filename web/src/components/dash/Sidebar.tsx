@@ -30,7 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { ModeToggle } from '../theme/Toggler'
+import DarkModeToggler from '../theme/DashboardLayoutToggler'
 import useAuthStore from '@/stores/useAuthStore'
 // import { Button } from '../ui/button'
 
@@ -44,10 +44,9 @@ const DashSidebar = () => {
   const { logout, user } = useAuthStore()
 
   const navigate = useNavigate()
-  const onLogout =  async () => {
+  const onLogout = async () => {
     await logout() // todo: fix glitch when there is error
     navigate('/')
-
   }
   const links: LinkItem[] = [
     {
@@ -98,7 +97,7 @@ const DashSidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <ModeToggle />
+                  <DarkModeToggler />
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
@@ -117,24 +116,26 @@ const DashSidebar = () => {
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
-        {user && <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> <span>{user.name}</span>
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-[var(--radix-popper-anchor-width)]">
-                <DropdownMenuItem onClick={onLogout} className="justify-between">
-                  <span>Sign out</span>
-                  <LogOut />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>}
+        {user && (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton>
+                    <User2 /> <span>{user.name}</span>
+                    <ChevronUp className="ml-auto" />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" className="w-[var(--radix-popper-anchor-width)]">
+                  <DropdownMenuItem onClick={onLogout} className="justify-between">
+                    <span>Sign out</span>
+                    <LogOut />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
       </SidebarFooter>
     </Sidebar>
   )
