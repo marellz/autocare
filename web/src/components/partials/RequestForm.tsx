@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from 'react'
-import Input from '../form/Input'
-import Text from '../form/Text'
+import { useState } from 'react'
+import { Input } from '../ui/input'
+import { Textarea } from '../ui/textarea'
 import {
   Dialog,
   DialogContent,
@@ -12,20 +12,50 @@ import {
 import { Button } from '../ui/button'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import useRequestStore from '@/stores/useRequestStore'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import z from 'zod'
+import { SendHorizonal } from 'lucide-react'
 
 const RequestForm = () => {
   const { createRequest, error, loading } = useRequestStore()
 
   const [open, setOpen] = useState<boolean>(false)
-  const handleSubmit = async (e: FormEvent) => {
 
-    e.preventDefault()
+  const formSchema = z.object({
+    name: z.string().min(2, { message: 'We need your name' }),
+    phone: z
+      .string()
+      .length(12, { message: 'Not a valid phone number' })
+      .startsWith('254', { message: "Phone number must start with '254'" })
+      .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' }),
+    item: z.string().min(2, { message: 'Your need to describe the part you want' }),
+  })
 
+  type SchemaType = z.infer<typeof formSchema>
+
+  const form = useForm<SchemaType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      item: '',
+    },
+  })
+
+  const handleSubmit = async (values: SchemaType) => {
     await createRequest({
-      phone,
-      name,
+      ...values,
       channel: 'web',
-      item,
     })
 
     if (error) {
@@ -36,12 +66,8 @@ const RequestForm = () => {
     }
   }
 
-  const [name, setName] = useState<string>('')
-  const [phone, setPhone] = useState<string>('')
-  const [item, setItem] = useState<string>('')
-
   return (
-    <Dialog open={open} onOpenChange={(v)=>setOpen(v)}>
+    <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
       <DialogTrigger asChild>
         <Button onClick={() => setOpen(true)}>Make request</Button>
       </DialogTrigger>
@@ -60,35 +86,72 @@ const RequestForm = () => {
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div>
-            <Input
-              label="Name"
-              required
-              defaultValue={name}
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            />
-            <Input
-              label="Phone"
-              placeholder="254XXXXXXXXXX"
-              required
-              defaultValue={phone}
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-            />
-            <Text
-              label="Item description"
-              required
-              defaultValue={item}
-              onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => setItem(e.target.value)}
-            ></Text>
-          </div>
-          <div className="flex items-center space-x-3">
-            <Button type="button" variant="secondary">
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>Submit</Button>
-          </div>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <div className="space-y-4">
+              <FormField
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              ></FormField>
+              <FormField
+                name="phone"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your phone number</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              ></FormField>
+              <FormField
+                name="item"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Item description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    <FormDescription>
+                      <span>
+                        Describe the item you need in this nice format: <br />
+                        <i>
+                          I need a <b>&lt;part&gt;</b> for a <b>&lt;year&gt;</b>{' '}
+                          <b>&lt;brand&gt;</b> <b>&lt;model&gt;</b> <b>&lt;variant&gt;</b>
+                        </i>
+                        <br />
+                        <b> eg: </b>
+                        <i>I need a water pump for a 2006 BMW X3 25i</i>
+                        {/* todo: feature: have a way to assist a client through this process, e.g using VIN, pics etc */}
+                      </span>
+                    </FormDescription>
+                  </FormItem>
+                )}
+              ></FormField>
+            </div>
+            <div className="flex space-x-3 justify-end items-center mt-8">
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                <span>Send request</span>
+                <SendHorizonal />
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )
