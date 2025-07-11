@@ -1,4 +1,3 @@
-import DashboardLayout from '@/layouts/Dashboard'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
 import { MoreHorizontal } from 'lucide-react'
@@ -31,8 +30,7 @@ import type { Vendor } from '@/services/useVendorService'
 import VendorFilters from '@/components/partials/vendor/Filters'
 
 const Vendors = () => {
-  const { vendors, resultParams, loading, handlePaginationChange, deleteVendor } =
-    useVendorStore()
+  const { vendors, resultParams, loading, handlePaginationChange, deleteVendor } = useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
   const handleVendorEdit = (vendor: Vendor) => {
@@ -133,8 +131,8 @@ const Vendors = () => {
   ]
 
   return (
-    <DashboardLayout>
-      <div className="py-4 flex items-center">
+    <>
+      <div className="flex items-center">
         <h1 className="text-4xl font-bold">Vendors</h1>
         <VendorForm
           btnProps={{ variant: 'outline' }}
@@ -153,7 +151,7 @@ const Vendors = () => {
           onPaginationChange={handlePaginationChange}
         />
       </div>
-    </DashboardLayout>
+    </>
   )
 }
 

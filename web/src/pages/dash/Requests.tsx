@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import DashboardLayout from '@/layouts/Dashboard'
 import useRequestStore from '@/stores/useRequestStore'
 import { type Request, type RequestStatus } from '@/services/useRequestService'
 import VendorAssign from '@/components/partials/requests/VendorAssign'
@@ -23,7 +22,8 @@ import RequestFilters from '@/components/partials/requests/Filters'
 // todo soon: filter brands, paid_status
 
 const Requests = () => {
-  const { requests, resultParams, loading, handlePaginationChange, updateRequest } = useRequestStore()
+  const { requests, resultParams, loading, handlePaginationChange, updateRequest } =
+    useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
@@ -164,7 +164,7 @@ const Requests = () => {
 
   // getRequests
   return (
-    <DashboardLayout>
+    <>
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-bold">Requests</h1>
@@ -213,7 +213,7 @@ const Requests = () => {
         request={displayRequest}
         hideDialog={hideClientResponse}
       ></ClientResponse>
-    </DashboardLayout>
+    </>
   )
 }
 

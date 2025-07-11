@@ -1,8 +1,16 @@
 import { UserModel } from "../../db/sequelize";
 import { hashPassword } from "../../utils/password";
 
-const get = async (id: number) => {
+const findById = async (id: number) => {
   return await UserModel.findByPk(id);
+};
+
+const findByEmail = async (email: string) => {
+  return await UserModel.findOne({
+    where: {
+      email,
+    },
+  });
 };
 
 const create = async ({
@@ -32,7 +40,7 @@ interface UpdateUserPayload {
 
 const update = async (
   id: string,
-  { name, password: unsecurePassword }: UpdateUserPayload
+  { name, password: unsecurePassword }: UpdateUserPayload,
 ) => {
   const _user = await UserModel.findOne({ where: { id } });
   const user = _user?.get();
@@ -52,7 +60,8 @@ const update = async (
 };
 
 export default {
-  get,
+  findById,
+  findByEmail,
   create,
   update,
 };
