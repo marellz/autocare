@@ -142,7 +142,7 @@ const RequestForm = () => {
               ></FormField>
             </div>
             <div className="flex space-x-3 justify-end items-center mt-8">
-              <Button type="button" variant="secondary">
+              <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
