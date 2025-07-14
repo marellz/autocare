@@ -12,6 +12,7 @@ class RequestsController {
         query,
         status,
         channel,
+        phone,
 
         // pagination
         page = 1,
@@ -58,6 +59,15 @@ class RequestsController {
           },
         };
 
+      if(phone){
+        where={
+          ...where,
+          phone: {
+            [Op.iLike]: `%${phone}%`,
+          },
+        }
+      }
+      
       const requests = await RequestService.paginate({
         page: page ? Number(page) : 1,
         limit: limit ? Number(limit) : 10,
