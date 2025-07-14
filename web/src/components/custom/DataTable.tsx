@@ -1,7 +1,7 @@
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { DataTablePagination } from './DataTablePagination'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { ResultParams } from '@/types/pagination'
 import Loader from './Loader'
 import { CircleSlash } from 'lucide-react'
@@ -15,6 +15,11 @@ interface Props<TData, TValue> {
   loading?: boolean
 }
 
+interface PaginationData {
+  pageIndex: number
+  pageSize: number
+}
+
 const DataTable = <TData, TValue>({
   columns,
   data,
@@ -25,15 +30,10 @@ const DataTable = <TData, TValue>({
 }: Props<TData, TValue>) => {
   const { page_count: pageCount, page, limit } = pagination
 
-  const [paginationData, setPaginationData] = useState<{ pageIndex: number; pageSize: number }>({
+  const [paginationData, setPaginationData] = useState<PaginationData>({
     pageIndex: page ? page - 1 : 0, //  compensate index vs actual
     pageSize: limit ?? 10,
   })
-
-  useEffect(() => {
-    // compensate index vs actual
-    onPaginationChange(paginationData.pageIndex + 1, paginationData.pageSize)
-  }, [paginationData])
 
   const table = useReactTable({
     data,
@@ -41,7 +41,11 @@ const DataTable = <TData, TValue>({
     pageCount,
     manualPagination: true,
     state: { pagination: paginationData },
-    onPaginationChange: setPaginationData,
+    onPaginationChange: (v) => {
+      setPaginationData(v)
+      const { pageIndex, pageSize } = paginationData
+      onPaginationChange(pageIndex + 1, pageSize)
+    },
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -103,7 +107,7 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      {(!loading && pageCount && pageCount > 1) ? (
+      {!loading && pageCount && pageCount > 1 ? (
         <DataTablePagination table={table}></DataTablePagination>
       ) : (
         ''
