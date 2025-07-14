@@ -1,9 +1,13 @@
 import { PaginationSortBy, PaginationSortOrder } from "../types/pagination";
-import { RequestStatusEnum } from "../db/models/request.model";
+import {
+  RequestChannelEnum,
+} from "../db/models/request.model";
 import RequestService from "../services/request/request.service";
 import { Request, Response, NextFunction } from "express";
 import { Op, WhereOptions, Sequelize, fn, col } from "sequelize";
 import { Request as RequestModel } from "../db/models/request.model";
+import ReceiverService from "../services/receiver/receiver.service";
+
 class RequestsController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
@@ -59,15 +63,15 @@ class RequestsController {
           },
         };
 
-      if(phone){
-        where={
+      if (phone) {
+        where = {
           ...where,
           phone: {
             [Op.iLike]: `%${phone}%`,
           },
-        }
+        };
       }
-      
+
       const requests = await RequestService.paginate({
         page: page ? Number(page) : 1,
         limit: limit ? Number(limit) : 10,
@@ -101,27 +105,18 @@ class RequestsController {
         name,
         phone,
         item,
-        capturedDetails = {},
-        missingDetails = [],
       } = req.body;
 
-      const status = RequestStatusEnum.SUBMITTED;
-      const originalMessages = [item];
-      const channel = "web";
-
-      const request = await RequestService.create({
+      const { request } = await ReceiverService.handleNewRequest({
+        body: item,
         name,
         phone,
-        channel,
-        capturedDetails,
-        missingDetails,
-        originalMessages,
-        status,
+        channel: RequestChannelEnum.WEB,
       });
 
       res.json({ message: "ok", data: request });
 
-      // todo, do processing and update this request.
+      // todo, do processing and update this request. ✅
     } catch (error) {
       next(error);
     }
