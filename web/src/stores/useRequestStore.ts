@@ -92,8 +92,7 @@ const useRequestStore = create<Store>((set) => {
   const createRequest = async (request: NewRequest) => {
     try {
       set({ loading: true })
-      const newRequest = await service.createRequest(request)
-      set((state) => ({ requests: [newRequest, ...state.requests] }))
+      await service.createRequest(request)
     } catch (error) {
       console.error('Error creating request:', error)
       set({ error: error as string })
