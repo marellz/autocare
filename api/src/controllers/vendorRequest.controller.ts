@@ -1,15 +1,27 @@
 import { cleanObject } from "../utils/object.utils";
 import VendorRequestService from "../services/vendor/vendorRequest.service";
 import { Request, Response } from "express";
-import { VendorRequestStatusEnum } from "../db/models/vendorRequest.model";
+import { VendorRequest, VendorRequestStatusEnum } from "../db/models/vendorRequest.model";
+import { Op, WhereOptions } from "sequelize";
 class VendorRequestController {
   static async findAll(req: Request, res: Response) {
     try {
       // const { vendorId, requestId } = req.query;
-      const payload: {
+      const {vendorId, requestId, price}: {
         vendorId?: string;
         requestId?: string;
+        price?: boolean
       } = cleanObject(req.query);
+
+      const payload : WhereOptions<VendorRequest>= {}
+
+      if(vendorId) payload.vendorId = vendorId
+      if(requestId) payload.requestId = requestId
+      if(price){
+        payload.price = {
+          [Op.not]: null
+        }
+      }
 
       const vendorRequests = await VendorRequestService.findAll(payload);
       res.status(200).json({
