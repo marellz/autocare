@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useRequestStore from '@/stores/useRequestStore'
 import { type Request, type RequestStatus } from '@/services/useRequestService'
 import VendorAssign from '@/components/partials/requests/VendorAssign'
@@ -22,8 +22,12 @@ import RequestFilters from '@/components/partials/requests/Filters'
 // todo soon: filter brands, paid_status
 
 const Requests = () => {
-  const { requests, resultParams, loading, handlePaginationChange, updateRequest } =
+  const { requests, resultParams, loading, getRequests, handlePaginationChange, updateRequest } =
     useRequestStore()
+
+  useEffect(() => {
+    getRequests({})
+  }, [])
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
