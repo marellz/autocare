@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,10 +23,11 @@ import {
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import StatusSelect from '@/components/custom/requests/StatusSelect'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useResponseStore from '@/stores/useResponseStore'
 import useRequestStore from '@/stores/useRequestStore'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface Props {
   open: boolean
@@ -38,6 +40,7 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
   const { updateRequest } = useRequestStore()
   const formSchema = z.object({
     message: z.string().min(1, 'Message is required'),
+    refund: z.boolean(),
   })
 
   type FormSchema = z.infer<typeof formSchema>
@@ -46,6 +49,7 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       message: '',
+      refund: false,
     },
   })
 
@@ -55,16 +59,22 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
     if (!show) hideDialog()
   }
 
-  const handleSubmit = async ({ message }: FormSchema) => {
+  const handleSubmit = async ({ message, refund }: FormSchema) => {
     if (!request) return //todo: throw error
     // send message
-    const response = await sendClientResponse(request.id, message)
+    const response = await sendClientResponse(request.id, message, refund)
 
     if (response) hideDialog()
 
     // if change in status, update that too
     if (status !== request.status) updateRequest(request.id, { status })
   }
+
+  useEffect(() => {
+    if (!open) {
+      form.reset()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -93,7 +103,7 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  ></FormField>
+                  />
 
                   <FormItem>
                     <FormLabel>Change status</FormLabel>
@@ -102,6 +112,28 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
                       onSelect={(status: RequestStatus) => setStatus(status)}
                     />
                   </FormItem>
+
+                  <FormField
+                    name="refund"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="flex items-start gap-2">
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div>
+                          <FormLabel>
+                            <div className="space-y-0.5">
+                              <p>Provide refund</p>
+                              <FormDescription className="font-normal">
+                                Return the service fee upon failure to provide said part.
+                              </FormDescription>
+                            </div>
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </form>
             </Form>

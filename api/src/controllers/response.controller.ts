@@ -11,7 +11,7 @@ class ResponseController {
   ) {
 
     try {
-        const { requestId, body } = req.body;
+        const { requestId, body, refund } = req.body;
         if (!requestId) throw new Error("Request id is required");
         if(!body) throw new Error("Message body is required")
         const _request = await RequestService.findById(requestId);
@@ -27,6 +27,14 @@ class ResponseController {
           // todo: maybe look at other options, like ADMIN_RESPONSE
           type: InteractionTypes.CLIENT_REQUEST_UPDATE, 
         });
+
+        /**
+         * todo: feature/payment, add:
+         * method to provide refunds
+         * interaction for refunds
+         * request status for refunds
+         */
+        if(refund) console.log("Refund")
     
         res.json({
           message: "ok",
