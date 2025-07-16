@@ -49,16 +49,16 @@ const MyRequests = () => {
 
   const [dirty, setDirty] = useState<boolean>(false)
 
-  const onSubmit = ({ phone }: SchemaType) => {
-    getRequests({
-      phone,
-    })
+  const { loading, resultParams, requests, resetRequests, updateParams } = useRequestStore()
 
+  const handlePaginationChange = (page: number, limit: number) => {
+    updateParams({ page, limit })
+  }
+  
+  const onSubmit = ({ phone }: SchemaType) => {
+    updateParams({ phone })
     setDirty(true)
   }
-
-  const { loading, resultParams, requests, resetRequests, getRequests, handlePaginationChange } =
-    useRequestStore()
 
   useEffect(() => {
     resetRequests()

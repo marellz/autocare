@@ -30,13 +30,14 @@ interface Store {
   loading: boolean
   error: string | undefined
   resultParams: VendorResultParams
+  requestParams: VendorRequestParams
 
-  getVendors: (params: VendorRequestParams) => Promise<void>
+  getVendors: () => Promise<void>
   createVendor: (payload: NewVendor) => Promise<void>
   deleteVendor: (id: number) => Promise<void>
   updateVendor: (id: number, updated: Partial<Vendor>) => Promise<void>
 
-  handlePaginationChange: (page: number, limit: number) => void
+  updateParams: (params:Partial<VendorRequestParams>) => void
 }
 
 const useVendorStore = create<Store>((set) => {
@@ -50,31 +51,26 @@ const useVendorStore = create<Store>((set) => {
     count: 0,
   }
 
-  const handlePaginationChange = (page: number, limit: number) => {
-    getVendors({
-      page,
-      limit,
-    })
+  const requestParams: VendorRequestParams = {
+    query: '',
+    brand: '',
+    page: 1,
+    limit: 10,
+    sort_by: 'id',
+    sort_order: 'ASC',
   }
 
-  const getVendors = async ({
-    query = '',
-    brand = '',
-    page = 1,
-    limit = 10,
-    sort_by = 'id',
-    sort_order = 'ASC',
-  }: VendorResultParams) => {
+  const updateParams = (params: Partial<VendorRequestParams>) => {
+    set((state) => ({ requestParams: { ...state.requestParams, ...params } }))
+
+    getVendors()
+  }
+
+  const getVendors = async () => {
     try {
       set({ loading: true })
-      const { items: vendors, pagination } = await service.getVendors({
-        query,
-        brand,
-        page,
-        limit,
-        sort_by,
-        sort_order,
-      })
+      const { requestParams } = useVendorStore.getState()
+      const { items: vendors, pagination } = await service.getVendors(requestParams)
       set({ vendors, resultParams: pagination })
     } catch (error) {
       console.error('Error fetching vendors:', error)
@@ -139,8 +135,9 @@ const useVendorStore = create<Store>((set) => {
     deleteVendor,
     updateVendor,
 
+    requestParams,
     resultParams,
-    handlePaginationChange,
+    updateParams,
   }
 })
 export default useVendorStore

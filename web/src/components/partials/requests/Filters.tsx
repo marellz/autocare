@@ -10,30 +10,35 @@ import { useState } from 'react'
 // todo: fix pagination and filter mis-alignment
 // pagination should work alongside filters
 const RequestFilters = () => {
-  const { getRequests } = useRequestStore()
+  const { updateParams } = useRequestStore()
   const [query, setQuery] = useState<string>('')
   const [status, setStatus] = useState<RequestStatus | ''>('')
   const [channel, setChannel] = useState<RequestChannel | ''>('')
 
   const handleSubmit = () => {
-
     // generate a clean object, no empty, "''" values
     const payload = Object.entries({ query, status, channel })
       .filter((p) => p[1] !== '')
       .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
 
     if (!Object.keys(payload).length) return false
-    getRequests(payload)
+
+    updateParams({ ...payload, page: 1 })
   }
 
-  const disabledSubmit = [query,status, channel].every(i=>i==='')
+  const disabledSubmit = [query, status, channel].every((i) => i === '')
 
   const resetFilters = () => {
     setQuery('')
     setStatus('')
     setChannel('')
 
-    getRequests({})
+    updateParams({
+      query: '',
+      status: '',
+      channel: '',
+      page: 1,
+    })
   }
 
   return (

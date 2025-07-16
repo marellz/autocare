@@ -30,11 +30,15 @@ import type { Vendor } from '@/services/useVendorService'
 import VendorFilters from '@/components/partials/vendor/Filters'
 
 const Vendors = () => {
-  const { vendors, resultParams, loading, handlePaginationChange, deleteVendor } = useVendorStore()
+  const { vendors, resultParams, loading, updateParams, deleteVendor } = useVendorStore()
   const [id, setId] = useState<number | null>(null)
 
   const handleVendorEdit = (vendor: Vendor) => {
     setId(vendor.id)
+  }
+
+  const handlePaginationChange = (page: number, limit: number) => {
+    updateParams({page, limit})
   }
 
   const columns: ColumnDef<Vendor>[] = [

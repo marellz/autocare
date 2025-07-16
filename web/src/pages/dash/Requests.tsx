@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useRequestStore from '@/stores/useRequestStore'
 import { type Request, type RequestStatus } from '@/services/useRequestService'
 import VendorAssign from '@/components/partials/requests/VendorAssign'
@@ -18,18 +18,19 @@ import ClientResponse from '@/components/partials/requests/ClientResponse'
 import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 // todo soon: filter brands, paid_status(feature/payment)
 
 const Requests = () => {
-  const { requests, resultParams, loading, getRequests, handlePaginationChange, updateRequest } =
+  const { requests, resultParams, loading, updateParams, updateRequest } =
     useRequestStore()
 
-  useEffect(() => {
-    getRequests({})
-  }, [])
-
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
+
+  const handlePaginationChange = (page: number, limit: number) => {
+    updateParams({ page, limit })
+  }
 
   const columns: ColumnDef<Request>[] = [
     {
@@ -62,14 +63,34 @@ const Requests = () => {
       maxSize: 300,
       header: 'Item',
       cell: ({ row }) => {
-        const { originalMessages: texts, createdAt } = row.original
+        const { originalMessages: texts, createdAt, capturedDetails } = row.original
         return (
           <div className="space-y-2">
-            <div className="flex flex-wrap text-sm">
-              {texts.map((text, i) => (
-                <span key={`text-${i}`}>{text}</span>
-              ))}
-            </div>
+            {Object.keys(capturedDetails).length > 0 ? (
+              <p>
+                {Object.keys(capturedDetails).map((k) => (
+                  <span key={k}>{capturedDetails[k]} </span>
+                ))}
+              </p>
+            ) : (
+              <Popover>
+                <PopoverTrigger>
+                  <Badge variant="secondary">
+                    View {texts.length} message{texts.length !== 1 && 's'}
+                  </Badge>
+                </PopoverTrigger>
+                <PopoverContent align="start">
+                  <div className="flex flex-col space-y-1 text-sm">
+                    {texts.map((text, i) => (
+                      <span className="hover:bg-accent" key={`text-${i}`}>
+                        &quot;{text}&quot;
+                      </span>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+
             <p className="text-xs text-muted-foreground">{createdAt}</p>
           </div>
         )

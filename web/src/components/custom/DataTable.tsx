@@ -1,7 +1,7 @@
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { DataTablePagination } from './DataTablePagination'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ResultParams } from '@/types/pagination'
 import Loader from './Loader'
 import { CircleSlash } from 'lucide-react'
@@ -35,6 +35,11 @@ const DataTable = <TData, TValue>({
     pageSize: limit ?? 10,
   })
 
+  useEffect(() => {
+    const {pageIndex,pageSize} = paginationData
+    onPaginationChange(pageIndex + 1, pageSize)
+  }, [paginationData])
+
   const table = useReactTable({
     data,
     columns,
@@ -43,8 +48,6 @@ const DataTable = <TData, TValue>({
     state: { pagination: paginationData },
     onPaginationChange: (v) => {
       setPaginationData(v)
-      const { pageIndex, pageSize } = paginationData
-      onPaginationChange(pageIndex + 1, pageSize)
     },
     getCoreRowModel: getCoreRowModel(),
   })

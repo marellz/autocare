@@ -25,14 +25,14 @@ interface Store {
   loading: boolean
   error: string | undefined
   resultParams: RequestResultParams
+  requestParams: RequestRequestParams
 
-  getRequests: (params: RequestRequestParams) => Promise<void>
+  updateParams: (params: Partial<RequestRequestParams>) => void
+  getRequests: () => Promise<void>
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
   resetRequests: () => void
   // deleteRequest: (id: number) => Promise<void>;
-
-  handlePaginationChange: (page: number, limit: number) => void
 }
 
 const useRequestStore = create<Store>((set) => {
@@ -48,37 +48,35 @@ const useRequestStore = create<Store>((set) => {
     query: '',
   }
 
-  const handlePaginationChange = (page: number, limit: number) => {
-    getRequests({
-      page,
-      limit,
-    })
+  const requestParams: RequestRequestParams = {
+    query: '',
+    status: '',
+    channel: '',
+    phone: '',
+
+    page: 1,
+    limit: 10,
+
+    sort_by: 'id',
+    sort_order: 'ASC',
   }
 
-  const getRequests = async ({
-    query = '',
-    status = '',
-    channel = '',
-    phone = '',
+  const updateParams = async (params: Partial<RequestRequestParams>) => {
+    set((state) => ({
+      requestParams: {
+        ...state.requestParams,
+        ...params,
+      },
+    }))
 
-    page = 1,
-    limit = 10,
-    sort_by = 'id',
-    sort_order = 'ASC',
-  }: RequestRequestParams) => {
+    await getRequests()
+  }
+
+  const getRequests = async () => {
     try {
       set({ loading: true })
-      const params = {
-        query,
-        status,
-        channel,
-        phone,
-        page,
-        limit,
-        sort_by,
-        sort_order,
-      }
-      const { items, pagination } = await service.getRequests(params)
+      const { requestParams } = useRequestStore.getState()
+      const { items, pagination } = await service.getRequests(requestParams)
       set({ requests: items })
       set({ resultParams: pagination })
     } catch (error) {
@@ -145,16 +143,17 @@ const useRequestStore = create<Store>((set) => {
     requests,
     loading,
     error,
+
+    requestParams,
+    updateParams,
     resultParams,
+
     getRequests,
     createRequest,
     updateRequest,
     // deleteRequest,
 
-    //
-    handlePaginationChange,
-
-    resetRequests
+    resetRequests,
   }
 })
 
