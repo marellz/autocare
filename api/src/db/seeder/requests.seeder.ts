@@ -9,7 +9,7 @@ export default async () => {
   // seed requests
   const requestData: NewRequest[] = Array.from({ length: 50 }).map(() => {
     const createdAt = faker.date.past({ years: 0.5 });
-    const fulfilled_at = faker.datatype.boolean()
+    const fulfilledAt = faker.datatype.boolean()
       ? moment(createdAt)
           .add(faker.number.int({ min: 1, max: 4 }), "days")
           .toISOString()
@@ -25,7 +25,7 @@ export default async () => {
       createdAt,
       missingDetails: [],
       status: faker.helpers.arrayElement(Object.values(RequestStatusEnum)),
-      fulfilled_at,
+      fulfilledAt,
     };
   });
 

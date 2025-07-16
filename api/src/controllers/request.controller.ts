@@ -125,10 +125,10 @@ class RequestsController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilled_at, status, originalMessages, capturedDetails } =
+      const { fulfilledAt, status, originalMessages, capturedDetails } =
         req.body;
       const request = await RequestService.update(id, {
-        fulfilled_at,
+        fulfilledAt,
         status,
         originalMessages,
         capturedDetails,

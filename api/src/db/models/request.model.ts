@@ -39,7 +39,7 @@ export default {
     allowNull: false,
     type: DataTypes.STRING,
   },
-  fulfilled_at: {
+  fulfilledAt: {
     allowNull: true,
     type: DataTypes.DATE,
   },
@@ -105,7 +105,7 @@ export interface Request {
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
   status: RequestStatus;
-  fulfilled_at: string | null;
+  fulfilledAt: string | null;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -118,6 +118,6 @@ export interface NewRequest {
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
   status: RequestStatus;
-  fulfilled_at?: string | null;
+  fulfilledAt?: string | null;
   createdAt?: Date;
 }
