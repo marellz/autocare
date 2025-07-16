@@ -10,6 +10,8 @@ export interface Vendor {
   brands: string[]
   location: string | null
   vendor_requests?: VendorRequest[]
+  createdAt: Date
+  updatedAt: Date | null // todo: confirm/enact this update
 }
 
 export interface NewVendor {
