@@ -59,6 +59,7 @@ const Requests = () => {
     },
     {
       accessorKey: 'originalMessages',
+      maxSize: 300,
       header: 'Item',
       cell: ({ row }) => {
         const { originalMessages: texts, createdAt } = row.original
@@ -77,6 +78,7 @@ const Requests = () => {
     {
       accessorKey: 'status',
       header: () => <p>Status</p>,
+      maxSize: 10,
       cell: ({ row }) => (
         <StatusSelect
           status={row.original.status}
@@ -87,6 +89,7 @@ const Requests = () => {
 
     {
       accessorKey: 'actions',
+      size: 10,
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
         {

@@ -61,7 +61,12 @@ const DataTable = <TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  style={{
+                    maxWidth: `${header.getSize()}px`,
+                  }}
+                  key={header.id}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
