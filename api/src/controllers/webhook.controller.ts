@@ -3,6 +3,7 @@ import InteractionService from "../services/interaction/interaction.service";
 import { matchRequestNumber } from "../services/callback/responseNumber.service";
 import { matchLastInteraction } from "../services/callback/lastInteraction.service";
 import { Request } from "express";
+import { RequestChannelEnum } from "../db/models/request.model";
 
 interface CallbackResponse {
   message: string;
@@ -54,5 +55,6 @@ export const processCallback = async (
     body,
     name,
     phone,
+    channel: RequestChannelEnum.WHATSAPP,
   });
 };

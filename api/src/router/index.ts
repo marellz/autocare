@@ -7,6 +7,7 @@ import whatsAppWebHookRoutes from "./routes/_whatsappWebhook";
 import fakeWhatsappWebhookRoutes from "./routes/_whatsappWebhook.fake";
 import interactionRoutes from "./routes/_interactions";
 import dashboardRoutes from "./routes/_dashboard";
+import responseRoutes from './routes/_responses'
 
 import { Express } from "express";
 
@@ -19,7 +20,8 @@ const routes = new Map([
   ["/vendor-requests", vendorRequestRoutes],
   ["/webhook/whatsapp", whatsAppWebHookRoutes],
   ["/fake-webhook", fakeWhatsappWebhookRoutes],
-  ["/dashboard", dashboardRoutes]
+  ["/dashboard", dashboardRoutes],
+  ["/responses", responseRoutes]
 ]);
 
 const registerRoutes = (app: Express) => {

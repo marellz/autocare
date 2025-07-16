@@ -8,8 +8,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '../ui/button'
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert'
-import Input from '../form/Input'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { Label } from '../ui/label'
 import { Check, Plus } from 'lucide-react'
 import useVendorStore from '@/stores/useVendorStore'
@@ -17,6 +16,19 @@ import type { NewVendor } from '@/services/useVendorService'
 import { Toaster } from '../ui/sonner'
 import { toast } from 'sonner'
 import VendorBrandSelect from './vendor/VendorBrandSelect'
+import { useForm } from 'react-hook-form'
+import z from 'zod'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Input } from '../ui/input'
 
 interface Props {
   id?: number | null
@@ -29,18 +41,34 @@ interface Props {
 
 const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
   const { error, loading, createVendor, vendors, updateVendor } = useVendorStore()
-
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [location, setLocation] = useState<string | null>(null)
-  const [brands, setBrands] = useState<string[]>([])
-
-  const setForm = ({ name, phone, location, brands }: NewVendor) => {
-    setName(name)
-    setPhone(phone)
-    setLocation(location ?? null)
-    setBrands(brands)
+  
+  const setForm = (payload: NewVendor) => {
+    form.reset({ ...payload, location: payload.location ?? '' })
   }
+
+  const formSchema = z.object({
+    name: z.string().min(2, { message: 'Vendor needs a name' }),
+    phone: z
+      .string()
+      .length(12, { message: 'Not a valid phone number' })
+      .startsWith('254', { message: "Phone number must start with '254'" })
+      .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' }),
+
+    location: z.string().optional(),
+    brands: z.array(z.string()).min(1, { message: 'Please select at least one brand' }),
+  })
+
+  type SchemaType = z.infer<typeof formSchema>
+
+  const form = useForm<SchemaType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      location: '',
+      brands: [],
+    },
+  })
 
   useEffect(() => {
     if (id) {
@@ -51,16 +79,8 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
     }
   }, [id])
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+  const _handleSubmit = async (payload: SchemaType) => {
     try {
-      const payload = {
-        name,
-        phone,
-        brands,
-        location,
-      }
-
       let action = 'created'
       if (id) {
         action = 'updated'
@@ -73,7 +93,7 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
 
       toast.info(`Vendor ${action} successfully.`, {
         icon: <Check size={16} />,
-        description: name,
+        description: payload.name,
         descriptionClassName: '!text-muted-foreground',
       })
 
@@ -119,33 +139,77 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit}>
-            <Input
-              value={name}
-              label="Name"
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            />
-            <Input
-              value={phone}
-              label="Phone"
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-            />
-            <Input
-              value={location ?? ''}
-              label="Location"
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => setLocation(e.target.value)}
-            />
-            <div className="mb-4 space-y-2">
-              <Label>Brands</Label>
-              <VendorBrandSelect brands={brands} onChange={setBrands} />
-            </div>
-            <div className="flex space-x-3 justify-end items-center pt-8">
-              <Button type="button" variant="secondary" onClick={() => setShowDialog(false)}>
-                Cancel
-              </Button>
-              <Button disabled={loading}>Save details</Button>
-            </div>
-          </form>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(_handleSubmit)}>
+              <div className="space-y-4">
+                <FormField
+                  name="name"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  name="phone"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone number</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      <FormDescription>
+                        Phone number must start with <b>254</b>
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  name="location"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor's location</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+
+                <div className="mb-4 space-y-2">
+                  <FormField
+                    name="brands"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Vendor's brands</Label>
+                        <VendorBrandSelect
+                          brands={field.value}
+                          onChange={(values) => form.setValue('brands', values)}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  ></FormField>
+                </div>
+              </div>
+              <div className="flex space-x-3 justify-end items-center mt-8">
+                <Button type="button" variant="secondary" onClick={() => setShowDialog(false)}>
+                  Cancel
+                </Button>
+                <Button disabled={loading}>Save details</Button>
+              </div>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
       <Toaster position="top-center" />

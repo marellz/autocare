@@ -11,11 +11,13 @@ import type { RequestParams, ResultParams } from '@/types/pagination'
 type RequestRequestParams = RequestParams<Request> & {
   status?: RequestStatus
   channel?: RequestChannel
+  phone?: string
 }
 
 type RequestResultParams = ResultParams<Request> & {
-  status?: RequestStatus,
+  status?: RequestStatus
   channel?: RequestChannel
+  phone?: string
 }
 
 interface Store {
@@ -27,6 +29,7 @@ interface Store {
   getRequests: (params: RequestRequestParams) => Promise<void>
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
+  resetRequests: () => void
   // deleteRequest: (id: number) => Promise<void>;
 
   handlePaginationChange: (page: number, limit: number) => void
@@ -56,6 +59,7 @@ const useRequestStore = create<Store>((set) => {
     query = '',
     status = '',
     channel = '',
+    phone = '',
 
     page = 1,
     limit = 10,
@@ -68,6 +72,7 @@ const useRequestStore = create<Store>((set) => {
         query,
         status,
         channel,
+        phone,
         page,
         limit,
         sort_by,
@@ -87,8 +92,7 @@ const useRequestStore = create<Store>((set) => {
   const createRequest = async (request: NewRequest) => {
     try {
       set({ loading: true })
-      const newRequest = await service.createRequest(request)
-      set((state) => ({ requests: [newRequest, ...state.requests] }))
+      await service.createRequest(request)
     } catch (error) {
       console.error('Error creating request:', error)
       set({ error: error as string })
@@ -131,6 +135,12 @@ const useRequestStore = create<Store>((set) => {
 
     */
 
+  const resetRequests = () => {
+    set({
+      requests: [],
+    })
+  }
+
   return {
     requests,
     loading,
@@ -143,6 +153,8 @@ const useRequestStore = create<Store>((set) => {
 
     //
     handlePaginationChange,
+
+    resetRequests
   }
 })
 

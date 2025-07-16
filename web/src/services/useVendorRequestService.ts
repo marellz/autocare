@@ -29,6 +29,7 @@ export interface NewVendorRequest {
 export type FindVendorRequestParams = {
   vendorId?: number
   requestId?: number
+  price?: boolean;
 }
 
 const api = createKyInstance('/vendor-requests')

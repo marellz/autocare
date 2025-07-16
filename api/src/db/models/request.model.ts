@@ -83,12 +83,18 @@ export const carPartDetailLables: Record<keyof CapturedDetails, string> = {
 export type CapturedDetails = Record<CarPartDetail, string | null>;
 
 export enum RequestStatusEnum {
-  SUBMITTED = 'submitted', // via web
+  SUBMITTED = "submitted", // via web
   MISSING_DETAILS = "missing_details",
   PENDING = "pending",
   COMPLETED = "completed",
 }
+
 export type RequestStatus = `${RequestStatusEnum}`;
+
+export enum RequestChannelEnum {
+  WEB = "web",
+  WHATSAPP = "whatsapp",
+}
 
 export interface Request {
   id: string;

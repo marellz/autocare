@@ -110,8 +110,9 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
 
   useEffect(() => {
     if (!request) return
+    if(!open) return
     initiate()
-  }, [request])
+  }, [request,open])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

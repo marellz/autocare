@@ -11,6 +11,7 @@ import DefaultLayout from './layouts/Default'
 import DashboardLayout from './layouts/Dashboard'
 import AuthLayout from './layouts/Auth'
 import ProtectedRoute from './layouts/Protected'
+import MyRequests from './pages/MyRequests'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/my-requests" element={<MyRequests />} />
         </Route>
         <Route
           element={

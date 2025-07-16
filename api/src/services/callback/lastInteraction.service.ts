@@ -1,3 +1,4 @@
+import { RequestChannelEnum } from "../../db/models/request.model";
 import {
   Interaction,
   InteractionTypes,
@@ -87,6 +88,7 @@ export const matchLastInteraction = async (
         body,
         name,
         phone,
+        channel: RequestChannelEnum.WHATSAPP
       });
 
       return response;

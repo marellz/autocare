@@ -1,4 +1,4 @@
-import type { Request } from '@/services/useRequestService'
+import type { Request, RequestStatus } from '@/services/useRequestService'
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,26 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { AlertCircle, SendHorizontal } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Textarea } from '@/components/ui/textarea'
+import StatusSelect from '@/components/custom/requests/StatusSelect'
+import { useEffect, useState } from 'react'
+import useResponseStore from '@/stores/useResponseStore'
+import useRequestStore from '@/stores/useRequestStore'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface Props {
   open: boolean
@@ -16,9 +36,45 @@ interface Props {
 }
 
 const ClientResponse = ({ open, hideDialog, request }: Props) => {
+  const { error, loading, sendClientResponse } = useResponseStore()
+  const { updateRequest } = useRequestStore()
+  const formSchema = z.object({
+    message: z.string().min(1, 'Message is required'),
+    refund: z.boolean(),
+  })
+
+  type FormSchema = z.infer<typeof formSchema>
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      message: '',
+      refund: false,
+    },
+  })
+
+  const [status, setStatus] = useState<RequestStatus>(request?.status || 'submitted')
+
   const handleOpenChange = (show: boolean) => {
     if (!show) hideDialog()
   }
+
+  const handleSubmit = async ({ message, refund }: FormSchema) => {
+    if (!request) return //todo: throw error
+    // send message
+    const response = await sendClientResponse(request.id, message, refund)
+
+    if (response) hideDialog()
+
+    // if change in status, update that too
+    if (status !== request.status) updateRequest(request.id, { status })
+  }
+
+  useEffect(() => {
+    if (!open) {
+      form.reset()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -31,11 +87,71 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
               </DialogTitle>
               <DialogDescription>Respond to client concerning their request</DialogDescription>
             </DialogHeader>
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Send message to client</FormLabel>
+                        <FormControl>
+                          <Textarea {...field}></Textarea>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormItem>
+                    <FormLabel>Change status</FormLabel>
+                    <StatusSelect
+                      status={status}
+                      onSelect={(status: RequestStatus) => setStatus(status)}
+                    />
+                  </FormItem>
+
+                  <FormField
+                    name="refund"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="flex items-start gap-2">
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div>
+                          <FormLabel>
+                            <div className="space-y-0.5">
+                              <p>Provide refund</p>
+                              <FormDescription className="font-normal">
+                                Return the service fee upon failure to provide said part.
+                              </FormDescription>
+                            </div>
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </form>
+            </Form>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle />
+                <AlertTitle>Error sending response</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <DialogFooter>
               <Button type="button" variant="outline" onClick={hideDialog}>
                 Close
               </Button>
-              <Button>Send response</Button>
+              <Button disabled={loading} onClick={form.handleSubmit(handleSubmit)}>
+                <span>Send response</span>
+                <SendHorizontal />
+              </Button>
             </DialogFooter>
           </>
         ) : (
