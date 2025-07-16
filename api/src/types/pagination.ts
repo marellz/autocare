@@ -7,4 +7,5 @@ export interface FindAllParams<T> {
   sort_order: PaginationSortOrder
   page: number;
   limit: number;
+  query?: string
 }
