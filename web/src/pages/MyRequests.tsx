@@ -1,5 +1,6 @@
 import DataTable from '@/components/custom/DataTable'
 import Loader from '@/components/custom/Loader'
+import RequestOffers from '@/components/partials/requests/Offers'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -49,10 +50,11 @@ const MyRequests = () => {
 
   const [dirty, setDirty] = useState<boolean>(false)
 
-  const { loading, resultParams, requests, resetRequests, updateParams, resetParams } = useRequestStore()
-  
+  const { loading, resultParams, requests, resetRequests,  updateParams } =
+    useRequestStore()
+
   const onSubmit = ({ phone }: SchemaType) => {
-    resetParams({phone})
+    updateParams({ phone })
     setDirty(true)
   }
 
@@ -60,9 +62,19 @@ const MyRequests = () => {
     resetRequests()
   }, [])
 
-  const getOffers = async (id: number) => {
-    // todo: get proposed offers for this requests
-    console.log({ request: id })
+  const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
+
+  // RequestOffers
+  const [showOffers, setShowOffers] = useState<boolean>(false)
+
+  const handleShowOffers = (request: Request) => {
+    setShowOffers(true)
+    setDisplayRequest(request)
+  }
+
+  const hideOffers = () => {
+    setShowOffers(false)
+    setDisplayRequest(undefined)
   }
 
   const processPayment = async (id: number) => {
@@ -119,11 +131,11 @@ const MyRequests = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => processPayment(row.original.id)}>
-                {/* if status === 'submitted */}
+                {/* todo: if status === 'submitted */}
                 Make payment
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => getOffers(row.original.id)}>
-                {/* if status === pending */}
+              <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
+                {/* todo: if status === pending */}
                 View offers
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -163,14 +175,14 @@ const MyRequests = () => {
                         </FormControl>
                         <FormMessage />
                         <FormDescription className="mt-1">
-                          <div className="flex items-start space-x-4 text-muted-foreground">
+                          <span className="flex items-start space-x-4 text-muted-foreground">
                             <AlertCircle size={20} className="flex-none" />
-                            <p className="text-sm ">
+                            <span className="text-sm block">
                               We'll search for requests that were made using this phone number. Only
                               numbers used in real requests will return results. We never share your
                               data.
-                            </p>
-                          </div>
+                            </span>
+                          </span>
                         </FormDescription>
                       </FormItem>
                     )}
@@ -191,12 +203,25 @@ const MyRequests = () => {
         {loading ? (
           <Loader />
         ) : requests.length ? (
-          <DataTable
-            data={requests}
-            columns={columns}
-            params={resultParams}
-            onParameterChange={updateParams}
-          />
+          <>
+            <DataTable
+              data={requests}
+              columns={columns}
+              params={resultParams}
+              onParameterChange={updateParams}
+            />
+
+            {/**
+             * RequestOffers
+             * show offers for the request
+             */}
+
+            <RequestOffers
+              open={showOffers}
+              request={displayRequest}
+              hideDialog={hideOffers}
+            ></RequestOffers>
+          </>
         ) : (
           form.watch('phone').length > 0 &&
           dirty && (
