@@ -1,7 +1,5 @@
 import { PaginationSortBy, PaginationSortOrder } from "../types/pagination";
-import {
-  RequestChannelEnum,
-} from "../db/models/request.model";
+import { RequestChannelEnum } from "../db/models/request.model";
 import RequestService from "../services/request/request.service";
 import { Request, Response, NextFunction } from "express";
 import { Op, WhereOptions, Sequelize, fn, col } from "sequelize";
@@ -101,11 +99,7 @@ class RequestsController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
-        name,
-        phone,
-        item,
-      } = req.body;
+      const { name, phone, item } = req.body;
 
       const { request } = await ReceiverService.handleNewRequest({
         body: item,
@@ -136,7 +130,7 @@ class RequestsController {
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }
-      res.json({ message: "ok", data: request });
+      res.json({ message: "ok", data: { updated: request.length > 0 } });
     } catch (error) {
       next(error);
     }
