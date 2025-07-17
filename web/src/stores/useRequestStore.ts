@@ -32,6 +32,7 @@ interface Store {
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
   resetRequests: () => void
+  resetParams: (params: Partial<RequestRequestParams>) => void
   // deleteRequest: (id: number) => Promise<void>;
 }
 
@@ -62,14 +63,25 @@ const useRequestStore = create<Store>((set) => {
   }
 
   const updateParams = async (params: Partial<RequestRequestParams>) => {
-    set((state) => ({
+    const { requestParams: current } = useRequestStore.getState()
+    set(() => ({
       requestParams: {
-        ...state.requestParams,
+        ...current,
         ...params,
       },
     }))
 
     await getRequests()
+  }
+
+  const resetParams = (params: Partial<RequestRequestParams>) => {
+    const { requestParams: initial } = useRequestStore.getInitialState()
+    set(() => ({
+      requestParams: {
+        ...initial,
+        ...params,
+      },
+    }))
   }
 
   const getRequests = async () => {
@@ -146,6 +158,7 @@ const useRequestStore = create<Store>((set) => {
 
     requestParams,
     updateParams,
+    resetParams,
     resultParams,
 
     getRequests,

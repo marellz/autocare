@@ -49,14 +49,10 @@ const MyRequests = () => {
 
   const [dirty, setDirty] = useState<boolean>(false)
 
-  const { loading, resultParams, requests, resetRequests, updateParams } = useRequestStore()
-
-  const handlePaginationChange = (page: number, limit: number) => {
-    updateParams({ page, limit })
-  }
+  const { loading, resultParams, requests, resetRequests, updateParams, resetParams } = useRequestStore()
   
   const onSubmit = ({ phone }: SchemaType) => {
-    updateParams({ phone })
+    resetParams({phone})
     setDirty(true)
   }
 
@@ -198,8 +194,8 @@ const MyRequests = () => {
           <DataTable
             data={requests}
             columns={columns}
-            pagination={resultParams}
-            onPaginationChange={handlePaginationChange}
+            params={resultParams}
+            onParameterChange={updateParams}
           />
         ) : (
           form.watch('phone').length > 0 &&
