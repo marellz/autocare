@@ -1,4 +1,11 @@
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table'
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type SortingState,
+} from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { DataTablePagination } from './DataTablePagination'
 import { useEffect, useState } from 'react'
@@ -9,8 +16,8 @@ import { CircleSlash } from 'lucide-react'
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  pagination: ResultParams<TData>
-  onPaginationChange: (page: number, page_size: number) => void
+  params: Partial<ResultParams<TData>>
+  onParameterChange: (params: ResultParams<TData>) => void
   onClickRow?: (id: number) => void
   loading?: boolean
 }
@@ -23,32 +30,41 @@ interface PaginationData {
 const DataTable = <TData, TValue>({
   columns,
   data,
-  pagination,
+  params,
   onClickRow,
-  onPaginationChange,
+  onParameterChange,
   loading,
 }: Props<TData, TValue>) => {
-  const { page_count: pageCount, page, limit } = pagination
+  const { page_count: pageCount, page, limit, sort_by, sort_order } = params
 
-  const [paginationData, setPaginationData] = useState<PaginationData>({
+  const [pagination, setPagination] = useState<PaginationData>({
     pageIndex: page ? page - 1 : 0, //  compensate index vs actual
     pageSize: limit ?? 10,
   })
 
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: (sort_by ?? 'id') as string, desc: sort_order === 'DESC' },
+  ])
+
   useEffect(() => {
-    const {pageIndex,pageSize} = paginationData
-    onPaginationChange(pageIndex + 1, pageSize)
-  }, [paginationData])
+    const { pageIndex, pageSize: limit } = pagination
+    const { id: sort_by, desc } = sorting[0]
+    const sort_order = desc ? 'DESC' : 'ASC'
+    onParameterChange({ sort_by, sort_order, page: pageIndex + 1, limit })
+  }, [sorting, pagination])
 
   const table = useReactTable({
     data,
     columns,
     pageCount,
     manualPagination: true,
-    state: { pagination: paginationData },
+    manualSorting: true,
+    state: { pagination: pagination, sorting },
     onPaginationChange: (v) => {
-      setPaginationData(v)
+      setPagination(v)
     },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
   })
 

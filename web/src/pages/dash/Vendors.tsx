@@ -28,6 +28,7 @@ import DataTable from '@/components/custom/DataTable'
 import type { ColumnDef } from '@tanstack/react-table'
 import type { Vendor } from '@/services/useVendorService'
 import VendorFilters from '@/components/partials/vendor/Filters'
+import ToggleSort from '@/components/utils/ToggleSort'
 
 const Vendors = () => {
   const { vendors, resultParams, loading, updateParams, deleteVendor } = useVendorStore()
@@ -37,19 +38,17 @@ const Vendors = () => {
     setId(vendor.id)
   }
 
-  const handlePaginationChange = (page: number, limit: number) => {
-    updateParams({page, limit})
-  }
-
   const columns: ColumnDef<Vendor>[] = [
     {
       accessorKey: 'id',
-      header: 'ID #',
+      enableResizing: true,
+      size: 10,
+      header: ({ column }) => <ToggleSort column={column}>ID #</ToggleSort>,
       cell: ({ row }) => <p className="font-bold px-2">{row.original.id}</p>,
     },
     {
       accessorKey: 'name',
-      header: 'Vendor',
+      header: ({ column }) => <ToggleSort column={column}>Vendor</ToggleSort>,
       cell: ({ row }) => {
         const { name, phone, location } = row.original
         return (
@@ -151,8 +150,8 @@ const Vendors = () => {
           columns={columns}
           data={vendors}
           loading={loading}
-          pagination={resultParams}
-          onPaginationChange={handlePaginationChange}
+          params={resultParams}
+          onParameterChange={updateParams}
         />
       </div>
     </>

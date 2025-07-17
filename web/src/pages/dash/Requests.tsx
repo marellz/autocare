@@ -19,28 +19,24 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import ToggleSort from '@/components/utils/ToggleSort'
 
 // todo soon: filter brands, paid_status(feature/payment)
 
 const Requests = () => {
-  const { requests, resultParams, loading, updateParams, updateRequest } =
-    useRequestStore()
+  const { requests, resultParams, loading, updateParams, updateRequest } = useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
-
-  const handlePaginationChange = (page: number, limit: number) => {
-    updateParams({ page, limit })
-  }
 
   const columns: ColumnDef<Request>[] = [
     {
       accessorKey: 'id',
-      header: 'ID #',
+      header: ({ column }) => <ToggleSort column={column}>ID #</ToggleSort>,
       cell: ({ row }) => <p className="font-bold px-2">{row.original.id}</p>,
     },
     {
       accessorKey: 'name',
-      header: 'Client',
+      header: ({ column }) => <ToggleSort column={column}>Client</ToggleSort>,
       cell: ({ row }) => {
         const { name, phone, channel } = row.original
         return (
@@ -206,8 +202,8 @@ const Requests = () => {
             columns={columns}
             loading={loading}
             data={requests}
-            pagination={resultParams}
-            onPaginationChange={handlePaginationChange}
+            params={resultParams}
+            onParameterChange={updateParams}
           />
         </div>
       </div>
