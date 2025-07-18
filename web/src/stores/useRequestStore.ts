@@ -3,22 +3,10 @@ import {
   useRequestService as service,
   type NewRequest,
   type Request,
-  type RequestChannel,
-  type RequestStatus,
+  type RequestRequestParams,
+  type RequestResultParams,
 } from '@/services/useRequestService'
-import type { RequestParams, ResultParams } from '@/types/pagination'
 
-type RequestRequestParams = RequestParams<Request> & {
-  status?: RequestStatus
-  channel?: RequestChannel
-  phone?: string
-}
-
-type RequestResultParams = ResultParams<Request> & {
-  status?: RequestStatus
-  channel?: RequestChannel
-  phone?: string
-}
 
 interface Store {
   requests: Request[]

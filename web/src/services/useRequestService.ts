@@ -1,4 +1,4 @@
-import type { RequestParams } from '@/types/pagination'
+import type { ResultParams, RequestParams } from '@/types/pagination'
 import { createKyInstance } from '@/utils/kyCreator'
 import type { SearchParamsOption } from 'ky'
 
@@ -46,10 +46,22 @@ export interface NewRequest {
   name: string
 }
 
+export type RequestRequestParams = RequestParams<Request> & {
+  status?: RequestStatus
+  channel?: RequestChannel
+  phone?: string
+}
+
+export type RequestResultParams = ResultParams<Request> & {
+  status?: RequestStatus
+  channel?: RequestChannel
+  phone?: string
+}
+
 const api = createKyInstance('/requests')
 
 export const useRequestService = {
-  async getRequests(params: RequestParams<Request>) {
+  async getRequests(params: RequestRequestParams) {
     const response = await api.get('', {
       searchParams: params as SearchParamsOption,
     })
