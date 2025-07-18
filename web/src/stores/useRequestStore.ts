@@ -10,6 +10,7 @@ import {
 
 interface Store {
   requests: Request[]
+  userRequests: Request[]
   loading: boolean
   error: string | undefined
   resultParams: RequestResultParams
@@ -17,6 +18,7 @@ interface Store {
 
   updateParams: (params: Partial<RequestRequestParams>) => void
   getRequests: () => Promise<void>
+  getUserRequests: (phone: string) => Promise<void>
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
   resetRequests: () => void
@@ -26,6 +28,7 @@ interface Store {
 
 const useRequestStore = create<Store>((set) => {
   const requests: Request[] = []
+  const userRequests: Request[] = []
   const loading: boolean = false
   const error: string | undefined = undefined
 
@@ -78,6 +81,21 @@ const useRequestStore = create<Store>((set) => {
       const { requestParams } = useRequestStore.getState()
       const { items, pagination } = await service.getRequests(requestParams)
       set({ requests: items })
+      set({ resultParams: pagination })
+    } catch (error) {
+      console.error('Error fetching requests:', error)
+      set({ error: error as string })
+    } finally {
+      set({ loading: false })
+    }
+  }
+
+  const getUserRequests = async (phone: string) => {
+    try {
+      set({ loading: true })
+      const { requestParams } = useRequestStore.getState()
+      const { items, pagination } = await service.getRequests({...requestParams, phone})
+      set({ userRequests: items })
       set({ resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
@@ -143,6 +161,8 @@ const useRequestStore = create<Store>((set) => {
     requests,
     loading,
     error,
+    userRequests,
+    getUserRequests,
 
     requestParams,
     updateParams,

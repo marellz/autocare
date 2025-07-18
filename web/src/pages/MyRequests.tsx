@@ -26,8 +26,9 @@ import type { Request } from '@/services/useRequestService'
 import useRequestStore from '@/stores/useRequestStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { ColumnDef } from '@tanstack/react-table'
+import clsx from 'clsx'
 import { AlertCircle, ArrowDownCircle, MoreHorizontal } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
@@ -50,17 +51,18 @@ const MyRequests = () => {
 
   const [dirty, setDirty] = useState<boolean>(false)
 
-  const { loading, resultParams, requests, resetRequests,  updateParams } =
-    useRequestStore()
+  const {
+    loading,
+    resultParams,
+    userRequests: requests,
+    getUserRequests,
+    updateParams,
+  } = useRequestStore()
 
   const onSubmit = ({ phone }: SchemaType) => {
-    updateParams({ phone })
+    getUserRequests(phone)
     setDirty(true)
   }
-
-  useEffect(() => {
-    resetRequests()
-  }, [])
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
@@ -200,61 +202,51 @@ const MyRequests = () => {
         </Card>
       </div>
       <div>
-        {loading ? (
-          <Loader />
-        ) : requests.length ? (
-          <>
-            <DataTable
-              data={requests}
-              columns={columns}
-              params={resultParams}
-              onParameterChange={updateParams}
-            />
-
-            {/**
-             * RequestOffers
-             * show offers for the request
-             */}
-
-            <RequestOffers
-              open={showOffers}
-              request={displayRequest}
-              hideDialog={hideOffers}
-            ></RequestOffers>
-          </>
-        ) : (
-          form.watch('phone').length > 0 &&
-          dirty && (
-            <Alert>
-              <AlertCircle />
-              <AlertTitle>No Requests Found for That Number</AlertTitle>
-              <AlertDescription>
-                <div className="space-y-4">
-                  <p>We couldn’t find any part requests tied to this phone number.</p>
-                  <div className="grid grid-cols-2 gap-10">
-                    <div>
-                      <p className="mb-2 font-medium underline">Possible reasons</p>
-                      <ul className="list-disc">
-                        <li>You might have entered the wrong number.</li>
-                        <li>Your request may not have been processed yet.</li>
-                        <li>You used a different number to make the request.</li>
-                      </ul>
-                    </div>
-                    <div className="pl-10 border-l list-disc">
-                      <p className="mb-2 font-medium underline">What to do next</p>
-                      <ul className="list-disc">
-                        <li>Double-check the number and try again.</li>
-                        <li>Give it a few minutes if you just sent the request.</li>
-                        <li>Start a new request if you haven’t already.</li>
-                      </ul>
-                    </div>
+        {loading && <Loader />}
+        {requests.length === 0 && form.watch('phone').length > 0 && dirty && (
+          <Alert>
+            <AlertCircle />
+            <AlertTitle>No Requests Found for That Number</AlertTitle>
+            <AlertDescription>
+              <div className="space-y-4">
+                <p>We couldn’t find any part requests tied to this phone number.</p>
+                <div className="grid grid-cols-2 gap-10">
+                  <div>
+                    <p className="mb-2 font-medium underline">Possible reasons</p>
+                    <ul className="list-disc">
+                      <li>You might have entered the wrong number.</li>
+                      <li>Your request may not have been processed yet.</li>
+                      <li>You used a different number to make the request.</li>
+                    </ul>
+                  </div>
+                  <div className="pl-10 border-l list-disc">
+                    <p className="mb-2 font-medium underline">What to do next</p>
+                    <ul className="list-disc">
+                      <li>Double-check the number and try again.</li>
+                      <li>Give it a few minutes if you just sent the request.</li>
+                      <li>Start a new request if you haven’t already.</li>
+                    </ul>
                   </div>
                 </div>
-              </AlertDescription>
-            </Alert>
-          )
+              </div>
+            </AlertDescription>
+          </Alert>
         )}
       </div>
+      <div className={clsx(requests.length === 0 && 'hidden')}>
+        <DataTable
+          data={requests}
+          columns={columns}
+          params={resultParams}
+          onParameterChange={updateParams}
+        />
+      </div>
+
+      {/**
+       * RequestOffers
+       * show offers for the request
+       */}
+      <RequestOffers open={showOffers} request={displayRequest} hideDialog={hideOffers} />
     </div>
   )
 }
