@@ -50,8 +50,13 @@ const DataTable = <TData, TValue>({
     const { pageIndex, pageSize: limit } = pagination
     const { id: sort_by, desc } = sorting[0]
     const sort_order = desc ? 'DESC' : 'ASC'
+
+    // fix: compare and run ONLY if something has changed
+
+    console.log([pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
+
     onParameterChange({ sort_by, sort_order, page: pageIndex + 1, limit })
-  }, [sorting, pagination])
+  }, [pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
 
   const table = useReactTable({
     data,
