@@ -128,7 +128,7 @@ const RequestForm = () => {
                       <span>
                         Describe the item you need in this nice format: <br />
                         <i>
-                          I need a <b>&lt;part&gt;</b> for a <b>&lt;year&gt;</b>{' '}
+                          I need a <b>&lt;part&gt;</b> for a <b>&lt;year&gt;</b>
                           <b>&lt;brand&gt;</b> <b>&lt;model&gt;</b> <b>&lt;variant&gt;</b>
                         </i>
                         <br />
