@@ -15,6 +15,7 @@ import MyRequests from './pages/MyRequests'
 import DocsLayout from './layouts/Docs'
 import Terms from './pages/docs/Terms'
 import Privacy from './pages/docs/Privacy'
+import Contact from './pages/Contact'
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
 
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
       </Routes>
     </ThemeProvider>
