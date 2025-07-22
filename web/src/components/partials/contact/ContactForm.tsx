@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import ReCaptcha from '@/components/utils/ReCaptcha'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Label } from '@radix-ui/react-label'
 import { Pen, Send } from 'lucide-react'
@@ -27,6 +28,7 @@ const ContactForm = () => {
       .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' })
       .optional(),
     message: z.string().min(5, 'Message is required'),
+    token: z.string({ required_error: "You need to verify that your're human" }),
   })
   type FormSchema = z.infer<typeof formSchema>
   const form = useForm<FormSchema>({
@@ -36,8 +38,11 @@ const ContactForm = () => {
       email: '',
       phone: '',
       message: '',
+      token: undefined,
     },
   })
+
+  const onTokenSuccess = (token: string) => form.setValue('token', token)
 
   // todo: implement contact endpoint. and also cloudflare turnstile validation.
   const onSubmit = () => {}
@@ -106,10 +111,24 @@ const ContactForm = () => {
                         <Textarea {...field} />
                       </FormControl>
                       <FormMessage />
-                      <FormDescription>A little context will go a long way into helping us help you.</FormDescription>
+                      <FormDescription>
+                        A little context will go a long way into helping us help you.
+                      </FormDescription>
                     </FormItem>
                   )}
                 />
+              </div>
+              <div>
+                <FormField
+                  name="token"
+                  control={form.control}
+                  render={() => (
+                    <FormItem>
+                      <ReCaptcha onSuccess={onTokenSuccess} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
               </div>
             </div>
           </CardContent>
