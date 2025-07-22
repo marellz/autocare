@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from "express";
 import { Op, WhereOptions, Sequelize, fn, col } from "sequelize";
 import { Request as RequestModel } from "../db/models/request.model";
 import ReceiverService from "../services/receiver/receiver.service";
+import verifyToken from "../services/recaptcha/verify.service";
 
 class RequestsController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
@@ -99,7 +100,26 @@ class RequestsController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, phone, item } = req.body;
+      const { name, phone, item, token } = req.body;
+
+      // todo: remove when implementing validation
+      if (!token)
+        return res.status(400).json({ message: "Recaptcha token is required" });
+
+      // verify recaptcha token
+      const recaptchaResponse = await verifyToken(token);
+      
+      if (!recaptchaResponse.success) {
+        return res.status(400).json({
+          message: "Recaptcha verification failed",
+          error: recaptchaResponse.message,
+        });
+      }
+
+      return res.status(400).json({
+        works: "yes",
+        message: "Recaptcha verification passed",
+      })
 
       const { request } = await ReceiverService.handleNewRequest({
         body: item,
