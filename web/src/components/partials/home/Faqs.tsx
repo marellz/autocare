@@ -37,9 +37,9 @@ const Faqs = () => {
         <div className="px-20">
           <h1 className="text-4xl font-bold">Got questions?</h1>
           <p className="text-muted-foreground">
-            If you cannot found what you're looking for,{' '}
+            If you cannot found what you're looking for,
             <Link to="/contact" className="underline">
-              react out
+              reach out
             </Link>
           </p>
         </div>

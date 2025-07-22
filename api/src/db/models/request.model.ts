@@ -39,7 +39,7 @@ export default {
     allowNull: false,
     type: DataTypes.STRING,
   },
-  fulfilled_at: {
+  fulfilledAt: {
     allowNull: true,
     type: DataTypes.DATE,
   },
@@ -83,12 +83,18 @@ export const carPartDetailLables: Record<keyof CapturedDetails, string> = {
 export type CapturedDetails = Record<CarPartDetail, string | null>;
 
 export enum RequestStatusEnum {
-  SUBMITTED = 'submitted', // via web
+  SUBMITTED = "submitted", // via web
   MISSING_DETAILS = "missing_details",
   PENDING = "pending",
   COMPLETED = "completed",
 }
+
 export type RequestStatus = `${RequestStatusEnum}`;
+
+export enum RequestChannelEnum {
+  WEB = "web",
+  WHATSAPP = "whatsapp",
+}
 
 export interface Request {
   id: string;
@@ -99,7 +105,7 @@ export interface Request {
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
   status: RequestStatus;
-  fulfilled_at: string | null;
+  fulfilledAt: string | null;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -112,6 +118,6 @@ export interface NewRequest {
   capturedDetails: Partial<CapturedDetails>;
   missingDetails: string[];
   status: RequestStatus;
-  fulfilled_at?: string | null;
+  fulfilledAt?: string | null;
   createdAt?: Date;
 }

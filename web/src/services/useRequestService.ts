@@ -1,4 +1,4 @@
-import type { RequestParams } from '@/types/pagination'
+import type { ResultParams, RequestParams } from '@/types/pagination'
 import { createKyInstance } from '@/utils/kyCreator'
 import type { SearchParamsOption } from 'ky'
 
@@ -11,6 +11,7 @@ export const requestStatuses = [
 export const requestChannels = [
   { label: 'Web', value: 'web' },
   { label: 'Whatsapp', value: 'whatsapp' },
+  { label: 'SMS', value: 'sms' },
 ]
 export const requestStatusLabels: Record<RequestStatus, string> = {
   missing_details: 'Missing details',
@@ -18,17 +19,23 @@ export const requestStatusLabels: Record<RequestStatus, string> = {
   pending: 'Pending',
   completed: 'Completed',
 }
+export const requestCapturedDetails = ['partName','carBrand', 'carModel','carVariant','carYear', 'engineSize','transmission','bodyType']
 
+export type RequestCapturedDetails = (typeof requestCapturedDetails)[number]
 export type RequestChannel = (typeof requestChannels)[number]['value']
 export type RequestStatus = (typeof requestStatuses)[number]['value']
+
 export interface Request {
   id: number
   phone: string
   name: string
-  createdAt: string
-  channel: 'web' | 'whatsapp'
+  channel: RequestChannel
+  capturedDetails: Partial<Record<RequestCapturedDetails, any>>
+  missingDetails: RequestCapturedDetails[]
   status: RequestStatus
+  createdAt: string
   updatedAt: string | null
+  fulfilledAt: string | null // todo: confirm/enact this update
   originalMessages: string[]
 }
 
@@ -39,10 +46,22 @@ export interface NewRequest {
   name: string
 }
 
+export type RequestRequestParams = RequestParams<Request> & {
+  status?: RequestStatus
+  channel?: RequestChannel
+  phone?: string
+}
+
+export type RequestResultParams = ResultParams<Request> & {
+  status?: RequestStatus
+  channel?: RequestChannel
+  phone?: string
+}
+
 const api = createKyInstance('/requests')
 
 export const useRequestService = {
-  async getRequests(params: RequestParams<Request>) {
+  async getRequests(params: RequestRequestParams) {
     const response = await api.get('', {
       searchParams: params as SearchParamsOption,
     })

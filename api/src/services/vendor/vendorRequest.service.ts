@@ -8,6 +8,7 @@ import type {
   NewVendorRequest,
   VendorRequest,
 } from "../../db/models/vendorRequest.model";
+import { WhereOptions } from "sequelize";
 class VendorRequestService {
   /**
    * WHERE FINDING ALL:
@@ -60,7 +61,7 @@ class VendorRequestService {
     return vendorRequest;
   }
 
-  static async findAll(where: { vendorId?: string; requestId?: string } = {}) {
+  static async findAll(where: WhereOptions<VendorRequest>) {
     // find vendorRequests where vendorPhone === phone
     // find where price === null && condition === null && availability === null
     const vendorRequests = await VendorRequestModel.findAll({

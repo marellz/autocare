@@ -32,9 +32,9 @@ class ReceiverService {
    * HANDLE NEW REQUEST
    */
   static async handleNewRequest(
-    inbound: InboundMessageDetails & { name: string },
+    inbound: InboundMessageDetails & { name: string, channel: string },
   ) {
-    const { body, phone } = inbound;
+    const { body, phone, channel } = inbound;
 
     // create new Request
     const {
@@ -44,7 +44,10 @@ class ReceiverService {
     } = await RequestProcessService.processNewRequest(body);
 
     // if incomplete, request for more info
-    let status = RequestStatusEnum.COMPLETED;
+    let status = RequestStatusEnum.SUBMITTED;
+    // todo: feature/payment: update statusd to pending, after payment is made
+    // on payment hook, if the paymernt is declined, only send once the means to complete it.
+    // don't forget to create interactions for this
 
     const isMissingDetails = missingKeys.length > 0;
     if (missingKeys.length) {
@@ -54,7 +57,7 @@ class ReceiverService {
     const payload = {
       ...inbound,
       originalMessages: [body],
-      channel: "whatsapp",
+      channel,
       status,
       capturedDetails: capturedKeys,
       missingDetails: missingKeys,
@@ -92,6 +95,7 @@ class ReceiverService {
     await sendRequestToVendors(request);
 
     return {
+      request,
       message,
     };
   }

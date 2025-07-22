@@ -1,5 +1,5 @@
 import { WhereOptions } from "sequelize";
-export type PaginationSortBy = "id" | "createdAt";
+export type PaginationSortBy = string;
 export type PaginationSortOrder = "ASC" | "DESC";
 export interface FindAllParams<T> {
   where?: WhereOptions<T>;
@@ -7,4 +7,5 @@ export interface FindAllParams<T> {
   sort_order: PaginationSortOrder
   page: number;
   limit: number;
+  query?: string
 }

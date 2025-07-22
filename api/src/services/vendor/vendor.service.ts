@@ -11,6 +11,7 @@ class VendorService {
     where,
     sort_by,
     sort_order,
+    query
   }: FindAllParams<Vendor>) {
     const offset = (page - 1) * limit;
     const { rows, count } = await VendorModel.findAndCountAll({
@@ -25,6 +26,7 @@ class VendorService {
       pagination: {
         total: count,
         page,
+        query,
         page_count: Math.ceil(count / limit),
         sort_by,
         sort_order,

@@ -3,37 +3,32 @@ import {
   useRequestService as service,
   type NewRequest,
   type Request,
-  type RequestChannel,
-  type RequestStatus,
+  type RequestRequestParams,
+  type RequestResultParams,
 } from '@/services/useRequestService'
-import type { RequestParams, ResultParams } from '@/types/pagination'
 
-type RequestRequestParams = RequestParams<Request> & {
-  status?: RequestStatus
-  channel?: RequestChannel
-}
-
-type RequestResultParams = ResultParams<Request> & {
-  status?: RequestStatus,
-  channel?: RequestChannel
-}
 
 interface Store {
   requests: Request[]
+  userRequests: Request[]
   loading: boolean
   error: string | undefined
   resultParams: RequestResultParams
+  requestParams: RequestRequestParams
 
-  getRequests: (params: RequestRequestParams) => Promise<void>
+  updateParams: (params: Partial<RequestRequestParams>) => void
+  getRequests: () => Promise<void>
+  getUserRequests: (phone: string) => Promise<void>
   createRequest: (payload: NewRequest) => Promise<void>
   updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
+  resetRequests: () => void
+  resetParams: (params: Partial<RequestRequestParams>) => void
   // deleteRequest: (id: number) => Promise<void>;
-
-  handlePaginationChange: (page: number, limit: number) => void
 }
 
 const useRequestStore = create<Store>((set) => {
   const requests: Request[] = []
+  const userRequests: Request[] = []
   const loading: boolean = false
   const error: string | undefined = undefined
 
@@ -45,36 +40,62 @@ const useRequestStore = create<Store>((set) => {
     query: '',
   }
 
-  const handlePaginationChange = (page: number, limit: number) => {
-    getRequests({
-      page,
-      limit,
-    })
+  const requestParams: RequestRequestParams = {
+    query: '',
+    status: '',
+    channel: '',
+    phone: '',
+
+    page: 1,
+    limit: 10,
+
+    sort_by: 'id',
+    sort_order: 'ASC',
   }
 
-  const getRequests = async ({
-    query = '',
-    status = '',
-    channel = '',
+  const updateParams = async (params: Partial<RequestRequestParams>) => {
+    const { requestParams: current } = useRequestStore.getState()
+    set(() => ({
+      requestParams: {
+        ...current,
+        ...params,
+      },
+    }))
 
-    page = 1,
-    limit = 10,
-    sort_by = 'id',
-    sort_order = 'ASC',
-  }: RequestRequestParams) => {
+    await getRequests()
+  }
+
+  const resetParams = (params: Partial<RequestRequestParams>) => {
+    const { requestParams: initial } = useRequestStore.getInitialState()
+    set(() => ({
+      requestParams: {
+        ...initial,
+        ...params,
+      },
+    }))
+  }
+
+  const getRequests = async () => {
     try {
       set({ loading: true })
-      const params = {
-        query,
-        status,
-        channel,
-        page,
-        limit,
-        sort_by,
-        sort_order,
-      }
-      const { items, pagination } = await service.getRequests(params)
+      const { requestParams } = useRequestStore.getState()
+      const { items, pagination } = await service.getRequests(requestParams)
       set({ requests: items })
+      set({ resultParams: pagination })
+    } catch (error) {
+      console.error('Error fetching requests:', error)
+      set({ error: error as string })
+    } finally {
+      set({ loading: false })
+    }
+  }
+
+  const getUserRequests = async (phone: string) => {
+    try {
+      set({ loading: true })
+      const { requestParams } = useRequestStore.getState()
+      const { items, pagination } = await service.getRequests({...requestParams, phone})
+      set({ userRequests: items })
       set({ resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
@@ -87,8 +108,7 @@ const useRequestStore = create<Store>((set) => {
   const createRequest = async (request: NewRequest) => {
     try {
       set({ loading: true })
-      const newRequest = await service.createRequest(request)
-      set((state) => ({ requests: [newRequest, ...state.requests] }))
+      await service.createRequest(request)
     } catch (error) {
       console.error('Error creating request:', error)
       set({ error: error as string })
@@ -131,18 +151,30 @@ const useRequestStore = create<Store>((set) => {
 
     */
 
+  const resetRequests = () => {
+    set({
+      requests: [],
+    })
+  }
+
   return {
     requests,
     loading,
     error,
+    userRequests,
+    getUserRequests,
+
+    requestParams,
+    updateParams,
+    resetParams,
     resultParams,
+
     getRequests,
     createRequest,
     updateRequest,
     // deleteRequest,
 
-    //
-    handlePaginationChange,
+    resetRequests,
   }
 })
 

@@ -3,7 +3,7 @@ export interface RequestParams<T> {
   where?: Record<string, string|number>
   page?: number
   limit?: number
-  sort_by?: keyof T
+  sort_by?: keyof T | string // todo: fix: remove string
   sort_order?: 'DESC' | 'ASC'
 }
 

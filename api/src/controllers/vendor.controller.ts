@@ -16,16 +16,23 @@ class VendorController {
         sort_order,
       } = req.query;
 
-      const where: WhereOptions<Vendor> = {};
+      let where: WhereOptions<Vendor> = {};
 
-      if (query)
-        where.name = {
-          [Op.iLike]: `%${query}%` as string,
+      const q = query as string;
+      if (q)
+        where = {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${q}%` } },
+            { phone: { [Op.iLike]: `%${q}%` } },
+          ],
         };
 
       if (brand)
-        where.brands = {
-          [Op.contains]: [brand as string],
+        where = {
+          ...where,
+          brands: {
+            [Op.contains]: [brand as string],
+          },
         };
 
       const vendors = await VendorService.paginate({
@@ -34,6 +41,7 @@ class VendorController {
         sort_by: (sort_by as PaginationSortBy) ?? "createdAt",
         sort_order: (sort_order as PaginationSortOrder) ?? "DESC",
         where,
+        query: query as string,
       });
 
       return res.status(200).json({ message: "ok", data: vendors });

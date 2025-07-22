@@ -1,4 +1,11 @@
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table'
+import {
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type SortingState,
+} from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { DataTablePagination } from './DataTablePagination'
 import { useEffect, useState } from 'react'
@@ -9,39 +16,60 @@ import { CircleSlash } from 'lucide-react'
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  pagination: ResultParams<TData>
-  onPaginationChange: (page: number, page_size: number) => void
+  params: Partial<ResultParams<TData>>
+  onParameterChange: (params: ResultParams<TData>) => void
   onClickRow?: (id: number) => void
   loading?: boolean
+}
+
+interface PaginationData {
+  pageIndex: number
+  pageSize: number
 }
 
 const DataTable = <TData, TValue>({
   columns,
   data,
-  pagination,
+  params,
   onClickRow,
-  onPaginationChange,
+  onParameterChange,
   loading,
 }: Props<TData, TValue>) => {
-  const { page_count: pageCount, page, limit } = pagination
+  const { page_count: pageCount, page, limit, sort_by, sort_order } = params
 
-  const [paginationData, setPaginationData] = useState<{ pageIndex: number; pageSize: number }>({
+  const [pagination, setPagination] = useState<PaginationData>({
     pageIndex: page ? page - 1 : 0, //  compensate index vs actual
     pageSize: limit ?? 10,
   })
 
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: (sort_by ?? 'id') as string, desc: sort_order === 'DESC' },
+  ])
+
   useEffect(() => {
-    // compensate index vs actual
-    onPaginationChange(paginationData.pageIndex + 1, paginationData.pageSize)
-  }, [paginationData])
+    const { pageIndex, pageSize: limit } = pagination
+    const { id: sort_by, desc } = sorting[0]
+    const sort_order = desc ? 'DESC' : 'ASC'
+
+    // fix: compare and run ONLY if something has changed
+
+    console.log([pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
+
+    onParameterChange({ sort_by, sort_order, page: pageIndex + 1, limit })
+  }, [pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
 
   const table = useReactTable({
     data,
     columns,
     pageCount,
     manualPagination: true,
-    state: { pagination: paginationData },
-    onPaginationChange: setPaginationData,
+    manualSorting: true,
+    state: { pagination: pagination, sorting },
+    onPaginationChange: (v) => {
+      setPagination(v)
+    },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -57,7 +85,12 @@ const DataTable = <TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  style={{
+                    maxWidth: `${header.getSize()}px`,
+                  }}
+                  key={header.id}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -103,7 +136,7 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      {(!loading && pageCount && pageCount > 1) ? (
+      {!loading && pageCount && pageCount > 1 ? (
         <DataTablePagination table={table}></DataTablePagination>
       ) : (
         ''

@@ -1,7 +1,7 @@
 // src/App.tsx
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import About from './pages/About'
+import About from './pages/docs/About'
 import Requests from './pages/dash/Requests'
 import Vendors from './pages/dash/Vendors'
 import DashHome from './pages/dash/Main'
@@ -11,6 +11,11 @@ import DefaultLayout from './layouts/Default'
 import DashboardLayout from './layouts/Dashboard'
 import AuthLayout from './layouts/Auth'
 import ProtectedRoute from './layouts/Protected'
+import MyRequests from './pages/MyRequests'
+import DocsLayout from './layouts/Docs'
+import Terms from './pages/docs/Terms'
+import Privacy from './pages/docs/Privacy'
+import Contact from './pages/Contact'
 
 export default function App() {
   return (
@@ -18,7 +23,7 @@ export default function App() {
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/my-requests" element={<MyRequests />} />
         </Route>
         <Route
           element={
@@ -32,8 +37,15 @@ export default function App() {
           <Route path="/dashboard/vendors" element={<Vendors />} />
         </Route>
 
+        <Route element={<DocsLayout />}>
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+        </Route>
+
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
       </Routes>
     </ThemeProvider>

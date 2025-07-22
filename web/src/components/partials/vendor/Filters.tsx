@@ -7,7 +7,7 @@ import { CircleSlash, Search } from 'lucide-react'
 import type { VendorRequestParams } from '@/services/useVendorService'
 
 const VendorFilters = () => {
-  const { getVendors } = useVendorStore()
+  const { updateParams } = useVendorStore()
   const [query, setQuery] = useState<string>('')
   const [brand, setBrand] = useState<string | null>(null)
   const handleQueryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,25 +16,24 @@ const VendorFilters = () => {
   }
 
   const handleQueryFormSubmit = () => {
-    const payload : VendorRequestParams = {}
-    if(query) payload.query = query
-    if(brand) payload.brand = brand
+    const payload: VendorRequestParams = {}
+    if (query) payload.query = query
+    if (brand) payload.brand = brand
 
-    getVendors(payload)
+    updateParams(payload)
   }
 
   const resetFilters = () => {
     setQuery('')
     setBrand(null)
-    getVendors({})
+    updateParams({ query: '', brand: '' })
   }
 
-  const disableSubmit = query ==='' && brand === null
+  const disableSubmit = query === '' && (brand === null || brand === '')
 
   return (
     <div className="flex space-x-4">
-      <Input onInput={handleQueryInput} placeholder="Search for a name, phone" />
-
+      <Input value={query} onInput={handleQueryInput} placeholder="Search for a name, phone" />
       <BrandSelect brand={brand} onSelect={setBrand} />
 
       <div className="flex space-x-2">

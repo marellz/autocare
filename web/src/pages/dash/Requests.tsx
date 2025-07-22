@@ -18,24 +18,25 @@ import ClientResponse from '@/components/partials/requests/ClientResponse'
 import { type ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import ToggleSort from '@/components/utils/ToggleSort'
 
-// todo soon: filter brands, paid_status
+// todo soon: filter brands, paid_status(feature/payment)
 
 const Requests = () => {
-  const { requests, resultParams, loading, handlePaginationChange, updateRequest } =
-    useRequestStore()
+  const { requests, resultParams, loading, updateParams, updateRequest } = useRequestStore()
 
   const [displayRequest, setDisplayRequest] = useState<Request | undefined>()
 
   const columns: ColumnDef<Request>[] = [
     {
       accessorKey: 'id',
-      header: 'ID #',
+      header: ({ column }) => <ToggleSort column={column}>ID #</ToggleSort>,
       cell: ({ row }) => <p className="font-bold px-2">{row.original.id}</p>,
     },
     {
       accessorKey: 'name',
-      header: 'Client',
+      header: ({ column }) => <ToggleSort column={column}>Client</ToggleSort>,
       cell: ({ row }) => {
         const { name, phone, channel } = row.original
         return (
@@ -55,16 +56,37 @@ const Requests = () => {
     },
     {
       accessorKey: 'originalMessages',
+      maxSize: 300,
       header: 'Item',
       cell: ({ row }) => {
-        const { originalMessages: texts, createdAt } = row.original
+        const { originalMessages: texts, createdAt, capturedDetails } = row.original
         return (
           <div className="space-y-2">
-            <div className="flex flex-wrap text-sm">
-              {texts.map((text, i) => (
-                <span key={`text-${i}`}>{text}</span>
-              ))}
-            </div>
+            {Object.keys(capturedDetails).length > 0 ? (
+              <p>
+                {Object.keys(capturedDetails).map((k) => (
+                  <span key={k}>{capturedDetails[k]} </span>
+                ))}
+              </p>
+            ) : (
+              <Popover>
+                <PopoverTrigger>
+                  <Badge variant="secondary">
+                    View {texts.length} message{texts.length !== 1 && 's'}
+                  </Badge>
+                </PopoverTrigger>
+                <PopoverContent align="start">
+                  <div className="flex flex-col space-y-1 text-sm">
+                    {texts.map((text, i) => (
+                      <span className="hover:bg-accent" key={`text-${i}`}>
+                        &quot;{text}&quot;
+                      </span>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+
             <p className="text-xs text-muted-foreground">{createdAt}</p>
           </div>
         )
@@ -73,6 +95,7 @@ const Requests = () => {
     {
       accessorKey: 'status',
       header: () => <p>Status</p>,
+      maxSize: 10,
       cell: ({ row }) => (
         <StatusSelect
           status={row.original.status}
@@ -83,8 +106,12 @@ const Requests = () => {
 
     {
       accessorKey: 'actions',
+      size: 10,
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
+        {
+          /* todo:vary displayed options depending on status, also for opened dialogs */
+        }
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex justify-center">
@@ -111,8 +138,8 @@ const Requests = () => {
 
       /*
        * todo: Implement:
-       * see available offers(if any)
-       * respond to client
+       * see available offers(if any) ✅
+       * respond to client ✅
           > refund(if nothing)
        */
     },
@@ -175,8 +202,8 @@ const Requests = () => {
             columns={columns}
             loading={loading}
             data={requests}
-            pagination={resultParams}
-            onPaginationChange={handlePaginationChange}
+            params={resultParams}
+            onParameterChange={updateParams}
           />
         </div>
       </div>

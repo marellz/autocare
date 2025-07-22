@@ -1,9 +1,11 @@
 import { PaginationSortBy, PaginationSortOrder } from "../types/pagination";
-import { RequestStatusEnum } from "../db/models/request.model";
+import { RequestChannelEnum } from "../db/models/request.model";
 import RequestService from "../services/request/request.service";
 import { Request, Response, NextFunction } from "express";
 import { Op, WhereOptions, Sequelize, fn, col } from "sequelize";
 import { Request as RequestModel } from "../db/models/request.model";
+import ReceiverService from "../services/receiver/receiver.service";
+
 class RequestsController {
   static async findAll(req: Request, res: Response, next: NextFunction) {
     try {
@@ -12,6 +14,7 @@ class RequestsController {
         query,
         status,
         channel,
+        phone,
 
         // pagination
         page = 1,
@@ -58,6 +61,15 @@ class RequestsController {
           },
         };
 
+      if (phone) {
+        where = {
+          ...where,
+          phone: {
+            [Op.iLike]: `%${phone}%`,
+          },
+        };
+      }
+
       const requests = await RequestService.paginate({
         page: page ? Number(page) : 1,
         limit: limit ? Number(limit) : 10,
@@ -87,31 +99,18 @@ class RequestsController {
 
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const {
+      const { name, phone, item } = req.body;
+
+      const { request } = await ReceiverService.handleNewRequest({
+        body: item,
         name,
         phone,
-        item,
-        capturedDetails = {},
-        missingDetails = [],
-      } = req.body;
-
-      const status = RequestStatusEnum.SUBMITTED;
-      const originalMessages = [item];
-      const channel = "web";
-
-      const request = await RequestService.create({
-        name,
-        phone,
-        channel,
-        capturedDetails,
-        missingDetails,
-        originalMessages,
-        status,
+        channel: RequestChannelEnum.WEB,
       });
 
       res.json({ message: "ok", data: request });
 
-      // todo, do processing and update this request.
+      // todo, do processing and update this request. ✅
     } catch (error) {
       next(error);
     }
@@ -120,10 +119,10 @@ class RequestsController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilled_at, status, originalMessages, capturedDetails } =
+      const { fulfilledAt, status, originalMessages, capturedDetails } =
         req.body;
       const request = await RequestService.update(id, {
-        fulfilled_at,
+        fulfilledAt,
         status,
         originalMessages,
         capturedDetails,
@@ -131,7 +130,7 @@ class RequestsController {
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }
-      res.json({ message: "ok", data: request });
+      res.json({ message: "ok", data: { updated: request.length > 0 } });
     } catch (error) {
       next(error);
     }
