@@ -17,8 +17,8 @@ const WhyWorkWithUs = () => {
     note: 'All vendors are pre-approved and regularly rated — keeping the network trusted and reliable.',
   }
   return (
-    <div className="space-y-8 pl-20 pr-10">
-      <div className="space-y-1 max-w-1/2">
+    <div className="space-y-8 px-5 md:px-10 lg:pl-20">
+      <div className="space-y-1 lg:max-w-1/2">
         <TypTitle>{why.heading}</TypTitle>
         <p className="text-muted-foreground">{why.description}</p>
       </div>

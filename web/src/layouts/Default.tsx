@@ -51,7 +51,7 @@ const DefaultLayout = () => {
     <>
       <header>
         <div className="container mx-auto py-8 px-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-center justify-between">
             <Link to="/" className="font-bold text-lg">
               Autocare
             </Link>

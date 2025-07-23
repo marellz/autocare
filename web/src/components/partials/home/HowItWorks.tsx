@@ -23,23 +23,23 @@ const HowItWorks = () => {
     },
     {
       step: 4,
-      className: "row-start-2 col-start-3",
+      className: "lg:row-start-2 lg:col-start-3",
       action: 'They Respond with Quotes:',
       text: 'Price, condition, availability — all returned back to you.',
     },
     {
       step: 5,
-      className:"row-start-2 col-start-2",
+      className:"lg:row-start-2 lg:col-start-2",
       action: 'You Pick & Proceed:',
       text: 'Choose your vendor, follow up directly or through us. All logged.',
     },
   ]
 
   return (
-    <div className="pl-20 pr-10 space-y-8 py-10">
+    <div className="p-5 lg:p-10 lg:pl-20 space-y-8">
       <TypTitle>How it works</TypTitle>
-      <div className="grid grid-cols-3 gap-4">
-        {steps.map((step,i) => (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {steps.map((step, i) => (
           <div key={i} className={clsx('border rounded-lg p-4 flex space-x-4', step.className)}>
             <span className="flex-none text-primary bg-primary-foreground rounded-full h-12 w-12 inline-flex justify-center items-center font-bold text-lg">
               {step.step}

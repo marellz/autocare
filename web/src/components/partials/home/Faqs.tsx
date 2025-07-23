@@ -1,5 +1,4 @@
 import TypTitle from '@/components/custom/typography/Title'
-import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronsUpDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -33,9 +32,9 @@ const Faqs = () => {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-10">
+    <div className="grid md:grid-cols-2 gap-10">
       <div className="flex flex-end">
-        <div className="px-20">
+        <div className="px-5 md:px-10 lg:px-20">
           <TypTitle>Got questions?</TypTitle>
           <p className="text-muted-foreground">
             If you cannot found what you're looking for,
@@ -49,12 +48,12 @@ const Faqs = () => {
         <div className="space-y-4" id="faqs">
           {items.map(({ q, a }, i) => (
             <Collapsible key={i}>
-              <CollapsibleTrigger asChild>
-                <div className="border-b pb-4">
-                  <Button variant="ghost" className="w-full text-left py-4 flex">
-                    <p className="flex-auto">{q}</p>
-                    <ChevronsUpDown />
-                  </Button>
+              <CollapsibleTrigger asChild className="border-b pb-4 ">
+                <div className="flex items-center justify-between p-4">
+                  <p className="flex-auto">{q}</p>
+                  <span className="p-2 rounded-full bg-white/10">
+                    <ChevronsUpDown size={16} />
+                  </span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>

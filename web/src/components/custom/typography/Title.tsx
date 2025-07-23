@@ -7,7 +7,9 @@ interface Props {
 }
 
 const TypTitle = ({ children, className }: Props) => {
-  return <h1 className={clsx('text-4xl font-bold', className)}>{children}</h1>
+  return (
+    <h1 className={clsx('text-2xl md:text-3xl lg:text-4xl font-bold', className)}>{children}</h1>
+  )
 }
 
 export default TypTitle
