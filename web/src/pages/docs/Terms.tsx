@@ -10,12 +10,12 @@ const Terms = () => {
       <p>By using our platform, you agree to the following terms : </p>
       <ol role="list" className="space-y-2 font-light">
         <li>
-          <span className="font-medium">Use of Service: </span>
+          <span className="font-medium">Use of service: </span>
           You may use the platform to request car parts and view vendor responses. Abuse, spamming,
           or misuse will result in removal from the service.
         </li>
         <li>
-          <span className="font-medium">Vendor Communication:</span> We connect you with vendors but
+          <span className="font-medium">Vendor communication:</span> We connect you with vendors but
           are not responsible for the quality, pricing, or delivery of parts.
         </li>
         <li>

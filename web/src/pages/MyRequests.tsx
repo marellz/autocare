@@ -141,7 +141,7 @@ const MyRequests = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-bold text-4xl">Track Your Car Part Requests</h1>
+        <h1 className="font-bold text-4xl">Track your car part requests.</h1>
         <p className="text-muted-foreground">
           Enter your phone number to view all the quotes and responses you've received. No login
           needed.

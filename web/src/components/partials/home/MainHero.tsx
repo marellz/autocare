@@ -8,24 +8,24 @@ const MainHero = () => {
     const items = [
       {
         icon: MailCheck,
-        title: 'One Message, Multiple Quotes',
+        title: 'One message, multiple quotes',
         description: 'No need to call or text multiple vendors. We handle that for you, instantly.',
       },
       {
         icon: Bot,
-        title: 'Smart Request Matching',
+        title: 'Smart request matching',
         description:
           "Our AI reads your message and figures out exactly what parts you're asking for.",
       },
       {
         icon: UserLock,
-        title: 'Trusted Vendors Only',
+        title: 'Trusted vendors only',
         description:
           'We forward your request to a vetted list of vendors. No spam, no time-wasters.',
       },
       {
         icon: Globe,
-        title: 'WhatsApp + Web Access',
+        title: 'WhatsApp + Web access',
         description: 'Manage requests however you prefer — chat-based or desktop browser.',
       },
     ]
@@ -35,7 +35,7 @@ const MainHero = () => {
         <div className="w-1/2 flex-none pl-20 pr-10 space-y-4">
           <Badge variant="outline">10K+ requests</Badge>
           <h1 className="text-4xl font-bold">
-            Find Car Parts Faster. With <i className="font-light">Zero</i> Guesswork.
+            Find car parts faster. With <i className="font-light">Zero</i> guesswork.
           </h1>
           <p className="text-lg text-muted-foreground">
             Send one message. Get multiple vendor quotes — instantly. No chasing, no stress. Just

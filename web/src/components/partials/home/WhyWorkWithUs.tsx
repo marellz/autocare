@@ -2,7 +2,7 @@ import { Blocks, ChartLine, ClockFading, ShipWheel } from 'lucide-react'
 
 const WhyWorkWithUs = () => {
   const why = {
-    heading: 'Built for People Who Hate Wasting Time',
+    heading: 'Built for people who hate wasting time.',
     description:
       "Whether you're a mechanic, car owner, or parts agent, we streamline your sourcing. No long calls. No running around. Just verified vendors, fast quotes, and organized responses.",
     points: [
