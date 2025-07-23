@@ -1,6 +1,8 @@
-import ky from "ky";
+import ky from 'ky'
 
-export const createKyInstance = (path:string) => ky.create({
+export const createKyInstance = (path: string) =>
+  ky.create({
+    credentials: 'include',
     prefixUrl: import.meta.env.VITE_API_URL + path,
     headers: {
       'Content-Type': 'application/json',

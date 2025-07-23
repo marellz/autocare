@@ -17,7 +17,6 @@ import { Toaster } from '../ui/sonner'
 import { toast } from 'sonner'
 import VendorBrandSelect from './vendor/VendorBrandSelect'
 import { useForm } from 'react-hook-form'
-import z from 'zod'
 import {
   Form,
   FormControl,
@@ -29,6 +28,7 @@ import {
 } from '../ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '../ui/input'
+import formSchema, {type VendorFormSchema} from '@/schemas/vendor.schema'
 
 interface Props {
   id?: number | null
@@ -46,21 +46,8 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
     form.reset({ ...payload, location: payload.location ?? '' })
   }
 
-  const formSchema = z.object({
-    name: z.string().min(2, { message: 'Vendor needs a name' }),
-    phone: z
-      .string()
-      .length(12, { message: 'Not a valid phone number' })
-      .startsWith('254', { message: "Phone number must start with '254'" })
-      .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' }),
 
-    location: z.string().optional(),
-    brands: z.array(z.string()).min(1, { message: 'Please select at least one brand' }),
-  })
-
-  type SchemaType = z.infer<typeof formSchema>
-
-  const form = useForm<SchemaType>({
+  const form = useForm<VendorFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -79,7 +66,7 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
     }
   }, [id])
 
-  const _handleSubmit = async (payload: SchemaType) => {
+  const _handleSubmit = async (payload: VendorFormSchema) => {
     try {
       let action = 'created'
       if (id) {

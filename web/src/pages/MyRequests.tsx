@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { myRequestFormSchema as formSchema, type MyRequestFormSchema } from '@/schemas/request.schema'
 import type { Request } from '@/services/useRequestService'
 import useRequestStore from '@/stores/useRequestStore'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,19 +31,9 @@ import clsx from 'clsx'
 import { AlertCircle, ArrowDownCircle, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import z from 'zod'
 
 const MyRequests = () => {
-  const formSchema = z.object({
-    phone: z
-      .string()
-      .length(12, { message: 'Not a valid phone number' })
-      .startsWith('254', { message: "Phone number must start with '254'" })
-      .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' }),
-  })
-
-  type SchemaType = z.infer<typeof formSchema>
-  const form = useForm<SchemaType>({
+  const form = useForm<MyRequestFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       phone: '',
@@ -59,7 +50,7 @@ const MyRequests = () => {
     updateParams,
   } = useRequestStore()
 
-  const onSubmit = ({ phone }: SchemaType) => {
+  const onSubmit = ({ phone }: MyRequestFormSchema) => {
     getUserRequests(phone)
     setDirty(true)
   }
@@ -150,7 +141,7 @@ const MyRequests = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-bold text-4xl">Track Your Car Part Requests</h1>
+        <h1 className="font-bold text-4xl">Track your car part requests.</h1>
         <p className="text-muted-foreground">
           Enter your phone number to view all the quotes and responses you've received. No login
           needed.

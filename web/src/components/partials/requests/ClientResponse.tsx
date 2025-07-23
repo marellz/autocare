@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { AlertCircle, SendHorizontal } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
@@ -28,6 +27,7 @@ import useResponseStore from '@/stores/useResponseStore'
 import useRequestStore from '@/stores/useRequestStore'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
+import formSchema, { type ClientResponseSchema } from '@/schemas/client-response.schema'
 
 interface Props {
   open: boolean
@@ -38,14 +38,8 @@ interface Props {
 const ClientResponse = ({ open, hideDialog, request }: Props) => {
   const { error, loading, sendClientResponse } = useResponseStore()
   const { updateRequest } = useRequestStore()
-  const formSchema = z.object({
-    message: z.string().min(1, 'Message is required'),
-    refund: z.boolean(),
-  })
 
-  type FormSchema = z.infer<typeof formSchema>
-
-  const form = useForm<FormSchema>({
+  const form = useForm<ClientResponseSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       message: '',
@@ -59,7 +53,7 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
     if (!show) hideDialog()
   }
 
-  const handleSubmit = async ({ message, refund }: FormSchema) => {
+  const handleSubmit = async ({ message, refund }: ClientResponseSchema) => {
     if (!request) return //todo: throw error
     // send message
     const response = await sendClientResponse(request.id, message, refund)
