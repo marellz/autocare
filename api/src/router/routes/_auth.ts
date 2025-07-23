@@ -2,12 +2,14 @@ import express, { RequestHandler } from "express";
 import passport from "passport";
 import AuthController from "../../controllers/auth.controller";
 import { User } from "../../db/models/user.model";
+import { validate } from "../../handlers/validation.handler";
+import { loginFormSchema, registerFormSchema } from "../../schemas/auth.schema";
 
 const { register, logout, getUser } = AuthController();
 
 const router = express.Router();
 
-router.post("/login", (req, res, next) => {
+router.post("/login", validate(loginFormSchema), (req, res, next) => {
   passport.authenticate(
     "local",
     (
@@ -31,7 +33,7 @@ router.post("/login", (req, res, next) => {
   )(req, res, next);
 });
 
-router.post("/register", register);
+router.post("/register", validate(registerFormSchema), register);
 router.post("/logout", logout as RequestHandler);
 router.get("/user", getUser);
 
