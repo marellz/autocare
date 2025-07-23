@@ -115,12 +115,7 @@ class RequestsController {
           error: recaptchaResponse.message,
         });
       }
-
-      return res.status(400).json({
-        works: "yes",
-        message: "Recaptcha verification passed",
-      })
-
+      
       const { request } = await ReceiverService.handleNewRequest({
         body: item,
         name,
