@@ -1,8 +1,8 @@
 import VendorService from "../services/vendor/vendor.service";
 import { Request, Response, NextFunction } from "express";
 import { Op, WhereOptions } from "sequelize";
-import { Vendor } from "src/db/models/vendor.model";
-import { PaginationSortBy, PaginationSortOrder } from "src/types/pagination";
+import { Vendor } from "../db/models/vendor.model";
+import { PaginationSortBy, PaginationSortOrder } from "../types/pagination";
 
 class VendorController {
   static async findAll(req: Request, res: Response, next: NextFunction) {

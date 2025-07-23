@@ -1,6 +1,6 @@
 import type { NewRequest, Request } from "../../db/models/request.model";
 import { RequestModel } from "../../db/sequelize";
-import { FindAllParams } from "src/types/pagination";
+import { FindAllParams } from "../../types/pagination";
 
 class RequestService {
   /**
