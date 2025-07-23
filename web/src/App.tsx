@@ -16,38 +16,56 @@ import DocsLayout from './layouts/Docs'
 import Terms from './pages/docs/Terms'
 import Privacy from './pages/docs/Privacy'
 import Contact from './pages/Contact'
-
+import { ErrorBoundary } from 'react-error-boundary'
+import { AlertCircle } from 'lucide-react'
+import { Button } from './components/ui/button'
 export default function App() {
   return (
     <ThemeProvider>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/my-requests" element={<MyRequests />} />
-        </Route>
-        <Route
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/dashboard" element={<DashHome />} />
-          <Route path="/dashboard/requests" element={<Requests />} />
-          <Route path="/dashboard/vendors" element={<Vendors />} />
-        </Route>
+      <ErrorBoundary
+        fallbackRender={({ error, resetErrorBoundary }) => (
+          <div className="max-w-4xl mx-auto pt-20 space-y-8">
+            <AlertCircle />
+            <h1 className="text-4xl font-bold">An error occurred.</h1>
+            <div>
+              <p className="text-sm text-muted-foreground">Error details:</p>
+              <p>{error}</p>
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={resetErrorBoundary}>Reset error</Button>
+            </div>
+          </div>
+        )}
+      >
+        <Routes>
+          <Route element={<DefaultLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/my-requests" element={<MyRequests />} />
+          </Route>
+          <Route
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<DashHome />} />
+            <Route path="/dashboard/requests" element={<Requests />} />
+            <Route path="/dashboard/vendors" element={<Vendors />} />
+          </Route>
 
-        <Route element={<DocsLayout />}>
-          <Route path="/about" element={<About />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
-        </Route>
+          <Route element={<DocsLayout />}>
+            <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+          </Route>
 
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/contact" element={<Contact />} />
-        </Route>
-      </Routes>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+        </Routes>
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }
