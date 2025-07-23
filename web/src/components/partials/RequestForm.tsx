@@ -23,30 +23,16 @@ import {
 } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import z from 'zod'
 import { SendHorizonal } from 'lucide-react'
 import ReCaptcha from '../utils/ReCaptcha'
+import formSchema, { type NewRequestFormSchema } from '@/schemas/request.schema'
 
 const RequestForm = () => {
   const { createRequest, error, loading } = useRequestStore()
 
   const [open, setOpen] = useState<boolean>(false)
-  // const [token, setToken] = useState<string | undefined>(undefined)
 
-  const formSchema = z.object({
-    name: z.string().min(2, { message: 'We need your name' }),
-    phone: z
-      .string()
-      .length(12, { message: 'Not a valid phone number' })
-      .startsWith('254', { message: "Phone number must start with '254'" })
-      .regex(/^[0-9]+$/, { message: 'Phone number must only contain digits' }),
-    item: z.string().min(2, { message: 'Your need to describe the part you want' }),
-    token: z.string({ required_error: "You need to verify that your're human" }),
-  })
-
-  type SchemaType = z.infer<typeof formSchema>
-
-  const form = useForm<SchemaType>({
+  const form = useForm<NewRequestFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -58,7 +44,7 @@ const RequestForm = () => {
 
   const onTokenSuccess = (token: string) => form.setValue('token', token)
 
-  const handleSubmit = async (values: SchemaType) => {
+  const handleSubmit = async (values: NewRequestFormSchema) => {
     await createRequest({
       ...values,
       channel: 'web',

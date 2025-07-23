@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -14,6 +13,7 @@ import useAuthStore from '@/stores/useAuthStore'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircleIcon } from 'lucide-react'
+import formSchema, { type LoginFormSchema } from '@/schemas/auth.schema'
 
 interface Props {
   onSuccess: () => void
@@ -21,14 +21,8 @@ interface Props {
 
 const LoginForm = ({ onSuccess }: Props) => {
   const { login, error, loading } = useAuthStore()
-  const formSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(1, "Password is required"),
-  })
 
-  type SchemaType = z.infer<typeof formSchema>
-
-  const form = useForm<SchemaType>({
+  const form = useForm<LoginFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -36,7 +30,7 @@ const LoginForm = ({ onSuccess }: Props) => {
     },
   })
 
-  const onSubmit = async (values: SchemaType) => {
+  const onSubmit = async (values: LoginFormSchema) => {
     const { email, password } = values
     const success = await login({ username: email, password })
     if (success) {
