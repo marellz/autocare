@@ -1,3 +1,4 @@
+import TypTitle from '@/components/custom/typography/Title'
 import { Blocks, ChartLine, ClockFading, ShipWheel } from 'lucide-react'
 
 const WhyWorkWithUs = () => {
@@ -18,7 +19,7 @@ const WhyWorkWithUs = () => {
   return (
     <div className="space-y-8 pl-20 pr-10">
       <div className="space-y-1 max-w-1/2">
-        <h1 className="text-4xl font-bold">{why.heading}</h1>
+        <TypTitle>{why.heading}</TypTitle>
         <p className="text-muted-foreground">{why.description}</p>
       </div>
       <div>

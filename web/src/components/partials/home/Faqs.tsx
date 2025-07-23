@@ -1,3 +1,4 @@
+import TypTitle from '@/components/custom/typography/Title'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronsUpDown } from 'lucide-react'
@@ -35,7 +36,7 @@ const Faqs = () => {
     <div className="grid grid-cols-2 gap-10">
       <div className="flex flex-end">
         <div className="px-20">
-          <h1 className="text-4xl font-bold">Got questions?</h1>
+          <TypTitle>Got questions?</TypTitle>
           <p className="text-muted-foreground">
             If you cannot found what you're looking for,
             <Link to="/contact" className="underline">

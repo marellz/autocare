@@ -29,6 +29,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import type { Vendor } from '@/services/useVendorService'
 import VendorFilters from '@/components/partials/vendor/Filters'
 import ToggleSort from '@/components/utils/ToggleSort'
+import TypTitle from '@/components/custom/typography/Title'
 
 const Vendors = () => {
   const { vendors, resultParams, loading, updateParams, deleteVendor } = useVendorStore()
@@ -136,7 +137,7 @@ const Vendors = () => {
   return (
     <>
       <div className="flex items-center">
-        <h1 className="text-4xl font-bold">Vendors</h1>
+        <TypTitle>Vendors</TypTitle>
         <VendorForm
           btnProps={{ variant: 'outline' }}
           id={id}

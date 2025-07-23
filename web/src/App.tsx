@@ -19,6 +19,7 @@ import Contact from './pages/Contact'
 import { ErrorBoundary } from 'react-error-boundary'
 import { AlertCircle } from 'lucide-react'
 import { Button } from './components/ui/button'
+import TypTitle from './components/custom/typography/Title'
 export default function App() {
   return (
     <ThemeProvider>
@@ -26,7 +27,7 @@ export default function App() {
         fallbackRender={({ error, resetErrorBoundary }) => (
           <div className="max-w-4xl mx-auto pt-20 space-y-8">
             <AlertCircle />
-            <h1 className="text-4xl font-bold">An error occurred.</h1>
+            <TypTitle>An error occurred.</TypTitle>
             <div>
               <p className="text-sm text-muted-foreground">Error details:</p>
               <p>{error}</p>

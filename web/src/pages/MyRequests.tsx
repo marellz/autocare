@@ -1,5 +1,6 @@
 import DataTable from '@/components/custom/DataTable'
 import Loader from '@/components/custom/Loader'
+import TypTitle from '@/components/custom/typography/Title'
 import RequestOffers from '@/components/partials/requests/Offers'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -141,7 +142,7 @@ const MyRequests = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-bold text-4xl">Track your car part requests.</h1>
+        <TypTitle>Track your car part requests.</TypTitle>
         <p className="text-muted-foreground">
           Enter your phone number to view all the quotes and responses you've received. No login
           needed.

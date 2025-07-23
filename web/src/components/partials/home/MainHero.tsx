@@ -3,6 +3,7 @@ import RequestForm from '../RequestForm'
 import { Button } from '@/components/ui/button'
 import { ArrowRight,Bot,Globe,MailCheck,UserLock } from 'lucide-react'
 import illustration from '@/assets/images/illustation.svg'
+import TypTitle from '@/components/custom/typography/Title'
 const MainHero = () => {
 
     const items = [
@@ -34,9 +35,9 @@ const MainHero = () => {
       <div className="flex justify-between">
         <div className="w-1/2 flex-none pl-20 pr-10 space-y-4">
           <Badge variant="outline">10K+ requests</Badge>
-          <h1 className="text-4xl font-bold">
+          <TypTitle>
             Find car parts faster. With <i className="font-light">Zero</i> guesswork.
-          </h1>
+          </TypTitle>
           <p className="text-lg text-muted-foreground">
             Send one message. Get multiple vendor quotes — instantly. No chasing, no stress. Just
             clear responses, via WhatsApp or Web.

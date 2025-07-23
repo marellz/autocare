@@ -1,8 +1,10 @@
+import TypTitle from "@/components/custom/typography/Title"
+
 const About = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold">About us</h1>
+        <TypTitle>About us</TypTitle>
         <p className="text-muted-foreground">Helping You Find the Right Car Part — Fast.</p>
       </div>
       <div className="font-light space-y-4">
