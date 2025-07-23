@@ -6,17 +6,20 @@ import {
   UpdateVendorRequestFormSchema,
   NewVendorRequestFormSchema,
 } from "../../schemas/vendor.schema";
+import { ensureAuthenticated } from "../../middleware/isAuthenticated";
 const router = express.Router();
 
 router.get("/", asyncHandler(VendorRequestController.findAll));
 router.post(
   "/",
+  ensureAuthenticated,
   validate(NewVendorRequestFormSchema),
   asyncHandler(VendorRequestController.create),
 );
 router.get("/:id", asyncHandler(VendorRequestController.findById));
 router.put(
   "/:id",
+  ensureAuthenticated,
   validate(UpdateVendorRequestFormSchema),
   asyncHandler(VendorRequestController.update),
 );
