@@ -36,7 +36,7 @@ const MainHero = () => {
           <TypTitle>
             Find car parts faster. With <i className="font-light">Zero</i> guesswork.
           </TypTitle>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground">
             Send one message. Get multiple vendor quotes — instantly. No chasing, no stress. Just
             clear responses, via WhatsApp or Web.
           </p>

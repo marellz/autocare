@@ -114,8 +114,8 @@ const DefaultLayout = () => {
       </main>
       <footer>
         <div className="container mx-auto py-2 px-4 text-sm text-muted-foreground">
-          <div className="flex justify-between">
-            <p className="">© {year} Alex Autocare. All rights reserved.</p>
+          <div className="flex flex-col-reverse md:flex-row md:justify-between">
+            <p className="mt-2 md:mt-0">© {year} Alex Autocare. All rights reserved.</p>
             <div className="flex">
               {user === null && (
                 <Link className="hover:underline px-2" to="/login">
