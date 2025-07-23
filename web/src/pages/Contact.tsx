@@ -8,8 +8,8 @@ const Contact = () => {
   const email = 'support@ourdomain.com'
 
   return (
-    <div className="max-w-4xl mx-auto grid grid-cols-2 gap-10">
-      <div className="col-span-2">
+    <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
+      <div className="md:col-span-2">
         <TypTitle>Contact us</TypTitle>
         <p className="text-muted-foreground">We’re here to help.</p>
       </div>
@@ -96,8 +96,8 @@ const Contact = () => {
           </CardContent>
         </Card>
       </div>
-      <hr className="col-span-2" />
-      <div className="col-span-2">
+      <hr className="md:col-span-2" />
+      <div className="md:col-span-2">
         <ContactForm />
       </div>
     </div>

@@ -12,16 +12,16 @@ const links = [
 const DocsLayout = () => {
   const loc = useLocation()
   return (
-    <div className="h-screen p-10 pb-0 container mx-auto grid grid-cols-5 ">
-      <div className="w-64 flex-none col-start-2">
-        <nav>
+    <div className="h-screen p-5 md:p-10 pb-0 container mx-auto flex flex-col md:grid md:grid-cols-5">
+      <div className="lg:col-start-2 sticky top-0 md:static">
+        <nav className="flex flex-row md:flex-col items-center">
           <Link to="/">
             <Button variant="ghost">
               <ArrowLeft />
-              <span>Go back</span>
+              <span className="hidden md:inline">Go back</span>
             </Button>
           </Link>
-          <ul className="space-y-2 mt-10 pl-4">
+          <ul className="md:space-y-2 md:mt-10 pl-4 flex md:flex-col space-x-2 md:space-x-2">
             {links.map(({ path, name }, i) => (
               <li
                 key={i}
@@ -39,7 +39,7 @@ const DocsLayout = () => {
         </nav>
       </div>
       {/* Sidebar */}
-      <div className="flex-auto overflow-auto flex flex-col col-span-2">
+      <div className="flex-auto overflow-auto flex flex-col lg:col-span-2 pt-10 md:pt-0">
         <div className="flex-auto">
           <Outlet />
         </div>
