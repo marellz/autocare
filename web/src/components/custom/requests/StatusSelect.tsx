@@ -33,7 +33,7 @@ const StatusSelect = ({ status, onSelect, asFilter }: Props) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="lg:w-[200px] flex-auto justify-between"
         >
           <>
             {selected?.value === '' ? (

@@ -1,5 +1,6 @@
 import ChannelSelect from '@/components/custom/requests/ChannelSelect'
 import StatusSelect from '@/components/custom/requests/StatusSelect'
+import FilterWrapper from '@/components/responsive/FilterWrapper'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { RequestChannel, RequestStatus } from '@/services/useRequestService'
@@ -42,23 +43,32 @@ const RequestFilters = () => {
   }
 
   return (
-    <div className="flex gap-4">
+    <FilterWrapper>
       <Input
         value={query}
         placeholder="Search user, phone, message..."
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
       />
-      <ChannelSelect channel={channel} onSelect={setChannel} />
-      <StatusSelect status={status} onSelect={setStatus} asFilter></StatusSelect>
-      <Button type="button" onClick={resetFilters} variant="outline">
-        <span>Reset</span>
-        <CircleSlash />
-      </Button>
-      <Button type="submit" onClick={handleSubmit} disabled={disabledSubmit}>
-        <Search />
-        <span>Search</span>
-      </Button>
-    </div>
+      <div className="flex items-center space-x-4">
+        <ChannelSelect channel={channel} onSelect={setChannel} />
+        <StatusSelect status={status} onSelect={setStatus} asFilter></StatusSelect>
+      </div>
+      <div className="flex items-center space-x-4 justify-end md:col-start-2 lg:col-start-auto">
+        <Button type="button" onClick={resetFilters} variant="outline">
+          <span>Reset</span>
+          <CircleSlash />
+        </Button>
+        <Button
+          type="submit"
+          className="flex-auto"
+          onClick={handleSubmit}
+          disabled={disabledSubmit}
+        >
+          <Search />
+          <span>Search</span>
+        </Button>
+      </div>
+    </FilterWrapper>
   )
 }
 

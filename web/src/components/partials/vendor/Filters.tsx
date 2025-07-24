@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { CircleSlash, Search } from 'lucide-react'
 import type { VendorRequestParams } from '@/services/useVendorService'
+import FilterWrapper from '@/components/responsive/FilterWrapper'
 
 const VendorFilters = () => {
   const { updateParams } = useVendorStore()
@@ -32,11 +33,10 @@ const VendorFilters = () => {
   const disableSubmit = query === '' && (brand === null || brand === '')
 
   return (
-    <div className="flex space-x-4">
+    <FilterWrapper>
       <Input value={query} onInput={handleQueryInput} placeholder="Search for a name, phone" />
       <BrandSelect brand={brand} onSelect={setBrand} />
-
-      <div className="flex space-x-2">
+      <div className="flex items-center space-x-4 justify-end md:col-start-2 lg:col-start-auto">
         <Button type="button" onClick={resetFilters} variant="outline">
           <span>Reset</span>
           <CircleSlash />
@@ -46,7 +46,7 @@ const VendorFilters = () => {
           <Search />
         </Button>
       </div>
-    </div>
+    </FilterWrapper>
   )
 }
 
