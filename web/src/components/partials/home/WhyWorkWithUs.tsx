@@ -17,10 +17,10 @@ const WhyWorkWithUs = () => {
     note: 'All vendors are pre-approved and regularly rated — keeping the network trusted and reliable.',
   }
   return (
-    <div className="space-y-8 px-5 md:px-10 lg:pl-20">
+    <div className="space-y-8 px-2 md:px-10 lg:pl-20 pb-10 lg:pb-20">
       <div className="space-y-1 lg:max-w-1/2">
         <TypTitle>{why.heading}</TypTitle>
-        <p className="text-muted-foreground">{why.description}</p>
+        <p className="text-muted-foreground mt-4">{why.description}</p>
       </div>
       <div>
         <div className="flex justify-center ">

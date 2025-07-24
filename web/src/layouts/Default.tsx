@@ -50,7 +50,7 @@ const DefaultLayout = () => {
   return (
     <>
       <header>
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto py-8">
           <div className="flex flex-col items-center justify-between">
             <Link to="/" className="font-bold text-lg">
               Autocare
@@ -108,7 +108,7 @@ const DefaultLayout = () => {
         </div>
       </header>
       <main className="flex-auto">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 md:px-4">
           <Outlet />
         </div>
       </main>

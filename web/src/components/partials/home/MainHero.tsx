@@ -31,7 +31,7 @@ const MainHero = () => {
   return (
     <div>
       <div className="flex flex-col-reverse lg:flex-row items-center md:items-start md:justify-between">
-        <div className="lg:w-1/2 flex-none px-5 md:px-10 lg:pl-20 space-y-4">
+        <div className="lg:w-1/2 flex-none px-4 md:px-5 xl:pl-20 space-y-4">
           <Badge variant="outline">10K+ requests</Badge>
           <TypTitle>
             Find car parts faster. With <i className="font-light">Zero</i> guesswork.
@@ -52,7 +52,7 @@ const MainHero = () => {
           <img className="w-full max-w-full" src={illustration} alt="" />
         </div>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 px-5 md:px-10 lg:pl-20 mt-16 md:mt-24 lg:mt-40">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 px-2 md:px-5 lg:px-10 lg:pl-20 mt-16 md:mt-24 lg:mt-40">
         {items.map((item, i) => (
           <div key={i} className="border rounded-lg p-4 flex space-x-2">
             <item.icon className="flex-none" />

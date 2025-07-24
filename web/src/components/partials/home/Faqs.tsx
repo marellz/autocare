@@ -32,32 +32,32 @@ const Faqs = () => {
   ]
 
   return (
-    <div className="grid md:grid-cols-2 gap-10">
+    <div className="grid md:grid-cols-2 gap-10 px-2 md:px-5 lg:px-20">
       <div className="flex flex-end">
-        <div className="px-5 md:px-10 lg:px-20">
+        <div>
           <TypTitle>Got questions?</TypTitle>
-          <p className="text-muted-foreground">
-            If you cannot found what you're looking for,
-            <Link to="/contact" className="underline">
-              reach out
+          <p className="text-muted-foreground mt-2">
+            If you cannot found what you're looking for, {' '}
+             <Link to="/contact" className="underline">
+              reach out.
             </Link>
           </p>
         </div>
       </div>
       <div>
-        <div className="space-y-4" id="faqs">
+        <div className="space-y-2 lg:space-y-4" id="faqs">
           {items.map(({ q, a }, i) => (
-            <Collapsible key={i}>
-              <CollapsibleTrigger asChild className="border-b pb-4 ">
-                <div className="flex items-center justify-between p-4">
-                  <p className="flex-auto">{q}</p>
+            <Collapsible key={i} className='group/faqs'>
+              <CollapsibleTrigger asChild className="border-b group-last/faqs:border-b-0 pb-2 lg:pb-4">
+                <div className="flex items-center justify-between p-2">
+                  <p className="flex-auto text-sm">{q}</p>
                   <span className="p-2 rounded-full bg-white/10">
                     <ChevronsUpDown size={16} />
                   </span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="p-4">
+                <div className="p-2">
                   <p className="text-sm text-muted-foreground">{a}</p>
                 </div>
               </CollapsibleContent>
