@@ -64,8 +64,8 @@ const DashHome = () => {
       <div className="flex border-b pb-4">
         <VendorForm btnProps={{ variant: 'outline' }} />
       </div>
-      <div className="mt-4 grid grid-cols-4 gap-x-10 gap-y-4">
-        <div className="col-span-4">
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-4">
+        <div className="col-span-2 lg:col-span-4">
           <h1 className="text-lg font-medium">Stats</h1>
         </div>
         {(Object.keys(stats) as Array<keyof DashboardStats>).map((stat) => (
@@ -79,7 +79,7 @@ const DashHome = () => {
           </Card>
         ))}
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-x-10 gap-y-4">
+      <div className="mt-4 grid md:grid-cols-2 gap-x-10 gap-y-4">
         <div>
           <Card>
             <CardHeader>
@@ -113,8 +113,8 @@ const DashHome = () => {
           </Card>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-x-10 gap-y-4">
-        <div className="col-span-2">
+      <div className="mt-4 grid md:grid-cols-2 gap-x-10 gap-y-4">
+        <div className="md:col-span-2">
           <h1 className="text-lg font-medium">Tables/Charts</h1>
         </div>
         <div className="">

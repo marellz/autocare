@@ -1,5 +1,6 @@
 import {
   ChevronDown,
+  ChevronLeft,
   ChevronUp,
   Home,
   LifeBuoy,
@@ -32,6 +33,7 @@ import {
 } from '../ui/dropdown-menu'
 import DarkModeToggler from '../theme/DashboardLayoutToggler'
 import useAuthStore from '@/stores/useAuthStore'
+import { Button } from '../ui/button'
 // import { Button } from '../ui/button'
 
 interface LinkItem {
@@ -40,7 +42,11 @@ interface LinkItem {
   icon: LucideIcon
 }
 
-const DashSidebar = () => {
+interface Props {
+  onClose?: () => void
+}
+
+const DashSidebar = ({ onClose }: Props) => {
   const { logout, user } = useAuthStore()
 
   const navigate = useNavigate()
@@ -81,7 +87,13 @@ const DashSidebar = () => {
 
   return (
     <Sidebar>
-      <SidebarHeader></SidebarHeader>
+      <SidebarHeader>
+        <div className="flex justify-end md:hidden">
+          <Button variant="ghost" onClick={onClose}>
+            <ChevronLeft />
+          </Button>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
