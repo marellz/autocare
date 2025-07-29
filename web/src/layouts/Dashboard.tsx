@@ -1,5 +1,6 @@
 import AppSidebar from '@/components/dash/Sidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { Toaster } from '@/components/ui/sonner'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useEffect, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
@@ -53,6 +54,7 @@ const DashboardLayout = ({ currentRoute }: Props) => {
             </div>
           </footer>
         </main>
+        <Toaster />
       </SidebarProvider>
     </>
   )
