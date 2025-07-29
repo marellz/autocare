@@ -59,13 +59,14 @@ const useFAQStore = create<Store>((set) => {
       set({ loading: false })
     }
   }
+
   const update = async (id: number, payload: Partial<FAQ>) => {
     set({ loading: true, error: null })
     try {
-      const faq = await service.update(id, payload)
-      if (faq) {
+      const updated = await service.update(id, payload)
+      if (updated) {
         set((state) => ({
-          faqs: state.faqs.map((f) => (f.id === id ? faq : f)),
+          faqs: state.faqs.map((f) => (f.id === id ? { ...f, ...payload } : f)),
         }))
       }
     } catch (error) {
@@ -75,6 +76,7 @@ const useFAQStore = create<Store>((set) => {
       set({ loading: false })
     }
   }
+
   const destroy = async (id: number) => {
     set({ loading: true, error: null })
     try {

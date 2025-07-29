@@ -7,9 +7,10 @@ import { ensureAuthenticated } from "../../middleware/isAuthenticated";
 
 const router = express.Router();
 
-const { getAll, create, update, destroy } = FAQController;
+const { getAll, getById, create, update, destroy } = FAQController;
 
 router.get("/", asyncHandler(getAll));
+router.get("/:id", asyncHandler(getById));
 router.post(
   "/",
   ensureAuthenticated,

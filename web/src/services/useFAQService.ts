@@ -51,11 +51,11 @@ export const useFAQService = {
       throw new Error('API response was not ok')
     }
 
-    const { data } = await response.json<{ message: 'ok'; data: FAQ | null }>()
-    return data
+    const { updated } = await response.json<{ message: 'ok'; updated: boolean }>()
+    return updated
   },
   async destroy(id: number) {
-    const response = await api.post(`${id}`)
+    const response = await api.delete(`${id}`)
 
     if (!response.ok) {
       throw new Error('API response was not ok')

@@ -16,7 +16,6 @@ const create = async (payload: NewFAQ) => {
 const update = async (id: string, payload: Partial<FAQ>) => {
   return await FAQModel.update(payload, {
     where: { id },
-    returning: true,
   });
 };
 

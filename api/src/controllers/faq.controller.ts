@@ -11,6 +11,16 @@ class FAQController {
     }
   }
 
+  static async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const data = await FAQService.getById(id);
+      res.json({ message: "ok", data });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, content } = req.body;
@@ -25,8 +35,8 @@ class FAQController {
     try {
       const { id } = req.params;
       const { title, content } = req.body;
-      const data = await FAQService.update(id, { title, content });
-      res.json({ message: "ok", data });
+      const [updated] = await FAQService.update(id, { title, content });
+      res.json({ message: "ok", updated: updated === 1 });
     } catch (error) {
       next(error);
     }
