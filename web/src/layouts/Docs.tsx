@@ -44,7 +44,7 @@ const DocsLayout = () => {
           <Outlet />
         </div>
         <footer>
-          <div className="container mx-auto py-4">
+          <div className="container mx-auto pb-4">
             <p className="text-sm text-muted-foreground">
               {new Date().getFullYear()}. All rights reserved.
             </p>

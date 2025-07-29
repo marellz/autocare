@@ -39,7 +39,7 @@ const DashboardLayout = ({ currentRoute }: Props) => {
             <Outlet />
           </div>
           <footer className="mt-10">
-            <div className="container max-w-5xl mx-auto py-2 px-4 text-sm text-muted-foreground">
+            <div className="container max-w-5xl mx-auto p-2 md:px-4 text-sm text-muted-foreground">
               <div className="flex flex-col-reverse md:flex-row md:justify-between">
                 <p className="mt-2 md:mt-0">© {year} Alex Autocare. All rights reserved.</p>
                 <div className="flex">
