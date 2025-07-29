@@ -22,6 +22,7 @@ import { Button } from './components/ui/button'
 import TypTitle from './components/custom/typography/Title'
 import { useState } from 'react'
 import RouteChangeListener from './hooks/use-route-change-listener'
+import FAQs from './pages/dash/FAQs'
 export default function App() {
   const location = useLocation()
   const [route, setRoute] = useState<string>(location.pathname)
@@ -59,6 +60,7 @@ export default function App() {
           >
             <Route path="/dashboard" element={<DashHome />} />
             <Route path="/dashboard/requests" element={<Requests />} />
+            <Route path="/dashboard/faqs" element={<FAQs />} />
             <Route path="/dashboard/vendors" element={<Vendors />} />
           </Route>
 

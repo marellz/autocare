@@ -9,6 +9,7 @@ import {
   Send,
   Store,
   User2,
+  MessageCircleQuestion,
   type LucideIcon,
 } from 'lucide-react'
 import {
@@ -69,6 +70,11 @@ const DashSidebar = ({ onClose }: Props) => {
       path: '/dashboard/vendors',
       label: 'Vendors',
       icon: Store,
+    },
+    {
+      path: '/dashboard/faqs',
+      label: 'FAQs',
+      icon: MessageCircleQuestion,
     },
   ]
 
