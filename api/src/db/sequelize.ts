@@ -21,6 +21,7 @@ import {
   NewInteraction,
   InteractionModelDefinition,
 } from "./models/interaction.model";
+import { FAQ, FAQModelDefinition, NewFAQ } from "./models/faq.model";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -110,6 +111,14 @@ export const InteractionModel = sequelize.define<
   freezeTableName: true,
   timestamps: false
 });
+
+export const FAQModel = sequelize.define<Model<FAQ, NewFAQ>>(
+  "faqs", FAQModelDefinition,  {
+    tableName: "faqs",
+    freezeTableName: true,
+    timestamps: true,
+  }
+);
 
 VendorModel.hasMany(VendorRequestModel);
 VendorRequestModel.belongsTo(VendorModel);
