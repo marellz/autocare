@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import TypTitle from '@/components/custom/typography/Title'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronsUpDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -32,32 +32,32 @@ const Faqs = () => {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-10">
+    <div className="grid md:grid-cols-2 gap-10 px-2 md:px-5 lg:px-20">
       <div className="flex flex-end">
-        <div className="px-20">
-          <h1 className="text-4xl font-bold">Got questions?</h1>
-          <p className="text-muted-foreground">
-            If you cannot found what you're looking for,
-            <Link to="/contact" className="underline">
-              reach out
+        <div>
+          <TypTitle>Got questions?</TypTitle>
+          <p className="text-muted-foreground mt-2">
+            If you cannot found what you're looking for, {' '}
+             <Link to="/contact" className="underline">
+              reach out.
             </Link>
           </p>
         </div>
       </div>
       <div>
-        <div className="space-y-4" id="faqs">
+        <div className="space-y-2 lg:space-y-4" id="faqs">
           {items.map(({ q, a }, i) => (
-            <Collapsible key={i}>
-              <CollapsibleTrigger asChild>
-                <div className="border-b pb-4">
-                  <Button variant="ghost" className="w-full text-left py-4 flex">
-                    <p className="flex-auto">{q}</p>
-                    <ChevronsUpDown />
-                  </Button>
+            <Collapsible key={i} className='group/faqs'>
+              <CollapsibleTrigger asChild className="border-b group-last/faqs:border-b-0 pb-2 lg:pb-4">
+                <div className="flex items-center justify-between p-2">
+                  <p className="flex-auto text-sm">{q}</p>
+                  <span className="p-2 rounded-full bg-white/10">
+                    <ChevronsUpDown size={16} />
+                  </span>
                 </div>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="p-4">
+                <div className="p-2">
                   <p className="text-sm text-muted-foreground">{a}</p>
                 </div>
               </CollapsibleContent>

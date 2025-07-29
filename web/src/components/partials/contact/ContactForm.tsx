@@ -45,8 +45,8 @@ const ContactForm = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
                 <FormField
                   name="name"
                   control={form.control}
@@ -87,7 +87,7 @@ const ContactForm = () => {
                   </FormItem>
                 )}
               />
-              <div className="col-span-2">
+              <div className="md:col-span-2">
                 <FormField
                   name="message"
                   control={form.control}
@@ -111,7 +111,9 @@ const ContactForm = () => {
                   control={form.control}
                   render={() => (
                     <FormItem>
-                      <ReCaptcha onSuccess={onTokenSuccess} />
+                      <div className="flex justify-center md:justify-start">
+                        <ReCaptcha onSuccess={onTokenSuccess} />
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -119,8 +121,8 @@ const ContactForm = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="justify-end">
-            <Button type="submit">
+          <CardFooter className="md:justify-end">
+            <Button type="submit" className='w-full md:w-auto'>
               <span>Send it!</span>
               <Send />
             </Button>

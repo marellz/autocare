@@ -20,6 +20,7 @@ import { MoreHorizontal } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import ToggleSort from '@/components/utils/ToggleSort'
+import TypTitle from '@/components/custom/typography/Title'
 
 // todo soon: filter brands, paid_status(feature/payment)
 
@@ -194,7 +195,7 @@ const Requests = () => {
     <>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-bold">Requests</h1>
+          <TypTitle>Requests</TypTitle>
         </div>
         <RequestFilters />
         <div>

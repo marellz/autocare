@@ -5,6 +5,7 @@ import {
   useReactTable,
   type ColumnDef,
   type SortingState,
+  type Table as TableType,
 } from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { DataTablePagination } from './DataTablePagination'
@@ -12,6 +13,8 @@ import { useEffect, useState } from 'react'
 import type { ResultParams } from '@/types/pagination'
 import Loader from './Loader'
 import { CircleSlash } from 'lucide-react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import clsx from 'clsx'
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -20,6 +23,12 @@ interface Props<TData, TValue> {
   onParameterChange: (params: ResultParams<TData>) => void
   onClickRow?: (id: number) => void
   loading?: boolean
+}
+
+interface PaginationProps<TData> {
+  loading?: boolean
+  pageCount?: number
+  table: TableType<TData>
 }
 
 interface PaginationData {
@@ -53,9 +62,12 @@ const DataTable = <TData, TValue>({
 
     // fix: compare and run ONLY if something has changed
 
-    console.log([pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
+    // console.log([pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
 
     onParameterChange({ sort_by, sort_order, page: pageIndex + 1, limit })
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+
   }, [pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
 
   const table = useReactTable({
@@ -78,71 +90,96 @@ const DataTable = <TData, TValue>({
     if (onClickRow && numberId) onClickRow(numberId)
   }
 
+  const isMobile = useIsMobile()
+
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  style={{
-                    maxWidth: `${header.getSize()}px`,
-                  }}
-                  key={header.id}
+    <div className="rounded-md md:border overflow-auto">
+      {isMobile ? (
+        <ul className="space-y-4">
+          {table.getRowModel().rows.map((row) => (
+            <li key={row.id} className={clsx('border rounded-md relative')}>
+              {row.getVisibleCells().map((cell) => (
+                <div
+                  className={clsx(
+                    'px-4 py-2',
+                    cell.column.id === 'id' && 'border-b',
+                    cell.column.id === 'actions' && '!px-1 !py-1 absolute top-0 right-0',
+                  )}
+                  key={cell.id}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
               ))}
-            </TableRow>
+            </li>
           ))}
-        </TableHeader>
-        <TableBody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan={columns.length}>
-                <Loader />
-              </TableCell>
-            </TableRow>
-          ) : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                onClick={() => handleRowClick(row.id)}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+        </ul>
+      ) : (
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    style={{
+                      maxWidth: `${header.getSize()}px`,
+                    }}
+                    key={header.id}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length}>
-                <div className="flex space-x-4 items-center justify-center">
-                  <CircleSlash className="opacity-30" />
-                  <p className="text-center text-base py-4">
-                    <span className="font-medium">Empty. </span>
-                    <span className="text-muted-foreground">No data/rows.</span>
-                  </p>
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
-      {!loading && pageCount && pageCount > 1 ? (
-        <DataTablePagination table={table}></DataTablePagination>
-      ) : (
-        ''
+            ))}
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <Loader />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => handleRowClick(row.id)}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <div className="flex space-x-4 items-center justify-center">
+                    <CircleSlash className="opacity-30" />
+                    <p className="text-center text-base py-4">
+                      <span className="font-medium">Empty. </span>
+                      <span className="text-muted-foreground">No data/rows.</span>
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       )}
+      <Pagination loading={loading} pageCount={pageCount} table={table} />
     </div>
   )
 }
 
+const Pagination = <TData,>({ loading, pageCount, table }: PaginationProps<TData>) => {
+  return !loading && pageCount && pageCount > 1 ? (
+    <DataTablePagination table={table}></DataTablePagination>
+  ) : (
+    ''
+  )
+}
 export default DataTable

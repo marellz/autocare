@@ -1,8 +1,10 @@
+import TypTitle from "@/components/custom/typography/Title"
+
 const Terms = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Terms</h1>
+        <TypTitle>Terms</TypTitle>
         <p className="text-muted-foreground">
           Last updated <span>21/07/2025</span>
         </p>

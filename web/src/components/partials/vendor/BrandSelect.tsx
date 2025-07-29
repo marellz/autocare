@@ -33,7 +33,7 @@ const BrandSelect = ({ onSelect, brand }: Props) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="lg:w-[200px] flex-auto justify-between"
         >
           {value ?? 'Select brand'}
           <ChevronsUpDown className="opacity-50" />

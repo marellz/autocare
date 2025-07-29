@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
 import {
@@ -23,11 +23,14 @@ import {
 } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SendHorizonal } from 'lucide-react'
+import { FilePlus2, SendHorizonal } from 'lucide-react'
 import ReCaptcha from '../utils/ReCaptcha'
 import formSchema, { type NewRequestFormSchema } from '@/schemas/request.schema'
 
-const RequestForm = () => {
+interface Props {
+  buttonChildren?: ReactNode
+}
+const RequestForm = ({buttonChildren}: Props) => {
   const { createRequest, error, loading } = useRequestStore()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -61,7 +64,14 @@ const RequestForm = () => {
   return (
     <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>Make request</Button>
+        <Button onClick={() => setOpen(true)}>
+          {buttonChildren || (
+            <>
+              <span>Make request</span>
+              <FilePlus2 />
+            </>
+          )}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

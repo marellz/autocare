@@ -1,5 +1,5 @@
 // src/App.tsx
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/docs/About'
 import Requests from './pages/dash/Requests'
@@ -19,17 +19,25 @@ import Contact from './pages/Contact'
 import { ErrorBoundary } from 'react-error-boundary'
 import { AlertCircle } from 'lucide-react'
 import { Button } from './components/ui/button'
+import TypTitle from './components/custom/typography/Title'
+import { useState } from 'react'
+import RouteChangeListener from './hooks/use-route-change-listener'
 export default function App() {
+  const location = useLocation()
+  const [route, setRoute] = useState<string>(location.pathname)
   return (
     <ThemeProvider>
+      <RouteChangeListener onChange={setRoute} />
       <ErrorBoundary
         fallbackRender={({ error, resetErrorBoundary }) => (
-          <div className="max-w-4xl mx-auto pt-20 space-y-8">
-            <AlertCircle />
-            <h1 className="text-4xl font-bold">An error occurred.</h1>
+          <div className="max-w-4xl mx-auto pt-20 space-y-8 px-5 md:px-10">
+            <div className="flex space-x-4 items-center">
+              <AlertCircle size={40} />
+              <TypTitle>An error occurred.</TypTitle>
+            </div>
             <div>
               <p className="text-sm text-muted-foreground">Error details:</p>
-              <p>{error}</p>
+              <p>{error.message}</p>
             </div>
             <div className="flex justify-end">
               <Button onClick={resetErrorBoundary}>Reset error</Button>
@@ -45,7 +53,7 @@ export default function App() {
           <Route
             element={
               <ProtectedRoute>
-                <DashboardLayout />
+                <DashboardLayout currentRoute={route} />
               </ProtectedRoute>
             }
           >

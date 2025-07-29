@@ -1,3 +1,4 @@
+import TypTitle from '@/components/custom/typography/Title'
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -52,7 +53,7 @@ const DashHome = () => {
     <div className="space-y-8">
       <div className="pb-4 flex items-center">
         <div className="flex-auto">
-          <h1 className="text-4xl font-bold">Dashboard</h1>
+          <TypTitle>Dashboard</TypTitle>
           <p className="text-muted-foreground text-sm">Last synced at {lastSyncedAt}</p>
         </div>
         <Button onClick={getData} disabled={loading}>
@@ -63,22 +64,22 @@ const DashHome = () => {
       <div className="flex border-b pb-4">
         <VendorForm btnProps={{ variant: 'outline' }} />
       </div>
-      <div className="mt-4 grid grid-cols-4 gap-x-10 gap-y-4">
-        <div className="col-span-4">
+      <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-4">
+        <div className="col-span-2 lg:col-span-4">
           <h1 className="text-lg font-medium">Stats</h1>
         </div>
         {(Object.keys(stats) as Array<keyof DashboardStats>).map((stat) => (
           <Card key={`stats-${stat}`}>
             <CardHeader>
               <CardTitle>
-                <h1 className="text-4xl font-bold">{stats[stat] ?? stat}</h1>
+                <TypTitle>{stats[stat] ?? stat}</TypTitle>
               </CardTitle>
               <CardDescription>{statLabels[stat]}</CardDescription>
             </CardHeader>
           </Card>
         ))}
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-x-10 gap-y-4">
+      <div className="mt-4 grid md:grid-cols-2 gap-x-10 gap-y-4">
         <div>
           <Card>
             <CardHeader>
@@ -112,8 +113,8 @@ const DashHome = () => {
           </Card>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-x-10 gap-y-4">
-        <div className="col-span-2">
+      <div className="mt-4 grid md:grid-cols-2 gap-x-10 gap-y-4">
+        <div className="md:col-span-2">
           <h1 className="text-lg font-medium">Tables/Charts</h1>
         </div>
         <div className="">

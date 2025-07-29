@@ -1,8 +1,10 @@
+import TypTitle from "@/components/custom/typography/Title"
+
 const Privacy = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Privacy</h1>
+        <TypTitle>Privacy</TypTitle>
         <p className="text-muted-foreground">Your privacy matters.</p>
       </div>
       <p>We respect and protect your privacy. Here’s how we handle your data : </p>

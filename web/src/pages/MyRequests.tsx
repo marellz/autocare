@@ -1,5 +1,6 @@
 import DataTable from '@/components/custom/DataTable'
 import Loader from '@/components/custom/Loader'
+import TypTitle from '@/components/custom/typography/Title'
 import RequestOffers from '@/components/partials/requests/Offers'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -22,17 +23,23 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { myRequestFormSchema as formSchema, type MyRequestFormSchema } from '@/schemas/request.schema'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useIsMobile } from '@/hooks/use-mobile'
+import {
+  myRequestFormSchema as formSchema,
+  type MyRequestFormSchema,
+} from '@/schemas/request.schema'
 import type { Request } from '@/services/useRequestService'
 import useRequestStore from '@/stores/useRequestStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { ColumnDef } from '@tanstack/react-table'
 import clsx from 'clsx'
-import { AlertCircle, ArrowDownCircle, MoreHorizontal } from 'lucide-react'
+import { AlertCircle, ArrowDownCircle, Info, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const MyRequests = () => {
+  const isMobile = useIsMobile()
   const form = useForm<MyRequestFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -141,14 +148,14 @@ const MyRequests = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-bold text-4xl">Track your car part requests.</h1>
-        <p className="text-muted-foreground">
+        <TypTitle>Track your car part requests.</TypTitle>
+        <p className="text-muted-foreground mt-2">
           Enter your phone number to view all the quotes and responses you've received. No login
           needed.
         </p>
       </div>
-      <div className="grid grid-cols-2">
-        <Card>
+      <div className="grid md:grid-cols-4 xl:grid-cols-2">
+        <Card className='md:col-span-3 xl:col-span-1'>
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -157,35 +164,56 @@ const MyRequests = () => {
                     <FormLabel>Your phone number</FormLabel>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid lg:grid-cols-4 gap-4">
                   <FormField
                     name="phone"
                     control={form.control}
                     render={({ field }) => (
-                      <FormItem className="col-span-3">
+                      <FormItem className="lg:col-span-3">
                         <FormControl>
                           <Input placeholder="254XXXXXXXXX" {...field} />
                         </FormControl>
                         <FormMessage />
-                        <FormDescription className="mt-1">
-                          <span className="flex items-start space-x-4 text-muted-foreground">
-                            <AlertCircle size={20} className="flex-none" />
-                            <span className="text-sm block">
-                              We'll search for requests that were made using this phone number. Only
-                              numbers used in real requests will return results. We never share your
-                              data.
+                        {!isMobile && (
+                          <FormDescription className="mt-1">
+                            <span className="flex items-start space-x-4 text-muted-foreground">
+                              <AlertCircle size={20} className="flex-none" />
+                              <span className="text-sm block">
+                                We'll search for requests that were made using this phone number.
+                                Only numbers used in real requests will return results. We never
+                                share your data.
+                              </span>
                             </span>
-                          </span>
-                        </FormDescription>
+                          </FormDescription>
+                        )}
                       </FormItem>
                     )}
                   ></FormField>
                   <div>
-                    <Button disabled={loading}>
+                    <Button disabled={loading} className="w-full md:w-auto">
                       <span>Get requests</span>
                       <ArrowDownCircle />
                     </Button>
                   </div>
+                  {isMobile && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <div>
+                          <Button type="button" variant="ghost">
+                            <Info />
+                            <span>More info</span>
+                          </Button>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <span className="text-sm block">
+                          We'll search for requests that were made using this phone number. Only
+                          numbers used in real requests will return results. We never share your
+                          data.
+                        </span>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                 </div>
               </form>
             </Form>
