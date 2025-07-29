@@ -9,6 +9,7 @@ import registerRoutes from "./router/index";
 import errorMiddleware from "./middleware/error.middleware";
 import passport from "passport";
 import "./auth/strategies/local.strategy";
+import { sessionStore } from "./db/session/store";
 
 dotenv.config();
 
@@ -29,14 +30,18 @@ app.use(
     secret: process.env.APP_SECET!, // todo: fix
     saveUninitialized: false,
     resave: false,
+    store: sessionStore,
     cookie: {
-      maxAge: 60000 * 60,
+      maxAge: 60000 * 60 * 12,
+      secure: process.env.NODE_ENV === "production",
+      // httpOnly: true, // prevent client-side JS from accessing the cookie.
     },
   }),
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
+sessionStore.sync();
 
 registerRoutes(app);
 
