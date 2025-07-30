@@ -12,7 +12,7 @@ interface Store {
   requests: Request[]
   userRequests: Request[]
   loading: boolean
-  error: string | undefined
+  error: string | null
   resultParams: RequestResultParams
   requestParams: RequestRequestParams
 
@@ -30,7 +30,7 @@ const useRequestStore = create<Store>((set) => {
   const requests: Request[] = []
   const userRequests: Request[] = []
   const loading: boolean = false
-  const error: string | undefined = undefined
+  const error: string | null = null
 
   const resultParams: RequestResultParams = {
     page_count: 1,
@@ -84,7 +84,7 @@ const useRequestStore = create<Store>((set) => {
       set({ resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -99,7 +99,7 @@ const useRequestStore = create<Store>((set) => {
       set({ resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -111,7 +111,7 @@ const useRequestStore = create<Store>((set) => {
       await service.createRequest(request)
     } catch (error) {
       console.error('Error creating request:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -128,7 +128,7 @@ const useRequestStore = create<Store>((set) => {
       }))
     } catch (error) {
       console.error('Error updating request:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -143,7 +143,7 @@ const useRequestStore = create<Store>((set) => {
             }));
         } catch (error) {
             console.error("Error deleting request:", error);
-            set({ error: error as string });
+            set({ error: err instanceof Error ? error.message : String(error) });
         } finally {
             set({ loading: false });
         }

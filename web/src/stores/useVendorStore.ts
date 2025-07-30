@@ -28,7 +28,7 @@ export const brandOptions = [
 interface Store {
   vendors: Vendor[]
   loading: boolean
-  error: string | undefined
+  error: string | null
   resultParams: VendorResultParams
   requestParams: VendorRequestParams
 
@@ -44,7 +44,7 @@ const useVendorStore = create<Store>((set) => {
   const vendors: Vendor[] = []
 
   const loading: boolean = false
-  const error: string | undefined = undefined
+  const error: string | null = null
 
   const resultParams: VendorResultParams = {
     page_count: 1,
@@ -74,7 +74,7 @@ const useVendorStore = create<Store>((set) => {
       set({ vendors, resultParams: pagination })
     } catch (error) {
       console.error('Error fetching vendors:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -87,7 +87,7 @@ const useVendorStore = create<Store>((set) => {
       set((state) => ({ vendors: [newVendor, ...state.vendors] }))
     } catch (error) {
       console.error('Error creating vendor:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -104,7 +104,7 @@ const useVendorStore = create<Store>((set) => {
       }))
     } catch (error) {
       console.error('Error updating vendor:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -119,7 +119,7 @@ const useVendorStore = create<Store>((set) => {
       }))
     } catch (error) {
       console.error('Error deleting vendor:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
