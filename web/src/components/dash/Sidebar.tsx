@@ -53,7 +53,7 @@ const DashSidebar = ({ onClose }: Props) => {
 
   const navigate = useNavigate()
   const onLogout = async () => {
-    await logout() // todo: fix glitch when there is error
+    await logout()
     navigate('/')
   }
   const links: LinkItem[] = [

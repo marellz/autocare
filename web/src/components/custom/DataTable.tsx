@@ -60,9 +60,7 @@ const DataTable = <TData, TValue>({
     const { id: sort_by, desc } = sorting[0]
     const sort_order = desc ? 'DESC' : 'ASC'
 
-    // fix: compare and run ONLY if something has changed
-
-    // console.log([pagination.pageIndex, pagination.pageSize, sorting[0]?.id, sorting[0]?.desc])
+    // todo: fix: compare and run ONLY if something has changed
 
     onParameterChange({ sort_by, sort_order, page: pageIndex + 1, limit })
 

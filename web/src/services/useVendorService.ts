@@ -11,7 +11,7 @@ export interface Vendor {
   location: string | null
   vendor_requests?: VendorRequest[]
   createdAt: Date
-  updatedAt: Date | null // todo: confirm/enact this update
+  updatedAt: Date | null
 }
 
 export interface NewVendor {

@@ -26,11 +26,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FilePlus2, SendHorizonal } from 'lucide-react'
 import ReCaptcha from '../utils/ReCaptcha'
 import formSchema, { type NewRequestFormSchema } from '@/schemas/request.schema'
+import { toast } from 'sonner'
 
 interface Props {
   buttonChildren?: ReactNode
 }
-const RequestForm = ({buttonChildren}: Props) => {
+const RequestForm = ({ buttonChildren }: Props) => {
   const { createRequest, error, loading } = useRequestStore()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -54,7 +55,7 @@ const RequestForm = ({buttonChildren}: Props) => {
     })
 
     if (error) {
-      // todo: throw error
+      toast.error('Error occurred', { description: error })
     } else {
       // close modal
       setOpen(false)

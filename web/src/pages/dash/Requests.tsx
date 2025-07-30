@@ -110,9 +110,9 @@ const Requests = () => {
       size: 10,
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
-        {
-          /* todo:vary displayed options depending on status, also for opened dialogs */
-        }
+        const { status } = row.original
+        const canAssignToVendors = status !== 'submitted'
+        const canSeeOffers = status !== 'pending'
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex justify-center">
@@ -123,12 +123,20 @@ const Requests = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
-                Assign to vendors
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
-                View offers
-              </DropdownMenuItem>
+
+              {/* Response is not submitted: not paid for. */}
+              {canAssignToVendors && (
+                <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
+                  Assign to vendors
+                </DropdownMenuItem>
+              )}
+
+              {/* Request is not pending, submitted: paid for and sent out to vendors */}
+              {canAssignToVendors && canSeeOffers && (
+                <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
+                  View offers
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => handleShowClientResponse(row.original)}>
                 Respond to client
               </DropdownMenuItem>
@@ -136,13 +144,6 @@ const Requests = () => {
           </DropdownMenu>
         )
       },
-
-      /*
-       * todo: Implement:
-       * see available offers(if any) ✅
-       * respond to client ✅
-          > refund(if nothing)
-       */
     },
   ]
 

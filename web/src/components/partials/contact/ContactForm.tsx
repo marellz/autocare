@@ -37,7 +37,6 @@ const ContactForm = () => {
   const onTokenSuccess = (token: string) => form.setValue('token', token)
   const [submitted, setSubmitted] = useState<boolean>(false)
 
-  // todo: implement contact endpoint. (and also cloudflare turnstile validation ✅).
   const { loading, error, create } = useContactStore()
   const onSubmit = async (values: ContactFormSchema) => {
     const response = await create(values)

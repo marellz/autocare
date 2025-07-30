@@ -120,6 +120,10 @@ const MyRequests = () => {
     {
       header: 'Actions',
       cell: ({ row }) => {
+        const { status } = row.original
+
+        const requestIsUnpaidFor = status === 'submitted'
+        const requestIsSentOut = ['pending', 'completed'].includes(status)
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex justify-center">
@@ -130,14 +134,17 @@ const MyRequests = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => processPayment(row.original.id)}>
-                {/* todo: if status === 'submitted */}
-                Make payment
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
-                {/* todo: if status === pending */}
-                View offers
-              </DropdownMenuItem>
+              {/* todo: add method to complete details if status is missing_details */}
+              {requestIsUnpaidFor && (
+                <DropdownMenuItem onClick={() => processPayment(row.original.id)}>
+                  Make payment
+                </DropdownMenuItem>
+              )}
+              {requestIsSentOut && (
+                <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
+                  View offers
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )
@@ -155,7 +162,7 @@ const MyRequests = () => {
         </p>
       </div>
       <div className="grid md:grid-cols-4 xl:grid-cols-2">
-        <Card className='md:col-span-3 xl:col-span-1'>
+        <Card className="md:col-span-3 xl:col-span-1">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>

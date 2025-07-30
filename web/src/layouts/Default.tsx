@@ -30,7 +30,7 @@ const DefaultLayout = () => {
     },
     {
       path: '/my-requests',
-      label: 'My requests', //todo: implement
+      label: 'My requests',
     },
   ]
 
