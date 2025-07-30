@@ -40,6 +40,10 @@ export default function App() {
             <div>
               <p className="text-sm text-muted-foreground">Error details:</p>
               <p>{error.message}</p>
+              <div className="mt-4 space-y-4">
+                <hr />
+                <div className="text-muted-foreground text-sm">{error.stack}</div>
+              </div>
             </div>
             <div className="flex justify-end">
               <Button onClick={resetErrorBoundary}>Reset error</Button>
