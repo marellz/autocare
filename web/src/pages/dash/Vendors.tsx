@@ -1,6 +1,6 @@
 import VendorForm from '@/components/partials/VendorForm'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal } from 'lucide-react'
+import { Edit, MoreHorizontal, Trash2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,36 +85,49 @@ const Vendors = () => {
       cell: ({ row }) => {
         const { id } = row.original
         return (
+          <AlertDialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex justify-end mx-4">
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => handleVendorEdit(row.original)}>
                   <Edit />
                   <span>Edit vendor</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <AlertDialogTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="destructive"
-                      className="w-full bg-red-100 text-red-500 hover:text-white mt-1"
-                    >
-                      <span>Delete vendor</span>
-                    </Button>
+                    <DropdownMenuItem className='text-destructive hover:!text-destructive'>
+                      <Trash2 className='text-current' />
+                      <span>Remove vendor</span>
+                    </DropdownMenuItem>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete vendor?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the vendor from
-                        your database.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction asChild onClick={() => deleteVendor(id)}>
-                        <Button variant="destructive">Yes, remove vendor</Button>
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete vendor?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the vendor from your
+                  database.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild onClick={() => deleteVendor(id)}>
+                  <Button variant="outline" className='border-destructive text-destructive hover:text-destructive'>Yes, remove vendor</Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )
       },
     },
