@@ -16,3 +16,9 @@ const contactFormSchema = z.object({
 export default contactFormSchema
 
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
+
+export const contactResponseSchema = z.object({
+  message: z.string({required_error: "Message is required"}).min(1, 'Message is required'),
+})
+
+export type ContactResponseSchema = z.infer<typeof contactResponseSchema>

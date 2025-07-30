@@ -5,6 +5,7 @@ import About from './pages/docs/About'
 import Requests from './pages/dash/Requests'
 import Vendors from './pages/dash/Vendors'
 import DashHome from './pages/dash/Main'
+import DashContact from './pages/dash/Contact'
 import { ThemeProvider } from './components/theme/Provider'
 import Login from './pages/auth/Login'
 import DefaultLayout from './layouts/Default'
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/dashboard/requests" element={<Requests />} />
             <Route path="/dashboard/faqs" element={<FAQs />} />
             <Route path="/dashboard/vendors" element={<Vendors />} />
+            <Route path="/dashboard/contact" element={<DashContact />} />
           </Route>
 
           <Route element={<DocsLayout />}>

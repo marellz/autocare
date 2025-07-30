@@ -22,6 +22,7 @@ import {
   InteractionModelDefinition,
 } from "./models/interaction.model";
 import { FAQ, FAQModelDefinition, NewFAQ } from "./models/faq.model";
+import { ContactMessage, ContactMessageModelDefinition, NewContactMessage } from "./models/contact.model";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -117,6 +118,14 @@ export const FAQModel = sequelize.define<Model<FAQ, NewFAQ>>(
     tableName: "faqs",
     freezeTableName: true,
     timestamps: true,
+  }
+);
+
+export const ContactMessageModel = sequelize.define<Model<ContactMessage, NewContactMessage>>(
+  "contact_messages", ContactMessageModelDefinition,  {
+    tableName: "contact_messages",
+    freezeTableName: true,
+    timestamps: false,
   }
 );
 
