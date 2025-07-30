@@ -17,7 +17,7 @@ export interface ContactMessage extends NewContactMessage {
 
 export enum ContactMessageStatusEnum {
   PENDING = "pending",
-  RESPONDED = "responded",
+  IN_PROGRESS = "in_progress",
   CLOSED = "closed",
 }
 
