@@ -38,13 +38,41 @@ const create = async (payload: Omit<NewContactMessage, "createdAt">) => {
 
 const update = async (id: string, payload: Partial<ContactMessage>) => {
   payload.updatedAt = new Date();
-  console.log({payload})
-  return await ContactMessageModel.update(
-    payload,
-    {
-      where: { id },
-    },
-  );
+  console.log({ payload });
+  return await ContactMessageModel.update(payload, {
+    where: { id },
+  });
+};
+
+const sendResponse = async (id: string, response: string) => {
+  const contactMessage = await ContactMessageModel.findByPk(id);
+  if (!contactMessage) {
+    throw new Error("Contact message not found");
+  }
+
+  const contact = contactMessage.get();
+
+  /**
+   * TODO: feature/messaging
+   * allow emailing and messaging.
+   */
+
+  if (contact.email) {
+    // send email.
+    // send contat.message quoted, plus response
+    console.log(
+      `Email to ${contact.email}: \n Last message: ${contact.message} \nResponse: ${response}`,
+    );
+  }
+
+  if (contact.phone) {
+    // send SMS.
+    // only send the response.
+
+    console.log(`SMS to ${contact.phone}: \nResponse: ${response}`);
+  }
+
+  return true
 };
 
 export default {
@@ -53,4 +81,6 @@ export default {
   getById,
   create,
   update,
+
+  sendResponse,
 };

@@ -15,4 +15,17 @@ export const useResponseService = {
     const { message } = await response.json<{ message: 'ok' | 'error' }>()
     return message === 'ok'
   },
+
+  async sendContactResponse(contactId: number, message: string) {
+    const response = await api.post(`contact/${contactId}`, {
+      json: { message },
+    })
+
+    if (!response.ok) {
+      throw new Error('API response was not ok')
+    }
+
+    const { sent = false } = await response.json<{ message: 'ok' | 'error'; sent?: boolean }>()
+    return sent
+  },
 }

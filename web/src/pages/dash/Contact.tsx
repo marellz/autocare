@@ -2,6 +2,7 @@ import ContactFilters from '@/components/contact/Filters'
 import StatusSelect from '@/components/contact/StatusSelect'
 import DataTable from '@/components/custom/DataTable'
 import TypTitle from '@/components/custom/typography/Title'
+import ContactResponseForm from '@/components/partials/contact/ContactResponseForm'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   DropdownMenu,
@@ -12,15 +13,24 @@ import {
 import type { ContactMessage, ContactMessageStatus } from '@/services/useContactService'
 import useContactStore from '@/stores/useContactStore'
 import type { ColumnDef } from '@tanstack/react-table'
-import { AlertCircle, MoreHorizontal, User } from 'lucide-react'
-import { useEffect } from 'react'
+import { AlertCircle, CornerUpLeft, MoreHorizontal, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 const Contact = () => {
   const { loading, error, messages, params, getAll, updateParams, update } = useContactStore()
 
+  const [responseDialogActive, setResponseDialogActive] = useState(false)
+  const [responseContact, setResponseContact] = useState<ContactMessage | undefined>(undefined)
+
   // actions
-  const sendResponse = (id: number) => {
-    console.log('Send response to ', id) // todo
+  const showResponseModal = (contact: ContactMessage) => {
+    setResponseContact(contact)
+    setResponseDialogActive(true)
+  }
+
+  const handleResponseSubmit = () => {
+    setResponseDialogActive(false)
+    setResponseContact(undefined)
   }
 
   const handleStatusUpdate = async (id: number, payload: { status: ContactMessageStatus }) => {
@@ -78,14 +88,14 @@ const Contact = () => {
       accessorKey: 'actions',
       header: 'Actions',
       cell: ({ row }) => {
-        const { id } = row.original
         return (
           <DropdownMenu>
             <DropdownMenuTrigger>
               <MoreHorizontal />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => sendResponse(id)}>
+              <DropdownMenuItem onClick={() => showResponseModal(row.original)}>
+                <CornerUpLeft />
                 <span>Send response</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -121,6 +131,12 @@ const Contact = () => {
           onParameterChange={updateParams}
         />
       )}
+
+      <ContactResponseForm
+        open={responseDialogActive}
+        onSubmit={handleResponseSubmit}
+        contact={responseContact}
+      ></ContactResponseForm>
     </div>
   )
 }

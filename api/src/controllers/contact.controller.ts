@@ -100,6 +100,18 @@ class ContactController {
       next(error);
     }
   }
+
+  static async sendResponse(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { message } = req.body;
+
+      const response = await service.sendResponse(id, message);
+      res.json({ message: "ok", sent: response });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default ContactController;
