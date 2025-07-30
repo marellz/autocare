@@ -115,14 +115,14 @@ const DefaultLayout = () => {
                     <DropdownMenuLabel>User menu</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard">
-                        <span>Dashboard</span>
                         <Blocks />
+                        <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem variant="destructive" onClick={onLogout}>
+                      <LogOut />
                       <span>Logout</span>
-                      <LogOut className="ml-auto" />
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

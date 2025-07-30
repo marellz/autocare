@@ -152,8 +152,8 @@ const DashSidebar = ({ onClose }: Props) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" className="w-[var(--radix-popper-anchor-width)]">
                   <DropdownMenuItem onClick={onLogout} className="justify-between">
-                    <span>Sign out</span>
                     <LogOut />
+                    <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

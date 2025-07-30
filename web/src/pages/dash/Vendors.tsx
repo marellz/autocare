@@ -85,22 +85,8 @@ const Vendors = () => {
       cell: ({ row }) => {
         const { id } = row.original
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="flex justify-end mx-4">
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleVendorEdit(row.original)}>
-                Edit vendor details
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <AlertDialog>
+                  <Edit />
+                  <span>Edit vendor</span>
                   <AlertDialogTrigger asChild>
                     <Button
                       size="icon"

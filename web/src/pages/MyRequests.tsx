@@ -34,7 +34,7 @@ import useRequestStore from '@/stores/useRequestStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { ColumnDef } from '@tanstack/react-table'
 import clsx from 'clsx'
-import { AlertCircle, ArrowDownCircle, Info, MoreHorizontal } from 'lucide-react'
+import { AlertCircle, ArrowDownCircle, HandCoins, Info, ListOrdered, MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -137,12 +137,14 @@ const MyRequests = () => {
               {/* todo: add method to complete details if status is missing_details */}
               {requestIsUnpaidFor && (
                 <DropdownMenuItem onClick={() => processPayment(row.original.id)}>
-                  Make payment
+                  <HandCoins />
+                  <span>Make payment</span>
                 </DropdownMenuItem>
               )}
               {requestIsSentOut && (
                 <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
-                  View offers
+                  <ListOrdered />
+                  <span>View offers</span>
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

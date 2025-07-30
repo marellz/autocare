@@ -16,7 +16,7 @@ import StatusSelect from '@/components/custom/requests/StatusSelect'
 import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 import { type ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal } from 'lucide-react'
+import { CornerUpLeft, ListOrdered, MoreHorizontal, UserPlus } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import ToggleSort from '@/components/utils/ToggleSort'
@@ -127,18 +127,21 @@ const Requests = () => {
               {/* Response is not submitted: not paid for. */}
               {canAssignToVendors && (
                 <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
-                  Assign to vendors
+                  <UserPlus />
+                  <span>Assign to vendors</span>
                 </DropdownMenuItem>
               )}
 
               {/* Request is not pending, submitted: paid for and sent out to vendors */}
               {canAssignToVendors && canSeeOffers && (
                 <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
-                  View offers
+                  <ListOrdered />
+                  <span>View offers</span>
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={() => handleShowClientResponse(row.original)}>
-                Respond to client
+                <CornerUpLeft />
+                <span>Respond to client</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
