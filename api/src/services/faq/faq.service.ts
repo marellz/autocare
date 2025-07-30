@@ -2,7 +2,9 @@ import { FAQModel } from "../../db/sequelize";
 import { NewFAQ, type FAQ } from "../../db/models/faq.model";
 
 const getAll = async () => {
-  return FAQModel.findAll();
+  return FAQModel.findAll({
+    order: [["id", "ASC"]],
+  });
 };
 
 const getById = async (id: string) => {
