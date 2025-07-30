@@ -3,14 +3,6 @@ import { RequestModel } from "../../db/sequelize";
 import { FindAllParams } from "../../types/pagination";
 
 class RequestService {
-  /**
-   * todo: ✅
-   * sort by [id | 'status|, desc] >sort_by="id", sort_order ="desc"
-   * pagination, default 10, page_size=20, page=1
-   * page default page=1
-   *
-   **/
-
   static async paginate({
     where,
     sort_by,

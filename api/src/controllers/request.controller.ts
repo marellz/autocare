@@ -102,10 +102,6 @@ class RequestsController {
     try {
       const { name, phone, item, token } = req.body;
 
-      // todo: remove when implementing validation
-      if (!token)
-        return res.status(400).json({ message: "Recaptcha token is required" });
-
       // verify recaptcha token
       const recaptchaResponse = await verifyToken(token);
       
@@ -124,8 +120,7 @@ class RequestsController {
       });
 
       res.json({ message: "ok", data: request });
-
-      // todo, do processing and update this request. ✅
+      
     } catch (error) {
       next(error);
     }
