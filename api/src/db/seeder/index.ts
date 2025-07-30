@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import vendorSeeder from "./vendor.seeder";
 import vendorRequestSeeder from "./vendor-requests";
 import faqsSeeder from "./faqs.seeder";
+import contactMessagesSeeder from "./contact-messages.seeder";
 
 (async () => {
   dotenv.config();
@@ -16,6 +17,7 @@ import faqsSeeder from "./faqs.seeder";
       await vendorRequestSeeder(),
       await userSeeder(),
       await faqsSeeder(),
+      await contactMessagesSeeder()
     ]);
 
     console.log("✅ Seeding complete");
