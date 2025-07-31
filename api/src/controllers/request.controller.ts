@@ -104,28 +104,37 @@ class RequestsController {
 
       // verify recaptcha token
       const recaptchaResponse = await verifyToken(token);
-      
+
       if (!recaptchaResponse.success) {
         return res.status(400).json({
-          message: "Recaptcha verification failed",
+          message: "error",
           error: recaptchaResponse.message,
         });
       }
-      
-      const { request } = await ReceiverService.handleNewRequest({
+
+      const {
+        request: data,
+        message: response,
+        missingKeys: missingDetails,
+      } = await ReceiverService.handleNewRequest({
         body: item,
         name,
         phone,
         channel: RequestChannelEnum.WEB,
       });
 
-      res.json({ message: "ok", data: request });
-      
+      res.json({
+        message: "ok",
+        data,
+        response,
+        missingDetails,
+      });
     } catch (error) {
       next(error);
     }
   }
 
+  // todo: rethink request updates from client/vendor/admin, rewire update-ables
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -140,7 +149,7 @@ class RequestsController {
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }
-      res.json({ message: "ok", data: { updated: request.length > 0 } });
+      res.json({ message: "ok", updated: request.length > 0 });
     } catch (error) {
       next(error);
     }

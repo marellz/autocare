@@ -78,28 +78,36 @@ export const useRequestService = {
   },
 
   async createRequest(request: NewRequest) {
-    const response = await api.post('', {
+    const _response = await api.post('', {
       json: request,
     })
 
-    if (!response.ok) {
+    if (!_response.ok) {
       throw new Error('API response was not ok')
     }
 
-    const { data } = await response.json<{ message: 'ok'; data: Request }>()
-    return data
+    const { data, response, missingDetails } = await _response.json<{
+      message: 'ok'
+      data?: Request
+      response?: string
+      missingDetails?: string[]
+    }>()
+    return { data, response, missingDetails }
   },
 
-  async updateRequest(id: number, updated: Partial<Request>) {
+  async updateRequest(id: number, update: Partial<Request>) {
     const response = await api.put(id.toString(), {
-      json: updated,
+      json: update,
     })
 
     if (!response.ok) {
       throw new Error('API response was not ok')
     }
 
-    const { message } = await response.json<{ message: 'ok' | 'error' }>()
-    return message === 'ok'
+    const { updated } = await response.json<{
+      message: 'ok' | 'error'
+      updated: boolean
+    }>()
+    return { updated }
   },
 }
