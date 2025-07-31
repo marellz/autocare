@@ -22,6 +22,7 @@ import DefaultLayoutToggler from '@/components/theme/DefaultLayoutToggler'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Toaster } from '@/components/ui/sonner'
 import { Logo, LogoShort } from '@/components/app/Logo'
+import { Toaster } from '@/components/ui/sonner'
 
 const DefaultLayout = () => {
   const { user, logout } = useAuthStore()

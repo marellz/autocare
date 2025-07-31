@@ -2,6 +2,7 @@ import {Logo, LogoShort} from '@/components/app/Logo'
 import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Toaster } from '@/components/ui/sonner'
 import { ArrowLeft } from 'lucide-react'
 import { Link, Outlet } from 'react-router-dom'
 
