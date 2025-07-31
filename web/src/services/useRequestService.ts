@@ -3,10 +3,10 @@ import { createKyInstance } from '@/utils/kyCreator'
 import type { SearchParamsOption } from 'ky'
 
 export const requestStatuses = [
-  { label: "Missing details", value: 'missing_details' },
-  { label: "Submitted", value: 'submitted' },
-  { label: "Pending", value: 'pending' },
-  { label: "Completed", value: 'completed' },
+  { label: 'Missing details', value: 'missing_details' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Pending', value: 'pending' },
+  { label: 'Completed', value: 'completed' },
 ]
 export const requestChannels = [
   { label: 'Web', value: 'web' },
@@ -19,7 +19,27 @@ export const requestStatusLabels: Record<RequestStatus, string> = {
   pending: 'Pending',
   completed: 'Completed',
 }
-export const requestCapturedDetails = ['partName','carBrand', 'carModel','carVariant','carYear', 'engineSize','transmission','bodyType']
+export const requestCapturedDetails = [
+  'partName',
+  'carBrand',
+  'carModel',
+  'carVariant',
+  'carYear',
+  'engineSize',
+  'transmission',
+  'bodyType',
+]
+
+export const requestCapturedDetailsLabels: Record<RequestCapturedDetails, string> = {
+  partName: 'Part name',
+  carBrand: 'Car brand',
+  carModel: 'Car model',
+  carVariant: 'Car variant',
+  carYear: 'Car year',
+  engineSize: 'Engine size',
+  transmission: 'Transmission',
+  bodyType: 'Body type',
+}
 
 export type RequestCapturedDetails = (typeof requestCapturedDetails)[number]
 export type RequestChannel = (typeof requestChannels)[number]['value']
