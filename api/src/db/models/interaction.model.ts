@@ -8,6 +8,9 @@ export enum InteractionTypes {
   // responding to client request, asking more info
   CLIENT_REQUEST_UPDATE = "client_request_update", // inbound
 
+  // request could not be parsed, all details missing
+  SYSTEM_REQUEST_FAIL = " system_request_fail", // outbound
+
   // requested more info from system
   SYSTEM_REQUEST_UPDATE = " system_request_update", // outbound
 
@@ -55,7 +58,7 @@ export interface NewInteraction {
   type: InteractionTypes;
   phone: string;
   message: string;
-  requestId: string;
+  requestId?: string;
   vendorId?: string | null;
   metadata?: Record<string, any> | null;
   createdAt?: Date | null;
@@ -86,7 +89,7 @@ export const InteractionModelDefinition = {
   },
   requestId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: RequestModel,
       key: "id",
