@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Blocks, ChevronDown, FilePlus2, LogOut, Menu, User } from 'lucide-react'
 import DefaultLayoutToggler from '@/components/theme/DefaultLayoutToggler'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Toaster } from '@/components/ui/sonner'
 
 const DefaultLayout = () => {
   const { user, logout } = useAuthStore()
@@ -161,6 +162,7 @@ const DefaultLayout = () => {
           </div>
         </div>
       </footer>
+      <Toaster />
     </>
   )
 }
