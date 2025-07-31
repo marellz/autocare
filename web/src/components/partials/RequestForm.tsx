@@ -23,18 +23,29 @@ import {
 } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FilePlus2, SendHorizonal } from 'lucide-react'
+import { AlertCircle, FilePlus2, Loader, SendHorizonal } from 'lucide-react'
 import ReCaptcha from '../utils/ReCaptcha'
 import formSchema, { type NewRequestFormSchema } from '@/schemas/request.schema'
 import { toast } from 'sonner'
+import { requestCapturedDetailsLabels } from '@/services/useRequestService'
 
 interface Props {
   buttonChildren?: ReactNode
 }
 const RequestForm = ({ buttonChildren }: Props) => {
-  const { createRequest, error, loading } = useRequestStore()
+  const { createRequest, loading, error } = useRequestStore()
 
   const [open, setOpen] = useState<boolean>(false)
+
+  const handleOpenChange = (v: boolean) => {
+    if (loading) return
+    setOpen(v)
+  }
+
+  const closeDialog = () => {
+    setOpen(false)
+    form.reset()
+  }
 
   const form = useForm<NewRequestFormSchema>({
     resolver: zodResolver(formSchema),
@@ -49,21 +60,32 @@ const RequestForm = ({ buttonChildren }: Props) => {
   const onTokenSuccess = (token: string) => form.setValue('token', token)
 
   const handleSubmit = async (values: NewRequestFormSchema) => {
-    await createRequest({
+    const created = await createRequest({
       ...values,
       channel: 'web',
     })
 
-    if (error) {
-      toast.error('Error occurred', { description: error })
-    } else {
-      // close modal
-      setOpen(false)
+    const { missingDetails, error: _error } = useRequestStore.getState()
+
+    if (created) {
+      toast.success('Request successfully created!')
+      closeDialog()
+      return
+    }
+
+    if (missingDetails) {
+      const message = `Your request is missing: ${missingDetails.map((d) => requestCapturedDetailsLabels[d]).join(', ')}`
+      form.setError('item', { message }, { shouldFocus: true })
+      toast.info('Missing details', {
+        description: 'Please fill in all relevant details to submit the request.',
+      })
+    } else if (_error) {
+      toast.error('Error occurred', { description: _error })
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button onClick={() => setOpen(true)}>
           {buttonChildren || (
@@ -84,6 +106,7 @@ const RequestForm = ({ buttonChildren }: Props) => {
 
         {error && (
           <Alert variant="destructive">
+            <AlertCircle />
             <AlertTitle>Problem submitting request</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -160,8 +183,17 @@ const RequestForm = ({ buttonChildren }: Props) => {
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                <span>Send request</span>
-                <SendHorizonal />
+                {loading ? (
+                  <>
+                    <span>Processing</span>
+                    <Loader className="transform animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    <span>Send request</span>
+                    <SendHorizonal />
+                  </>
+                )}
               </Button>
             </div>
           </form>
