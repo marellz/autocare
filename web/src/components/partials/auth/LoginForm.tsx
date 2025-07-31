@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input'
 import useAuthStore from '@/stores/useAuthStore'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircleIcon } from 'lucide-react'
+import { AlertCircleIcon, Loader } from 'lucide-react'
 import formSchema, { type LoginFormSchema } from '@/schemas/auth.schema'
+import { toast } from 'sonner'
 
 interface Props {
   onSuccess: () => void
@@ -25,8 +26,8 @@ const LoginForm = ({ onSuccess }: Props) => {
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   })
 
@@ -35,6 +36,8 @@ const LoginForm = ({ onSuccess }: Props) => {
     const success = await login({ username: email, password })
     if (success) {
       onSuccess()
+    } else {
+      toast.error('Invalid username/password', { description: 'Please try again' })
     }
   }
 
@@ -79,7 +82,8 @@ const LoginForm = ({ onSuccess }: Props) => {
             </Alert>
           )}
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Logging in ' : 'Login'}
+            <span>{loading ? 'Logging in ' : 'Login'}</span>
+            <Loader className="transform animate-spin" />
           </Button>
         </div>
       </form>

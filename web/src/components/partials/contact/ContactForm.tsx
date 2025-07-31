@@ -55,7 +55,7 @@ const ContactForm = () => {
       .forEach((k) => form.setValue(k as keyof ContactFormSchema, ''))
 
     // toast!
-    toast('Contact message sent!')
+    toast('Contact message sent!', { description: "You'll receive a response in a few hours." })
   }
 
   return (

@@ -82,9 +82,12 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
 
       hideDialog()
 
-      toast.success('Successfully assigned request to vendors', {
-        description: `Request ID #${request!.id}`,
-      })
+      toast.success(
+        `Successfully assigned request to ${selected.length === 1 ? '1 vendor' : selected.length + ' vendors'} `,
+        {
+          description: `Request ID #${request!.id}`,
+        },
+      )
     } catch (error) {
       toast.error('Error assiging request to vendors', {
         description: error as string,

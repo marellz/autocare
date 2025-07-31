@@ -62,12 +62,26 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
     // send message
     const response = await sendClientResponse(request.id, message, refund)
 
+    const { error: _error } = useResponseStore.getState()
+
+    if (_error) {
+      toast.error('Error occurred', { description: error })
+      return
+    }
+
     toast('Response sent to client successfully')
 
     if (response) hideDialog()
 
     // if change in status, update that too
-    if (status !== request.status) updateRequest(request.id, { status })
+    if (status === request.status) return
+
+    const updated = await updateRequest(request.id, { status })
+    if (updated) {
+      toast.success(`Updated request status to "${status}"`)
+    } else {
+      toast.error("Error on updating request status")
+    }
   }
 
   useEffect(() => {

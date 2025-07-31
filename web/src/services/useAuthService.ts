@@ -22,8 +22,7 @@ export const useAuthService = {
       })
 
       if (!response.ok) {
-        const errorData: any = await response.json<{ error: string }>().catch(() => null) // sometimes no JSON
-        console.log({ herer: errorData })
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
         return { data: undefined, error: errorData?.error ?? NetworkError }
       }
 

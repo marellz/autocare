@@ -20,7 +20,7 @@ interface Store {
   getRequests: () => Promise<void>
   getUserRequests: (phone: string) => Promise<void>
   createRequest: (payload: NewRequest) => Promise<boolean>
-  updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
+  updateRequest: (id: number, updated: Partial<Request>) => Promise<boolean>
   resetRequests: () => void
   resetParams: (params: Partial<RequestRequestParams>) => void
   // deleteRequest: (id: number) => Promise<void>;
@@ -136,9 +136,12 @@ const useRequestStore = create<Store>((set) => {
           request.id === id ? { ...request, ...update } : request,
         ),
       }))
+
+      return true
     } catch (error) {
       console.error('Error updating request:', error)
       set({ error: error instanceof Error ? error.message : String(error) })
+      return false
     } finally {
       set({ loading: false })
     }
