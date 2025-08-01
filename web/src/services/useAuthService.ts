@@ -11,6 +11,18 @@ export interface LoginPayload {
   password: string
 }
 
+export interface PasswordResetRequestPayload {
+  email: string
+  token: string
+}
+
+export interface PasswordResetPayload {
+  password: string
+  confirmPassword: string
+  token: string
+  secure_token: string
+}
+
 const NetworkError = 'Network/server error'
 const api = createKyInstance('/auth')
 
@@ -72,6 +84,48 @@ export const useAuthService = {
       return {
         data: undefined,
         error: e,
+      }
+    }
+  },
+  // password reset
+
+  async requestPasswordReset(payload: PasswordResetRequestPayload) {
+    try {
+      const response = await api.post('password/request', {
+        json: payload,
+      })
+
+      if (!response.ok) {
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
+        return { success: false, error: errorData?.error ?? NetworkError }
+      }
+
+      return { success: true }
+    } catch (error: any) {
+      const { error: e } = await error.response.json()
+      return {
+        success: false,
+        error: e as string,
+      }
+    }
+  },
+  async submitPasswordReset(payload: PasswordResetPayload) {
+    try {
+      const response = await api.post('password/reset', {
+        json: payload,
+      })
+
+      if (!response.ok) {
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
+        return { success: false, error: errorData?.error ?? NetworkError }
+      }
+
+      return { success: true }
+    } catch (error: any) {
+      const { error: e } = await error.response.json()
+      return {
+        success: false,
+        error: e as string,
       }
     }
   },
