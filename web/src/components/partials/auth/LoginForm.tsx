@@ -83,7 +83,7 @@ const LoginForm = ({ onSuccess }: Props) => {
           )}
           <Button type="submit" className="w-full" disabled={loading}>
             <span>{loading ? 'Logging in ' : 'Login'}</span>
-            <Loader className="transform animate-spin" />
+            {loading && <Loader className="transform animate-spin" />}
           </Button>
         </div>
       </form>
