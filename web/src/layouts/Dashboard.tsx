@@ -21,20 +21,20 @@ const DashboardLayout = ({ currentRoute }: Props) => {
   // todo: close sidebar on route change 
   // ❗sidebar doesn't respond in mobile
 
-  const [open, setOpen] = useState(false)
   
   const isMobile = useIsMobile()
+  const [open, setOpen] = useState(!isMobile)
 
   useEffect(() => {
     if(isMobile) setOpen(false)
   }, [currentRoute])
   return (
     <>
-      <SidebarProvider defaultOpen={!isMobile} open={open} onOpenChange={setOpen}>
-        <AppSidebar onClose={()=>setOpen(false)}/>
+      <SidebarProvider open={open} onOpenChange={setOpen}>
+        <AppSidebar onClose={() => setOpen(false)} />
         <main className="flex-auto flex flex-col min-h-screen h-screen">
           <div className="py-4 px-2 md:px-4">
-          <SidebarTrigger onClick={() => setOpen(!open)}></SidebarTrigger>
+            <SidebarTrigger onClick={() => setOpen(!open)}></SidebarTrigger>
           </div>
           <div className="container max-w-5xl mx-auto px-4 flex-auto">
             <Outlet />

@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Blocks, ChevronDown, FilePlus2, LogOut, Menu, User } from 'lucide-react'
 import DefaultLayoutToggler from '@/components/theme/DefaultLayoutToggler'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Toaster } from '@/components/ui/sonner'
 
 const DefaultLayout = () => {
   const { user, logout } = useAuthStore()
@@ -30,7 +31,7 @@ const DefaultLayout = () => {
     },
     {
       path: '/my-requests',
-      label: 'My requests', //todo: implement
+      label: 'My requests',
     },
   ]
 
@@ -115,14 +116,14 @@ const DefaultLayout = () => {
                     <DropdownMenuLabel>User menu</DropdownMenuLabel>
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard">
-                        <span>Dashboard</span>
                         <Blocks />
+                        <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem variant="destructive" onClick={onLogout}>
+                      <LogOut />
                       <span>Logout</span>
-                      <LogOut className="ml-auto" />
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -161,6 +162,7 @@ const DefaultLayout = () => {
           </div>
         </div>
       </footer>
+      <Toaster />
     </>
   )
 }

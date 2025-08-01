@@ -53,7 +53,7 @@ const DashSidebar = ({ onClose }: Props) => {
 
   const navigate = useNavigate()
   const onLogout = async () => {
-    await logout() // todo: fix glitch when there is error
+    await logout()
     navigate('/')
   }
   const links: LinkItem[] = [
@@ -152,8 +152,8 @@ const DashSidebar = ({ onClose }: Props) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" className="w-[var(--radix-popper-anchor-width)]">
                   <DropdownMenuItem onClick={onLogout} className="justify-between">
-                    <span>Sign out</span>
                     <LogOut />
+                    <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

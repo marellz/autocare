@@ -28,6 +28,7 @@ import useRequestStore from '@/stores/useRequestStore'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
 import formSchema, { type ClientResponseSchema } from '@/schemas/client-response.schema'
+import { toast } from 'sonner'
 
 interface Props {
   open: boolean
@@ -54,14 +55,33 @@ const ClientResponse = ({ open, hideDialog, request }: Props) => {
   }
 
   const handleSubmit = async ({ message, refund }: ClientResponseSchema) => {
-    if (!request) return //todo: throw error
+    if (!request) {
+      toast.error('Error occurred', { description: 'Request does not exist.' })
+      return
+    }
     // send message
     const response = await sendClientResponse(request.id, message, refund)
+
+    const { error: _error } = useResponseStore.getState()
+
+    if (_error) {
+      toast.error('Error occurred', { description: error })
+      return
+    }
+
+    toast('Response sent to client successfully')
 
     if (response) hideDialog()
 
     // if change in status, update that too
-    if (status !== request.status) updateRequest(request.id, { status })
+    if (status === request.status) return
+
+    const updated = await updateRequest(request.id, { status })
+    if (updated) {
+      toast.success(`Updated request status to "${status}"`)
+    } else {
+      toast.error("Error on updating request status")
+    }
   }
 
   useEffect(() => {

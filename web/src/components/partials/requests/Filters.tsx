@@ -8,8 +8,6 @@ import useRequestStore from '@/stores/useRequestStore'
 import { CircleSlash, Search } from 'lucide-react'
 import { useState } from 'react'
 
-// todo: fix pagination and filter mis-alignment
-// pagination should work alongside filters
 const RequestFilters = () => {
   const { updateParams } = useRequestStore()
   const [query, setQuery] = useState<string>('')

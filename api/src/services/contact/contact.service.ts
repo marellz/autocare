@@ -58,21 +58,18 @@ const sendResponse = async (id: string, response: string) => {
    */
 
   if (contact.email) {
-    // send email.
-    // send contat.message quoted, plus response
+    // send email: message quoted, plus response
     console.log(
       `Email to ${contact.email}: \n Last message: ${contact.message} \nResponse: ${response}`,
     );
   }
 
   if (contact.phone) {
-    // send SMS.
-    // only send the response.
-
+    // send SMS: only send the response.
     console.log(`SMS to ${contact.phone}: \nResponse: ${response}`);
   }
 
-  return true
+  return true;
 };
 
 export default {

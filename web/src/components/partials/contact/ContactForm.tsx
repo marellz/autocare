@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
+  FormLabel,
   FormControl,
   FormDescription,
   FormField,
@@ -16,7 +17,6 @@ import contactFormSchema from '@/schemas/contact.schema'
 import formSchema, { type ContactFormSchema } from '@/schemas/contact.schema'
 import useContactStore from '@/stores/useContactStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Label } from '@radix-ui/react-label'
 import { AlertCircle, Check, CheckCheckIcon, Pen, Send } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,7 +37,6 @@ const ContactForm = () => {
   const onTokenSuccess = (token: string) => form.setValue('token', token)
   const [submitted, setSubmitted] = useState<boolean>(false)
 
-  // todo: implement contact endpoint. (and also cloudflare turnstile validation ✅).
   const { loading, error, create } = useContactStore()
   const onSubmit = async (values: ContactFormSchema) => {
     const response = await create(values)
@@ -56,7 +55,7 @@ const ContactForm = () => {
       .forEach((k) => form.setValue(k as keyof ContactFormSchema, ''))
 
     // toast!
-    toast('Contact message sent!')
+    toast('Contact message sent!', { description: "You'll receive a response in a few hours." })
   }
 
   return (
@@ -90,7 +89,7 @@ const ContactForm = () => {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <Label>Your name</Label>
+                        <FormLabel>Your name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -104,7 +103,7 @@ const ContactForm = () => {
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <Label>Email address</Label>
+                      <FormLabel>Email address</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -117,7 +116,7 @@ const ContactForm = () => {
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <Label>Phone number</Label>
+                      <FormLabel>Phone number</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -131,7 +130,7 @@ const ContactForm = () => {
                     control={form.control}
                     render={({ field }) => (
                       <FormItem>
-                        <Label>What do you want to tell us?</Label>
+                        <FormLabel>What do you want to tell us?</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
                         </FormControl>

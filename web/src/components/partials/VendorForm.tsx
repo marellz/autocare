@@ -13,7 +13,6 @@ import { Label } from '../ui/label'
 import { Check, Plus } from 'lucide-react'
 import useVendorStore from '@/stores/useVendorStore'
 import type { NewVendor } from '@/services/useVendorService'
-import { Toaster } from '../ui/sonner'
 import { toast } from 'sonner'
 import VendorBrandSelect from './vendor/VendorBrandSelect'
 import { useForm } from 'react-hook-form'
@@ -199,7 +198,6 @@ const VendorForm = ({ id, onSubmit, onCancel, btnProps }: Props) => {
           </Form>
         </DialogContent>
       </Dialog>
-      <Toaster position="top-center" />
     </>
   )
 }

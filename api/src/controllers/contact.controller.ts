@@ -102,6 +102,7 @@ class ContactController {
   }
 
   static async sendResponse(req: Request, res: Response, next: NextFunction) {
+    // todo: create interaction from this response
     try {
       const { id } = req.params;
       const { message } = req.body;

@@ -6,7 +6,7 @@ export const ContactMessageStatuses = [
   { value: 'pending', label: 'Pending' },
   { value: 'in_progress', label: 'In progress' },
   { value: 'closed', label: 'Closed' },
-] // todo: change this when re-configured on the API
+]
 export type ContactMessageStatus = (typeof ContactMessageStatuses)[number]['value']
 
 export interface ContactMessage {

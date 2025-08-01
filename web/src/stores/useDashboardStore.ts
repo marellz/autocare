@@ -11,7 +11,7 @@ import { useDashboardService as service } from '@/services/useDashboardService'
 interface Store extends DashboardData {
   getData: () => Promise<void>
   loading: boolean
-  error: string | undefined
+  error: string | null
   lastSyncedAt?: string | undefined
 }
 
@@ -24,7 +24,7 @@ const useDashboardStore = create<Store>((set) => {
     uniqueInteractions: 0,
   }
 
-  const error: string | undefined = undefined
+  const error: string | null = null
   const loading: boolean = false
 
   const newRequests: Request[] = []
@@ -42,8 +42,8 @@ const useDashboardStore = create<Store>((set) => {
         chartData,
         lastSyncedAt,
       })
-    } catch (error) {
-      set({ error: error as string })
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : String(err) })
     } finally {
       set({ loading: false })
     }

@@ -24,6 +24,8 @@ import TypTitle from './components/custom/typography/Title'
 import { useState } from 'react'
 import RouteChangeListener from './hooks/use-route-change-listener'
 import FAQs from './pages/dash/FAQs'
+import RequestPasswordReset from './pages/auth/forgot-password/Request'
+import PasswordReset from './pages/auth/forgot-password/Reset'
 export default function App() {
   const location = useLocation()
   const [route, setRoute] = useState<string>(location.pathname)
@@ -40,6 +42,10 @@ export default function App() {
             <div>
               <p className="text-sm text-muted-foreground">Error details:</p>
               <p>{error.message}</p>
+              <div className="mt-4 space-y-4">
+                <hr />
+                <div className="text-muted-foreground text-sm">{error.stack}</div>
+              </div>
             </div>
             <div className="flex justify-end">
               <Button onClick={resetErrorBoundary}>Reset error</Button>
@@ -75,6 +81,8 @@ export default function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/forgot-password" element={<RequestPasswordReset />} />
+            <Route path="/forgot-password/reset" element={<PasswordReset />} />
           </Route>
         </Routes>
       </ErrorBoundary>

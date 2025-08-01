@@ -6,7 +6,7 @@ interface SendMessageAndLogInteractionPayload {
   phone: string;
   message: string;
   vendorId?: string;
-  requestId: string;
+  requestId?: string;
   type: InteractionTypes;
   metadata?: JSON;
 }

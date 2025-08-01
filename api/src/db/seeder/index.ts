@@ -11,14 +11,22 @@ import contactMessagesSeeder from "./contact-messages.seeder";
   dotenv.config();
   try {
     await syncModels(true);
-    Promise.all([
+
+    let seeds = [await faqsSeeder()];
+
+    const devSeeds = [
+      await userSeeder(),
+      await contactMessagesSeeder(),
       await vendorSeeder(),
       await requestSeeder(),
       await vendorRequestSeeder(),
-      await userSeeder(),
-      await faqsSeeder(),
-      await contactMessagesSeeder()
-    ]);
+    ];
+
+    if (process.env.NODE_ENV === "development") {
+      seeds = [...seeds, ...devSeeds];
+    }
+
+    Promise.all(seeds);
 
     console.log("✅ Seeding complete");
     process.exit(0);
