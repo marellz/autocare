@@ -13,10 +13,12 @@ interface Store {
 
   requestPasswordReset: (payload: PasswordResetRequestPayload) => Promise<boolean>
   resetPassword: (payload: PasswordResetPayload) => Promise<boolean>
-
+  verifyToken: (token: string) => Promise<boolean>
+  
   user: User | null
   loading: boolean
   error: string | null
+  resetError: () => void
 }
 
 const service = useAuthService
@@ -66,7 +68,7 @@ const useAuthStore = create<Store>()(
       const requestPasswordReset = async (payload: PasswordResetRequestPayload) => {
         try {
           set({ loading: true, error: null })
-          const { success } = await service.requestPasswordReset(payload)
+          const { sent: success } = await service.requestPasswordReset(payload)
           return success
         } catch (error) {
           console.error('Error resetting password', error)
@@ -80,7 +82,7 @@ const useAuthStore = create<Store>()(
       const resetPassword = async (payload: PasswordResetPayload) => {
         try {
           set({ loading: true, error: null })
-          const { success } = await service.submitPasswordReset(payload)
+          const { updated: success } = await service.submitPasswordReset(payload)
           return success
         } catch (error) {
           console.error('Error resetting password', error)
@@ -89,6 +91,25 @@ const useAuthStore = create<Store>()(
         } finally {
           set({ loading: false })
         }
+      }
+
+      const verifyToken = async (token: string) => {
+        try {
+          set({ loading: true, error: null })
+          const { valid: success } = await service.verifyToken(token)
+          return success
+        } catch (error) {
+          console.error('Error verifying your token', error)
+          set({ error: error instanceof Error ? error.message : String(error) })
+          return false
+        } finally {
+          set({ loading: false })
+        }
+      }
+
+
+      const resetError = () => {
+        set({error: null})
       }
 
       return {
@@ -101,6 +122,9 @@ const useAuthStore = create<Store>()(
 
         requestPasswordReset,
         resetPassword,
+        verifyToken,
+
+        resetError,
       }
     },
     {
