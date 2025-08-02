@@ -24,10 +24,11 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(errorMiddleware);
-
+const secret = process.env.APP_SECRET
+if(!secret) throw new Error('APP_SECRET is not defined in your .env')
 app.use(
   session({
-    secret: process.env.APP_SECRET!,
+    secret,
     saveUninitialized: false,
     resave: false,
     store: sessionStore,
