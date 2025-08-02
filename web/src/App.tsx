@@ -24,7 +24,7 @@ import TypTitle from './components/custom/typography/Title'
 import { useState } from 'react'
 import RouteChangeListener from './hooks/use-route-change-listener'
 import FAQs from './pages/dash/FAQs'
-import RequestPasswordReset from './pages/auth/forgot-password/Request'
+import PassowrdRecovery from './pages/auth/forgot-password/Recovery'
 import PasswordReset from './pages/auth/forgot-password/Reset'
 export default function App() {
   const location = useLocation()
@@ -81,8 +81,8 @@ export default function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/forgot-password" element={<RequestPasswordReset />} />
-            <Route path="/forgot-password/reset" element={<PasswordReset />} />
+            <Route path="/forgot-password" element={<PassowrdRecovery />} />
+            <Route path="/reset-password" element={<PasswordReset />} />
           </Route>
         </Routes>
       </ErrorBoundary>

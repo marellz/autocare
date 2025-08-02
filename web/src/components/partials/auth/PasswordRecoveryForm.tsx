@@ -20,13 +20,14 @@ import { AlertCircle, Loader, SendHorizonal } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import ReCaptcha from '@/components/utils/ReCaptcha'
+import { useEffect } from 'react'
 
 interface Props {
   onSubmit: () => void
 }
 
 const PasswordResetRequestForm = ({ onSubmit }: Props) => {
-  const { loading, error, requestPasswordReset } = useAuthStore()
+  const { loading, error, requestPasswordReset, resetError } = useAuthStore()
   const form = useForm<Schema>({
     resolver: zodResolver(formSchema),
   })
@@ -42,19 +43,23 @@ const PasswordResetRequestForm = ({ onSubmit }: Props) => {
     }
   }
 
+  useEffect(() => {
+    resetError()
+  }, [])
+
   return (
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle />
-              <AlertTitle>Error requesting for a password reset</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
           <div className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle />
+                <AlertTitle>Error requesting for a password reset</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <FormField
               name="email"
               control={form.control}
@@ -62,7 +67,7 @@ const PasswordResetRequestForm = ({ onSubmit }: Props) => {
                 <FormItem>
                   <FormLabel>Email address</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormDescription>
                     Enter the email you used to sign up. We’ll send you a secure link to reset your

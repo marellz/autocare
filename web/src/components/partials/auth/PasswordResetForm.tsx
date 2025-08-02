@@ -20,14 +20,14 @@ import { AlertCircle, Loader, ShieldCheck } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import ReCaptcha from '@/components/utils/ReCaptcha'
-import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 
 interface Props {
   onSubmit: () => void
+  token: string;
 }
 
-const PasswordResetForm = ({ onSubmit }: Props) => {
+const PasswordResetForm = ({ onSubmit, token }: Props) => {
   const { loading, error, resetPassword } = useAuthStore()
   const form = useForm<Schema>({
     resolver: zodResolver(formSchema),
@@ -44,19 +44,10 @@ const PasswordResetForm = ({ onSubmit }: Props) => {
     }
   }
 
-  const { search } = useLocation()
-  const [tokenError, setTokenError] = useState<boolean>(false)
-  useEffect(() => {
-    setTokenError(false)
-    const params = new URLSearchParams(search)
-    const { token } = Object.fromEntries(params.entries())
-    if (!token) {
-      setTokenError(true)
-      return
-    }
 
+  useEffect(() => {
     form.setValue("secure_token", token)
-  }, [search])
+  }, [])
 
   return (
     <div>
@@ -71,12 +62,12 @@ const PasswordResetForm = ({ onSubmit }: Props) => {
           )}
 
           {/* show when token is missing in the url/search */}
-          {tokenError && (
+          {/* {tokenError && (
             <Alert variant="destructive" className="mb-4">
               <AlertCircle />
               <AlertTitle>Token is missing</AlertTitle>
             </Alert>
-          )}
+          )} */}
 
           <div className="space-y-4">
             <FormField
@@ -86,7 +77,7 @@ const PasswordResetForm = ({ onSubmit }: Props) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                   <FormDescription>
@@ -103,7 +94,7 @@ const PasswordResetForm = ({ onSubmit }: Props) => {
                 <FormItem>
                   <FormLabel>Confirm password</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                   <FormDescription>Just making sure you didn’t mistype.</FormDescription>
@@ -123,7 +114,7 @@ const PasswordResetForm = ({ onSubmit }: Props) => {
               )}
             />
 
-            <Button className="w-full" disabled={loading || tokenError}>
+            <Button className="w-full" disabled={loading}>
               {loading ? (
                 <>
                   <span>Loading</span>
