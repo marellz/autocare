@@ -86,6 +86,19 @@ services:
     networks:
       - web
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: autocare-mailhog
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailhog.rule=Host(`mail.autocare.localhost`)"
+      - "traefik.http.routers.mailhog.entrypoints=web"
+      - "traefik.http.services.mailhog.loadbalancer.server.port=8025"
+
+    depends_on:
+      - api
 volumes:
   pgdata:
 
