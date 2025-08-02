@@ -1,8 +1,11 @@
+import {Logo, LogoShort} from '@/components/app/Logo'
 import { Button } from '@/components/ui/button'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { ArrowLeft } from 'lucide-react'
 import { Link, Outlet } from 'react-router-dom'
 
 const AuthLayout = () => {
+  const isMobile = useIsMobile()
   return (
     <>
       <header className="border-b">
@@ -10,10 +13,14 @@ const AuthLayout = () => {
           <Link to="/">
             <Button variant="ghost">
               <ArrowLeft />
-              <span className='hidden md:inline'>Go back</span>
+              <span className="hidden md:inline">Go back</span>
             </Button>
           </Link>
-          <h1 className="font-bold text-xl md:absolute md:left-1/2 md:-translate-x-1/2">Autocare</h1>
+          {isMobile ? (
+            <LogoShort className="md:absolute md:left-1/2 md:-translate-x-1/2" />
+          ) : (
+            <Logo className="md:absolute md:left-1/2 md:-translate-x-1/2" />
+          )}
         </div>
       </header>
       <main className="flex-auto mt-12">

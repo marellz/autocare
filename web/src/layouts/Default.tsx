@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Blocks, ChevronDown, FilePlus2, LogOut, Menu, User } from 'lucide-react'
 import DefaultLayoutToggler from '@/components/theme/DefaultLayoutToggler'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Logo, LogoShort } from '@/components/app/Logo'
 
 const DefaultLayout = () => {
   const { user, logout } = useAuthStore()
@@ -53,9 +54,7 @@ const DefaultLayout = () => {
       <header>
         <div className="container mx-auto py-8 px-2 md:px-4">
           <div className="flex items-center md:justify-between space-x-4">
-            <Link to="/" className="font-bold text-lg">
-              Autocare
-            </Link>
+            <Link to="/">{isMobile ? <LogoShort /> : <Logo height="h-10" />}</Link>
             {isMobile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger className="order-last ml-4 mr-0">
@@ -139,7 +138,7 @@ const DefaultLayout = () => {
       <footer>
         <div className="container mx-auto py-2 px-4 text-sm text-muted-foreground">
           <div className="flex flex-col-reverse md:flex-row md:justify-between">
-            <p className="mt-2 md:mt-0">© {year} Alex Autocare. All rights reserved.</p>
+            <p className="mt-2 md:mt-0">© {year} Autocare. All rights reserved.</p>
             <div className="flex items-center">
               {user === null && (
                 <Link className="hover:underline px-2" to="/login">
