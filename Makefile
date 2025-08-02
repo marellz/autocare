@@ -27,3 +27,9 @@ front-install:
 
 front-restart:
 	docker container restart autocare-front
+
+api-install:
+	docker exec -ti autocare-api npm i
+
+api-restart:
+	docker container restart autocare-api
