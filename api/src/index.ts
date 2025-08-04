@@ -23,21 +23,20 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(errorMiddleware);
 const secret = process.env.APP_SECRET
 if(!secret) throw new Error('APP_SECRET is not defined in your .env')
-app.use(
-  session({
-    secret,
-    saveUninitialized: false,
-    resave: false,
-    store: sessionStore,
-    cookie: {
-      maxAge: 60000 * 60 * 12,
-      secure: process.env.NODE_ENV === "production",
-      // httpOnly: true, // prevent client-side JS from accessing the cookie.
-    },
-  }),
+  app.use(
+session({
+  secret,
+  saveUninitialized: false,
+  resave: false,
+  store: sessionStore,
+  cookie: {
+    maxAge: 60000 * 60 * 12,
+    secure: process.env.NODE_ENV === "production",
+    // httpOnly: true, // prevent client-side JS from accessing the cookie.
+  },
+}),
 );
 
 app.use(passport.initialize());
@@ -45,6 +44,7 @@ app.use(passport.session());
 sessionStore.sync();
 
 registerRoutes(app);
+app.use(errorMiddleware);
 
 const appName = process.env.APP_NAME;
 const apiPort = process.env.API_PORT;
