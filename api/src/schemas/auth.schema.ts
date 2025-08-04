@@ -42,3 +42,7 @@ export const resetPasswordSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export const verifyTokenSchema = z.object({
+  token: z.string(),
+});

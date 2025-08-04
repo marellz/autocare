@@ -8,6 +8,7 @@ import {
   recoverPasswordFormSchema,
   registerFormSchema,
   resetPasswordSchema,
+  verifyTokenSchema,
 } from "../../schemas/auth.schema";
 
 const { register, logout, getUser, recoverPassword, resetPassword, verifyToken } =
@@ -47,7 +48,7 @@ router.post(
   recoverPassword,
 );
 router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
-router.post("/reset-password/verify-token", verifyToken);
+router.post("/reset-password/verify-token", validate(verifyTokenSchema), verifyToken);
 router.get("/user", getUser);
 
 export default router;
