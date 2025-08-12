@@ -90,7 +90,6 @@ class ReceiverService {
         // your request was not understood, please try again.
         // log interaction that the request was not understood
         
-        // todo: add a handling for this interaction type in the whatsapp callback
         const message = "I did not catch that. Please rewrite your request with the necessary details: <carPart> <CarBrand> <carModel> <carVariant>"
         sendMessageAndLogInteraction({
           message,
