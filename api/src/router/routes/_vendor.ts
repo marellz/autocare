@@ -4,9 +4,15 @@ import express from "express";
 import { validate } from "../../handlers/validation.handler";
 import vendorFormSchema from "../../schemas/vendor.schema";
 import { ensureAuthenticated } from "../../middleware/isAuthenticated";
+import { VendorPaginationSchema } from "../../schemas/pagination.schema";
 const router = express.Router();
 
-router.get("/", ensureAuthenticated, asyncHandler(VendorController.findAll));
+router.get(
+  "/",
+  validate(VendorPaginationSchema.partial(), "query"),
+  ensureAuthenticated,
+  asyncHandler(VendorController.findAll),
+);
 router.get(
   "/:id",
   ensureAuthenticated,
