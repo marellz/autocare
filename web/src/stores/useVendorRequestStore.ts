@@ -13,6 +13,7 @@ interface Store {
 
   getVendorRequests: (query?: FindVendorRequestParams) => Promise<void>
   createVendorRequest: (payload: NewVendorRequest) => Promise<void>
+  updateVendorRequest: (id: number, payload: Partial<VendorRequest>) => Promise<boolean>
   deleteVendorRequest: (id: number) => Promise<void>
 }
 
@@ -48,6 +49,21 @@ const useVendorRequestStore = create<Store>((set) => {
         set({ loading: false })
       }
     },
+    
+    updateVendorRequest: async (id: number, payload: Partial<VendorRequest>) => {
+      set({ error: null })
+      set({ loading: true })
+      try {
+        return await service.updateVendorRequest(id, payload)
+      } catch (error) {
+        set({ error: error })
+        console.error('Error creating vendor request:', error)
+        return false
+      } finally {
+        set({ loading: false })
+      }
+    },
+    
 
     deleteVendorRequest: async (id: number) => {
       set({ error: null })

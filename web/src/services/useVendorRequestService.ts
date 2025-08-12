@@ -57,6 +57,12 @@ export const useVendorRequestService = {
     ).then((res) => res.data)
   },
 
+  async updateVendorRequest(id: number, requestData: Partial<VendorRequest>): Promise<boolean> {
+    return handleResponse<{ message: 'ok'; updated: boolean }>(
+      await api.put(`${id}`, { json: requestData }),
+    ).then((res) => res.updated)
+  },
+
   async deleteVendorRequest(id: number): Promise<boolean> {
     await handleResponse<{ message: 'ok' | 'error' }>(await api.delete(id.toString()))
     return true
