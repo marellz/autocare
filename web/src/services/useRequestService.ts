@@ -55,7 +55,7 @@ export interface Request {
   status: RequestStatus
   createdAt: string
   updatedAt: string | null
-  fulfilledAt: string | null // todo: confirm/enact this update
+  fulfilledAt: string | null
   originalMessages: string[]
 }
 
