@@ -133,16 +133,17 @@ class RequestsController {
     }
   }
 
-  // todo: rethink request updates from client/vendor/admin, rewire update-ables
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilledAt, status, originalMessages, capturedDetails } =
-        req.body;
+      const { fulfilledAt, status, item, capturedDetails } = req.body;
+      const existing = await RequestService.findById(id);
+      if (!existing) throw new Error("Request does not exist");
+      const { originalMessages } = existing.get();
       const request = await RequestService.update(id, {
         fulfilledAt,
         status,
-        originalMessages,
+        originalMessages: [...originalMessages, item],
         capturedDetails,
       });
       if (!request) {
