@@ -22,8 +22,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import ToggleSort from '@/components/utils/ToggleSort'
 import TypTitle from '@/components/custom/typography/Title'
 
-// todo soon: filter brands, paid_status(feature/payment)
-
 const Requests = () => {
   const { requests, resultParams, loading, updateParams, updateRequest } = useRequestStore()
 
