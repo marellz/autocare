@@ -24,7 +24,6 @@ class RequestsController {
         sort_order,
       } = req.query;
 
-      // todo: handle pagination errors, validate via yup
       const paginationError = null;
       if (paginationError)
         throw new Error("Pagination error: " + paginationError);
