@@ -27,7 +27,7 @@ app.use(errorMiddleware);
 
 app.use(
   session({
-    secret: process.env.APP_SECET!, // todo: fix
+    secret: process.env.APP_SECRET!,
     saveUninitialized: false,
     resave: false,
     store: sessionStore,
