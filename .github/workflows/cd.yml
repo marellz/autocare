@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install deps
+        working-directory: ./web
+        run: npm install
+
+      - name: Frontend lint
+        working-directory: ./web
+        run: npm run lint
+
+      - name: Install API deps
+        working-directory: ./api
+        run: npm install
+
+      - name: Backend lint
+        working-directory: ./api
+        run: npm run lint
