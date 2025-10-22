@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: cd
+          ref: 'ci-cd'
           fetch-depth: 0
 
       - name: Set up Docker Buildx
