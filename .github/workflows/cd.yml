@@ -4,13 +4,11 @@ env:
   REGISTRY: ghcr.io
 
 on:
-  push:
-    branches: [ci-cd']
-  # workflow_run:
-  #   workflows: ["CI"]
-  #   branches: [master]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["CI"]
+    branches: [master]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       no_cache:
