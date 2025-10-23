@@ -34,6 +34,7 @@ export const useAuthService = {
       })
 
       if (!response.ok) {
+        // todo: remove "any" types
         const errorData: any = await response.json<{ error: string }>().catch(() => null)
         return { data: undefined, error: errorData?.error ?? NetworkError }
       }
