@@ -24,7 +24,6 @@ class RequestsController {
         sort_order,
       } = req.query;
 
-      // todo: handle pagination errors, validate via yup
       const paginationError = null;
       if (paginationError)
         throw new Error("Pagination error: " + paginationError);
@@ -102,30 +101,33 @@ class RequestsController {
     try {
       const { name, phone, item, token } = req.body;
 
-      // todo: remove when implementing validation
-      if (!token)
-        return res.status(400).json({ message: "Recaptcha token is required" });
-
       // verify recaptcha token
       const recaptchaResponse = await verifyToken(token);
-      
+
       if (!recaptchaResponse.success) {
         return res.status(400).json({
-          message: "Recaptcha verification failed",
+          message: "error",
           error: recaptchaResponse.message,
         });
       }
-      
-      const { request } = await ReceiverService.handleNewRequest({
+
+      const {
+        request: data,
+        message: response,
+        missingKeys: missingDetails,
+      } = await ReceiverService.handleNewRequest({
         body: item,
         name,
         phone,
         channel: RequestChannelEnum.WEB,
       });
 
-      res.json({ message: "ok", data: request });
-
-      // todo, do processing and update this request. ✅
+      res.json({
+        message: "ok",
+        data,
+        response,
+        missingDetails,
+      });
     } catch (error) {
       next(error);
     }
@@ -134,18 +136,20 @@ class RequestsController {
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { fulfilledAt, status, originalMessages, capturedDetails } =
-        req.body;
+      const { fulfilledAt, status, item, capturedDetails } = req.body;
+      const existing = await RequestService.findById(id);
+      if (!existing) throw new Error("Request does not exist");
+      const { originalMessages } = existing.get();
       const request = await RequestService.update(id, {
         fulfilledAt,
         status,
-        originalMessages,
+        originalMessages: [...originalMessages, item],
         capturedDetails,
       });
       if (!request) {
         return res.status(404).json({ message: "not found" });
       }
-      res.json({ message: "ok", data: { updated: request.length > 0 } });
+      res.json({ message: "ok", updated: request.length > 0 });
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,6 @@
 import {Logo, LogoShort} from '@/components/app/Logo'
 import { Button } from '@/components/ui/button'
+import { Toaster } from '@/components/ui/sonner'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ArrowLeft } from 'lucide-react'
 import { Link, Outlet } from 'react-router-dom'
@@ -33,6 +34,7 @@ const AuthLayout = () => {
           <p className="text-sm text-muted-foreground">All rights reserved.</p>
         </div>
       </footer>
+      <Toaster />
     </>
   )
 }

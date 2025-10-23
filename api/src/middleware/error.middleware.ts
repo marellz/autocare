@@ -5,7 +5,7 @@ const errorHandler = (
   req: Request,
   res: Response,
   // eslint-disable-next-line
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error(err.stack); // Log error for debugging
 

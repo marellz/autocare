@@ -13,6 +13,7 @@ import useVendorRequestStore from '@/stores/useVendorRequestStore'
 import Loader from '@/components/custom/Loader'
 import { Badge } from '@/components/ui/badge'
 import { RefreshCcw } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Props {
   open: boolean
@@ -27,7 +28,11 @@ const RequestOffers = ({ open, hideDialog, request }: Props) => {
 
   const { loading, vendorRequests: offers, getVendorRequests } = useVendorRequestStore()
   const getOffers = async () => {
-    if (!request) return // todo: show error alert
+    if (!request) {
+      toast.error('Error occurred', { description: 'Request does not exist.' })
+      return
+    }
+    
     await getVendorRequests({ requestId: request.id, price: true })
   }
 

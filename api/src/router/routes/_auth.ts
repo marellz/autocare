@@ -3,9 +3,16 @@ import passport from "passport";
 import AuthController from "../../controllers/auth.controller";
 import { User } from "../../db/models/user.model";
 import { validate } from "../../handlers/validation.handler";
-import { loginFormSchema, registerFormSchema } from "../../schemas/auth.schema";
+import {
+  loginFormSchema,
+  recoverPasswordFormSchema,
+  registerFormSchema,
+  resetPasswordSchema,
+  verifyTokenSchema,
+} from "../../schemas/auth.schema";
 
-const { register, logout, getUser } = AuthController();
+const { register, logout, getUser, recoverPassword, resetPassword, verifyToken } =
+  AuthController();
 
 const router = express.Router();
 
@@ -35,6 +42,13 @@ router.post("/login", validate(loginFormSchema), (req, res, next) => {
 
 router.post("/register", validate(registerFormSchema), register);
 router.post("/logout", logout as RequestHandler);
+router.post(
+  "/recover-password",
+  validate(recoverPasswordFormSchema),
+  recoverPassword,
+);
+router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
+router.post("/reset-password/verify-token", validate(verifyTokenSchema), verifyToken);
 router.get("/user", getUser);
 
 export default router;

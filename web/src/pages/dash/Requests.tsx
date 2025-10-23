@@ -16,13 +16,11 @@ import StatusSelect from '@/components/custom/requests/StatusSelect'
 import RequestOffers from '@/components/partials/requests/Offers'
 import ClientResponse from '@/components/partials/requests/ClientResponse'
 import { type ColumnDef } from '@tanstack/react-table'
-import { MoreHorizontal } from 'lucide-react'
+import { CornerUpLeft, ListOrdered, MoreHorizontal, UserPlus } from 'lucide-react'
 import RequestFilters from '@/components/partials/requests/Filters'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import ToggleSort from '@/components/utils/ToggleSort'
 import TypTitle from '@/components/custom/typography/Title'
-
-// todo soon: filter brands, paid_status(feature/payment)
 
 const Requests = () => {
   const { requests, resultParams, loading, updateParams, updateRequest } = useRequestStore()
@@ -110,9 +108,9 @@ const Requests = () => {
       size: 10,
       header: () => <p className="text-right pr-4">Actions</p>,
       cell: ({ row }) => {
-        {
-          /* todo:vary displayed options depending on status, also for opened dialogs */
-        }
+        const { status } = row.original
+        const canAssignToVendors = status !== 'submitted'
+        const canSeeOffers = status !== 'pending'
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="flex justify-center">
@@ -123,26 +121,30 @@ const Requests = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
-                Assign to vendors
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
-                View offers
-              </DropdownMenuItem>
+
+              {/* Response is not submitted: not paid for. */}
+              {canAssignToVendors && (
+                <DropdownMenuItem onClick={() => handleVendorAssign(row.original)}>
+                  <UserPlus />
+                  <span>Assign to vendors</span>
+                </DropdownMenuItem>
+              )}
+
+              {/* Request is not pending, submitted: paid for and sent out to vendors */}
+              {canAssignToVendors && canSeeOffers && (
+                <DropdownMenuItem onClick={() => handleShowOffers(row.original)}>
+                  <ListOrdered />
+                  <span>View offers</span>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => handleShowClientResponse(row.original)}>
-                Respond to client
+                <CornerUpLeft />
+                <span>Respond to client</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
       },
-
-      /*
-       * todo: Implement:
-       * see available offers(if any) ✅
-       * respond to client ✅
-          > refund(if nothing)
-       */
     },
   ]
 

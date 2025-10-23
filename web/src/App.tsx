@@ -26,6 +26,8 @@ const Terms = lazy(() => import('./pages/docs/Terms'))
 const Privacy = lazy(() => import('./pages/docs/Privacy'))
 const Contact = lazy(() => import('./pages/Contact'))
 const FAQs = lazy(() => import('./pages/dash/FAQs'))
+const PasswordRecovery = lazy(() => import('./pages/auth/forgot-password/Recovery'))
+const PasswordReset = lazy(() => import('./pages/auth/forgot-password/Reset'))
 
 export default function App() {
   const location = useLocation()
@@ -43,7 +45,11 @@ export default function App() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Error details:</p>
-              <p>{error?.message}</p>
+              <p>{error.message}</p>
+              <div className="mt-4 space-y-4">
+                <hr />
+                <div className="text-muted-foreground text-sm">{error.stack}</div>
+              </div>
             </div>
             <div className="flex justify-end">
               <Button onClick={resetErrorBoundary}>Reset error</Button>
@@ -87,6 +93,8 @@ export default function App() {
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<Login />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/forgot-password" element={<PasswordRecovery />} />
+              <Route path="/reset-password" element={<PasswordReset />} />
             </Route>
           </Routes>
         </Suspense>

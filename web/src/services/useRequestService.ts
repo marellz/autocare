@@ -3,10 +3,10 @@ import { createKyInstance } from '@/utils/kyCreator'
 import type { SearchParamsOption } from 'ky'
 
 export const requestStatuses = [
-  { label: "Missing details", value: 'missing_details' },
-  { label: "Submitted", value: 'submitted' },
-  { label: "Pending", value: 'pending' },
-  { label: "Completed", value: 'completed' },
+  { label: 'Missing details', value: 'missing_details' },
+  { label: 'Submitted', value: 'submitted' },
+  { label: 'Pending', value: 'pending' },
+  { label: 'Completed', value: 'completed' },
 ]
 export const requestChannels = [
   { label: 'Web', value: 'web' },
@@ -19,7 +19,27 @@ export const requestStatusLabels: Record<RequestStatus, string> = {
   pending: 'Pending',
   completed: 'Completed',
 }
-export const requestCapturedDetails = ['partName','carBrand', 'carModel','carVariant','carYear', 'engineSize','transmission','bodyType']
+export const requestCapturedDetails = [
+  'partName',
+  'carBrand',
+  'carModel',
+  'carVariant',
+  'carYear',
+  'engineSize',
+  'transmission',
+  'bodyType',
+]
+
+export const requestCapturedDetailsLabels: Record<RequestCapturedDetails, string> = {
+  partName: 'Part name',
+  carBrand: 'Car brand',
+  carModel: 'Car model',
+  carVariant: 'Car variant',
+  carYear: 'Car year',
+  engineSize: 'Engine size',
+  transmission: 'Transmission',
+  bodyType: 'Body type',
+}
 
 export type RequestCapturedDetails = (typeof requestCapturedDetails)[number]
 export type RequestChannel = (typeof requestChannels)[number]['value']
@@ -35,7 +55,7 @@ export interface Request {
   status: RequestStatus
   createdAt: string
   updatedAt: string | null
-  fulfilledAt: string | null // todo: confirm/enact this update
+  fulfilledAt: string | null
   originalMessages: string[]
 }
 
@@ -78,28 +98,36 @@ export const useRequestService = {
   },
 
   async createRequest(request: NewRequest) {
-    const response = await api.post('', {
+    const _response = await api.post('', {
       json: request,
     })
 
-    if (!response.ok) {
+    if (!_response.ok) {
       throw new Error('API response was not ok')
     }
 
-    const { data } = await response.json<{ message: 'ok'; data: Request }>()
-    return data
+    const { data, response, missingDetails } = await _response.json<{
+      message: 'ok'
+      data?: Request
+      response?: string
+      missingDetails?: string[]
+    }>()
+    return { data, response, missingDetails }
   },
 
-  async updateRequest(id: number, updated: Partial<Request>) {
+  async updateRequest(id: number, update: Partial<Request>) {
     const response = await api.put(id.toString(), {
-      json: updated,
+      json: update,
     })
 
     if (!response.ok) {
       throw new Error('API response was not ok')
     }
 
-    const { message } = await response.json<{ message: 'ok' | 'error' }>()
-    return message === 'ok'
+    const { updated } = await response.json<{
+      message: 'ok' | 'error'
+      updated: boolean
+    }>()
+    return { updated }
   },
 }

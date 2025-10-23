@@ -7,20 +7,20 @@ import {
   type RequestResultParams,
 } from '@/services/useRequestService'
 
-
 interface Store {
   requests: Request[]
   userRequests: Request[]
   loading: boolean
-  error: string | undefined
+  error: string | null
   resultParams: RequestResultParams
   requestParams: RequestRequestParams
+  missingDetails: string[] | undefined
 
   updateParams: (params: Partial<RequestRequestParams>) => void
   getRequests: () => Promise<void>
   getUserRequests: (phone: string) => Promise<void>
-  createRequest: (payload: NewRequest) => Promise<void>
-  updateRequest: (id: number, updated: Partial<Request>) => Promise<void>
+  createRequest: (payload: NewRequest) => Promise<boolean>
+  updateRequest: (id: number, updated: Partial<Request>) => Promise<boolean>
   resetRequests: () => void
   resetParams: (params: Partial<RequestRequestParams>) => void
   // deleteRequest: (id: number) => Promise<void>;
@@ -30,7 +30,8 @@ const useRequestStore = create<Store>((set) => {
   const requests: Request[] = []
   const userRequests: Request[] = []
   const loading: boolean = false
-  const error: string | undefined = undefined
+  const error: string | null = null
+  const missingDetails: string[] | undefined = undefined
 
   const resultParams: RequestResultParams = {
     page_count: 1,
@@ -77,14 +78,13 @@ const useRequestStore = create<Store>((set) => {
 
   const getRequests = async () => {
     try {
-      set({ loading: true })
+      set({ loading: true, error: null })
       const { requestParams } = useRequestStore.getState()
       const { items, pagination } = await service.getRequests(requestParams)
-      set({ requests: items })
-      set({ resultParams: pagination })
+      set({ requests: items, resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -92,14 +92,13 @@ const useRequestStore = create<Store>((set) => {
 
   const getUserRequests = async (phone: string) => {
     try {
-      set({ loading: true })
+      set({ loading: true, error: null })
       const { requestParams } = useRequestStore.getState()
-      const { items, pagination } = await service.getRequests({...requestParams, phone})
-      set({ userRequests: items })
-      set({ resultParams: pagination })
+      const { items, pagination } = await service.getRequests({ ...requestParams, phone })
+      set({ userRequests: items, resultParams: pagination })
     } catch (error) {
       console.error('Error fetching requests:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ loading: false })
     }
@@ -107,28 +106,42 @@ const useRequestStore = create<Store>((set) => {
 
   const createRequest = async (request: NewRequest) => {
     try {
-      set({ loading: true })
-      await service.createRequest(request)
+      set({ loading: true, missingDetails: undefined, error: null })
+      const { response, missingDetails } = await service.createRequest(request)
+      set({ missingDetails })
+      if (missingDetails) {
+        throw new Error(response ?? 'Request has missing details.')
+      }
+
+      return true
     } catch (error) {
       console.error('Error creating request:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
+      return false
     } finally {
       set({ loading: false })
     }
   }
 
-  const updateRequest = async (id: number, updated: Partial<Request>) => {
+  const updateRequest = async (id: number, update: Partial<Request>) => {
     try {
-      set({ loading: true })
-      await service.updateRequest(id, updated)
+      set({ loading: true, missingDetails: undefined, error: null })
+
+      const { updated } = await service.updateRequest(id, update)
+
+      if (!updated) throw new Error('Failed to update request')
+
       set((state) => ({
         requests: state.requests.map((request) =>
-          request.id === id ? { ...request, ...updated } : request,
+          request.id === id ? { ...request, ...update } : request,
         ),
       }))
+
+      return true
     } catch (error) {
       console.error('Error updating request:', error)
-      set({ error: error as string })
+      set({ error: error instanceof Error ? error.message : String(error) })
+      return false
     } finally {
       set({ loading: false })
     }
@@ -143,7 +156,7 @@ const useRequestStore = create<Store>((set) => {
             }));
         } catch (error) {
             console.error("Error deleting request:", error);
-            set({ error: error as string });
+            set({ error: err instanceof Error ? error.message : String(error) });
         } finally {
             set({ loading: false });
         }
@@ -175,6 +188,8 @@ const useRequestStore = create<Store>((set) => {
     // deleteRequest,
 
     resetRequests,
+
+    missingDetails,
   }
 })
 

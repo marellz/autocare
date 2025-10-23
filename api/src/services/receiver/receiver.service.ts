@@ -5,6 +5,8 @@ import {
 import RequestService from "../request/request.service";
 import {
   CarPartDetail,
+  Request,
+  RequestChannelEnum,
   RequestStatusEnum,
 } from "../../db/models/request.model";
 import RequestProcessService from "../request/process.service";
@@ -20,7 +22,6 @@ import {
 import InteractionService from "../interaction/interaction.service";
 import VendorService from "../vendor/vendor.service";
 import { sendMessageAndLogInteraction } from "../notification/notify.service";
-import { sendRequestToVendors } from "../request/sender.service";
 
 interface InboundMessageDetails {
   phone: string;
@@ -32,27 +33,24 @@ class ReceiverService {
    * HANDLE NEW REQUEST
    */
   static async handleNewRequest(
-    inbound: InboundMessageDetails & { name: string, channel: string },
-  ) {
+    inbound: InboundMessageDetails & { name: string; channel: string },
+  ): Promise<{missingKeys?: string[], request?: Request, message: string}> {
     const { body, phone, channel } = inbound;
 
     // create new Request
     const {
-      response: message,
+      response: message, // todo: rethink the importance of this response/message
       capturedKeys,
       missingKeys,
     } = await RequestProcessService.processNewRequest(body);
 
     // if incomplete, request for more info
-    let status = RequestStatusEnum.SUBMITTED;
+    const status = missingKeys.length
+      ? RequestStatusEnum.MISSING_DETAILS
+      : RequestStatusEnum.SUBMITTED;
     // todo: feature/payment: update statusd to pending, after payment is made
     // on payment hook, if the paymernt is declined, only send once the means to complete it.
     // don't forget to create interactions for this
-
-    const isMissingDetails = missingKeys.length > 0;
-    if (missingKeys.length) {
-      status = RequestStatusEnum.MISSING_DETAILS;
-    }
 
     const payload = {
       ...inbound,
@@ -63,36 +61,83 @@ class ReceiverService {
       missingDetails: missingKeys,
     };
 
-    const _request = await RequestService.create(payload);
-    const request = _request.get();
+    const createRequest = async () => {
+      const _request = await RequestService.create(payload);
+      return _request.get();
+    };
+
+    const logInboundInteraction = async (requestId?: string) => {
+      await InteractionService.create({
+        message: body,
+        direction: InteractionDirectionEnum.INBOUND,
+        type: InteractionTypes.CLIENT_REQUEST,
+        metadata: {},
+        phone,
+        requestId,
+      });
+    };
+
+    if (missingKeys.length) {
+      /** WEB: If channel is web, any missing keys have to be corrected. */
+      if (channel === RequestChannelEnum.WEB) {
+        return {
+          message: 'Request has missing details',
+          missingKeys,
+        };
+      }
+
+      if (missingKeys.length >= 4) {
+        // your request was not understood, please try again.
+        // log interaction that the request was not understood
+        
+        const message = "I did not catch that. Please rewrite your request with the necessary details: <carPart> <CarBrand> <carModel> <carVariant>"
+        sendMessageAndLogInteraction({
+          message,
+          type: InteractionTypes.SYSTEM_REQUEST_FAIL,
+          phone,
+        });
+
+        return {
+          message,
+        };
+      }
+
+      // create request
+      const request = await createRequest();
+
+      // inbound interaction
+      await logInboundInteraction(request.id);
+
+      // if missing keys, ask for more info
+      sendMessageAndLogInteraction({
+        message: "Missing keys: " + missingKeys.join(", "),
+        type: InteractionTypes.SYSTEM_REQUEST_UPDATE,
+        phone,
+        requestId: request.id,
+      });
+
+      return {
+        message: 'Request has missing keys, please update this.',
+        missingKeys,
+        request,
+      };
+    }
+
+    /** milestone: information is tight! */
+
+    // create request
+    const request = await createRequest();
 
     // create inbound interaction
-    await InteractionService.create({
-      message: body,
-      direction: InteractionDirectionEnum.INBOUND,
-      type: InteractionTypes.CLIENT_REQUEST,
-      metadata: {},
-      phone,
-      requestId: request.id,
-    });
-
-    const interactionType = isMissingDetails
-      ? InteractionTypes.SYSTEM_REQUEST_UPDATE // seeking more info
-      : InteractionTypes.SYSTEM_REQUEST_ACKNOWLEDGE;
+    await logInboundInteraction(request.id);
 
     // create outbound interation back to callback user -> client
     await sendMessageAndLogInteraction({
       message,
-      type: interactionType,
+      type: InteractionTypes.SYSTEM_REQUEST_ACKNOWLEDGE,
       phone,
       requestId: request.id,
     });
-
-    if (isMissingDetails) return { message };
-
-    // if complete, finalize and send to vendors
-    // todo: automate this part conditionally.
-    await sendRequestToVendors(request);
 
     return {
       request,
@@ -211,8 +256,8 @@ class ReceiverService {
     if (!available) {
       // mark the vendor-request as unavailable
       VendorRequestService.update(vendorRequest.id, {
-        status: VendorRequestStatusEnum.UNAVAILABLE
-      })
+        status: VendorRequestStatusEnum.UNAVAILABLE,
+      });
       return {
         message: "Vendor does not have the said part in stock",
       };
@@ -261,7 +306,7 @@ class ReceiverService {
 
       message = `Your quote for request for #${requestId} has been received and will be forwared to the client`;
 
-      status = VendorRequestStatusEnum.QUOTED
+      status = VendorRequestStatusEnum.QUOTED;
     } else {
       message =
         "Some details were missing. Please resend and also include: " +
@@ -282,7 +327,7 @@ class ReceiverService {
     await VendorRequestService.update(vendorRequest.id, {
       condition,
       price: price?.toString(),
-      status
+      status,
     });
 
     return {

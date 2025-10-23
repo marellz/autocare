@@ -1,12 +1,11 @@
 import {
   RequestModel,
-  // RequestModel,
   VendorModel,
   VendorRequestModel,
 } from "../../db/sequelize";
-import type {
-  NewVendorRequest,
-  VendorRequest,
+import {
+  type NewVendorRequest,
+  type VendorRequest,
 } from "../../db/models/vendorRequest.model";
 import { WhereOptions } from "sequelize";
 class VendorRequestService {
@@ -52,10 +51,7 @@ class VendorRequestService {
       where: {
         ...where,
       },
-      include: [
-        VendorModel,
-        RequestModel
-      ]
+      include: [VendorModel, RequestModel],
     });
 
     return vendorRequest;

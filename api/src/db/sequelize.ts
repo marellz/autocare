@@ -23,6 +23,7 @@ import {
 } from "./models/interaction.model";
 import { FAQ, FAQModelDefinition, NewFAQ } from "./models/faq.model";
 import { ContactMessage, ContactMessageModelDefinition, NewContactMessage } from "./models/contact.model";
+import  PasswordResetModelDefinition, {  type NewPasswordReset, type PasswordReset } from "./models/passwordResets";
 
 const { dbName, userName, password } = dbConfig;
 
@@ -124,6 +125,14 @@ export const FAQModel = sequelize.define<Model<FAQ, NewFAQ>>(
 export const ContactMessageModel = sequelize.define<Model<ContactMessage, NewContactMessage>>(
   "contact_messages", ContactMessageModelDefinition,  {
     tableName: "contact_messages",
+    freezeTableName: true,
+    timestamps: false,
+  }
+);
+
+export const PasswordResetModel = sequelize.define<Model<PasswordReset, NewPasswordReset>>(
+  "contact_messages", PasswordResetModelDefinition,  {
+    tableName: "password_resets",
     freezeTableName: true,
     timestamps: false,
   }

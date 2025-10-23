@@ -37,13 +37,17 @@ interface Props {
 
 const VendorAssign = ({ open, request, hideDialog }: Props) => {
   const { getVendors, vendors } = useVendorStore()
-  const { vendorRequests, getVendorRequests, createVendorRequest } = useVendorRequestStore()
+  const { vendorRequests, getVendorRequests, createVendorRequest, updateVendorRequest } =
+    useVendorRequestStore()
   const { updateRequest } = useRequestStore()
 
   const initiate = async (/*brand: string*/) => {
-    // will not run if request is null.
-    // todo: handle with an error
-    if (!request) return
+    if (!request) {
+      // will not run if request is null.
+      toast.error('Error occurred', { description: 'Request does not exist.' })
+      return
+    }
+
     await getVendors()
     await getVendorRequests({
       requestId: request.id,
@@ -79,9 +83,12 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
 
       hideDialog()
 
-      toast.success('Successfully assigned request to vendors', {
-        description: `Request ID #${request!.id}`,
-      })
+      toast.success(
+        `Successfully assigned request to ${selected.length === 1 ? '1 vendor' : selected.length + ' vendors'} `,
+        {
+          description: `Request ID #${request!.id}`,
+        },
+      )
     } catch (error) {
       toast.error('Error assiging request to vendors', {
         description: error as string,
@@ -98,21 +105,30 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
     (vendor) => !vendorRequests.map((vr) => vr.vendorId).includes(vendor.id),
   )
 
-  const requestBrand = 'Toyota' // todo: fix: get real brand from request
+  const requestBrand = request?.capturedDetails.carBrand
   const recommended = unrequestedVendors.filter((vendor) => vendor.brands.includes(requestBrand))
   const otherVendors = unrequestedVendors.filter((vendor) => !vendor.brands.includes(requestBrand))
 
   // proposition
-  const proposeQuote = (id: number) => {
-    // todo: update VendorRequest with status "proposed"
-    console.log(`propose vendor-request id ${id}`)
+  /**
+   *
+   * @param id vendorRequest->id
+   */
+  const proposeQuote = async (id: number) => {
+    /**
+     *todo: set-up propositions, on api, with send mail/text/whatsapp methods
+
+     >> await proposeQuoteToClient(id) // already has quote, request.id
+     */
+
+    await updateVendorRequest(id, { status: 'proposed' })
   }
 
   useEffect(() => {
     if (!request) return
-    if(!open) return
+    if (!open) return
     initiate()
-  }, [request,open])
+  }, [request, open])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

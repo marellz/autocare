@@ -19,6 +19,7 @@ import { AlertCircle, Edit, Plus, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { FAQ } from '@/services/useFAQService'
 import FaqForm from '@/components/partials/faq/FaqForm'
+import { toast } from 'sonner'
 
 interface FAQListProps {
   onDelete: (id: number) => void
@@ -81,7 +82,11 @@ const FAQs = () => {
 
   const handleUpdate = async (id: number) => {
     const _faq = await getById(id)
-    if (!_faq) return // todo: handle: use toast perhaps
+    if (!_faq) {
+      toast.error('Error', { description: 'This FAQ does not exist.' })
+      return
+    }
+    toast.success('FAQ successfully updated')
     setForm(_faq)
     setDialogOpen(true)
   }

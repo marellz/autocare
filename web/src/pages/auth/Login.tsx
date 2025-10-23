@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import LoginForm from '@/components/partials/auth/LoginForm'
 
 const Login = () => {
@@ -27,9 +27,9 @@ const Login = () => {
       </CardContent>
       <CardFooter className="flex-col space-y-2">
         <div className="text-center">
-          <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+          <Link to="/forgot-password" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
             Forgot your password?
-          </a>
+          </Link>
         </div>
       </CardFooter>
     </Card>

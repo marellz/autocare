@@ -1,26 +1,34 @@
 import { cleanObject } from "../utils/object.utils";
 import VendorRequestService from "../services/vendor/vendorRequest.service";
+import RequestService from "../services/request/request.service";
 import { Request, Response } from "express";
-import { VendorRequest, VendorRequestStatusEnum } from "../db/models/vendorRequest.model";
+import {
+  VendorRequest,
+  VendorRequestStatusEnum,
+} from "../db/models/vendorRequest.model";
 import { Op, WhereOptions } from "sequelize";
 class VendorRequestController {
   static async findAll(req: Request, res: Response) {
     try {
       // const { vendorId, requestId } = req.query;
-      const {vendorId, requestId, price}: {
+      const {
+        vendorId,
+        requestId,
+        price,
+      }: {
         vendorId?: string;
         requestId?: string;
-        price?: boolean
+        price?: boolean;
       } = cleanObject(req.query);
 
-      const payload : WhereOptions<VendorRequest>= {}
+      const payload: WhereOptions<VendorRequest> = {};
 
-      if(vendorId) payload.vendorId = vendorId
-      if(requestId) payload.requestId = requestId
-      if(price){
+      if (vendorId) payload.vendorId = vendorId;
+      if (requestId) payload.requestId = requestId;
+      if (price) {
         payload.price = {
-          [Op.not]: null
-        }
+          [Op.not]: null,
+        };
       }
 
       const vendorRequests = await VendorRequestService.findAll(payload);
@@ -85,8 +93,18 @@ class VendorRequestController {
         condition,
         price,
         notes,
-        status
+        status,
       });
+
+      const { requestId } = vendorRequest.get();
+      if (status === VendorRequestStatusEnum.PROPOSED) {
+        const request = await RequestService.findById(requestId);
+        if (!request) return;
+        await RequestService.update(requestId, {
+          fulfilledAt: new Date().toISOString(),
+        });
+      }
+
       res.status(200).json({ message: "Vendor request updated successfully" });
     } catch (error) {
       res.status(500).json({ message: "Error updating vendor request", error });

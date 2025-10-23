@@ -1,13 +1,24 @@
-import { useAuthService, type LoginPayload, type User } from '@/services/useAuthService'
+import {
+  useAuthService,
+  type LoginPayload,
+  type PasswordResetPayload,
+  type PasswordResetRequestPayload,
+  type User,
+} from '@/services/useAuthService'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 interface Store {
   login: (payload: LoginPayload) => Promise<boolean>
   logout: () => Promise<boolean>
 
+  requestPasswordReset: (payload: PasswordResetRequestPayload) => Promise<boolean>
+  resetPassword: (payload: PasswordResetPayload) => Promise<boolean>
+  verifyToken: (token: string) => Promise<boolean>
+  
   user: User | null
   loading: boolean
   error: string | null
+  resetError: () => void
 }
 
 const service = useAuthService
@@ -19,8 +30,7 @@ const useAuthStore = create<Store>()(
       const error: string | null = null
 
       const login = async (payload: LoginPayload) => {
-        set({ loading: true })
-        set({ error: null })
+        set({ loading: true, error: null })
 
         const response = await service.login(payload)
         if (response) {
@@ -37,9 +47,7 @@ const useAuthStore = create<Store>()(
       }
 
       const logout = async () => {
-        set({ loading: true })
-        set({ error: null })
-        set({ user: null })
+        set({ loading: true, error: null, user: null })
 
         const response = await service.logout()
         if (response) {
@@ -57,6 +65,53 @@ const useAuthStore = create<Store>()(
         }
       }
 
+      const requestPasswordReset = async (payload: PasswordResetRequestPayload) => {
+        try {
+          set({ loading: true, error: null })
+          const { sent: success } = await service.requestPasswordReset(payload)
+          return success
+        } catch (error) {
+          console.error('Error resetting password', error)
+          set({ error: error instanceof Error ? error.message : String(error) })
+          return false
+        } finally {
+          set({ loading: false })
+        }
+      }
+
+      const resetPassword = async (payload: PasswordResetPayload) => {
+        try {
+          set({ loading: true, error: null })
+          const { updated: success } = await service.submitPasswordReset(payload)
+          return success
+        } catch (error) {
+          console.error('Error resetting password', error)
+          set({ error: error instanceof Error ? error.message : String(error) })
+          return false
+        } finally {
+          set({ loading: false })
+        }
+      }
+
+      const verifyToken = async (token: string) => {
+        try {
+          set({ loading: true, error: null })
+          const { valid: success } = await service.verifyToken(token)
+          return success
+        } catch (error) {
+          console.error('Error verifying your token', error)
+          set({ error: error instanceof Error ? error.message : String(error) })
+          return false
+        } finally {
+          set({ loading: false })
+        }
+      }
+
+
+      const resetError = () => {
+        set({error: null})
+      }
+
       return {
         error,
         loading,
@@ -64,6 +119,12 @@ const useAuthStore = create<Store>()(
 
         login,
         logout,
+
+        requestPasswordReset,
+        resetPassword,
+        verifyToken,
+
+        resetError,
       }
     },
     {

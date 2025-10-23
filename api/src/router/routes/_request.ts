@@ -5,10 +5,15 @@ import { validate } from "../../handlers/validation.handler";
 
 // schemas
 import { requestSchema } from "../../schemas/request.schema";
+import { RequestPaginationSchema } from "../../schemas/pagination.schema";
 
 const router = express.Router();
 
-router.get("/", asyncHandler(RequestsController.findAll));
+router.get(
+  "/",
+  validate(RequestPaginationSchema.partial(), "query"),
+  asyncHandler(RequestsController.findAll),
+);
 router.post(
   "/",
   validate(requestSchema),

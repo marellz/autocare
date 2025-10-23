@@ -11,6 +11,18 @@ export interface LoginPayload {
   password: string
 }
 
+export interface PasswordResetRequestPayload {
+  email: string
+  token: string
+}
+
+export interface PasswordResetPayload {
+  password: string
+  confirmPassword: string
+  token: string
+  secure_token: string
+}
+
 const NetworkError = 'Network/server error'
 const api = createKyInstance('/auth')
 
@@ -22,8 +34,8 @@ export const useAuthService = {
       })
 
       if (!response.ok) {
-        const errorData: any = await response.json<{ error: string }>().catch(() => null) // sometimes no JSON
-        console.log({ herer: errorData })
+        // todo: remove "any" types
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
         return { data: undefined, error: errorData?.error ?? NetworkError }
       }
 
@@ -73,6 +85,76 @@ export const useAuthService = {
       return {
         data: undefined,
         error: e,
+      }
+    }
+  },
+
+  // password reset
+  async requestPasswordReset(payload: PasswordResetRequestPayload) {
+    try {
+      const response = await api.post('recover-password', {
+        json: payload,
+      })
+
+      if (!response.ok) {
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
+        return { sent: false, error: errorData?.error ?? NetworkError }
+      }
+
+      const { sent } = await response.json<{ message: 'ok' | 'error'; sent: boolean }>()
+
+      return { sent }
+    } catch (error: any) {
+      const { error: e } = await error.response.json()
+      return {
+        sent: false,
+        error: e as string,
+      }
+    }
+  },
+
+  async submitPasswordReset(payload: PasswordResetPayload) {
+    try {
+      const response = await api.post('reset-password', {
+        json: payload,
+      })
+
+      if (!response.ok) {
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
+        return { updated: false, error: errorData?.error ?? NetworkError }
+      }
+
+      const { updated } = await response.json<{ message: 'ok' | 'error'; updated: boolean }>()
+
+      return { updated }
+    } catch (error: any) {
+      const { error: e } = await error.response.json()
+      return {
+        updated: false,
+        error: e as string,
+      }
+    }
+  },
+
+  async verifyToken(token: string) {
+    try {
+      const response = await api.post('reset-password/verify-token', {
+        json: { token },
+      })
+
+      if (!response.ok) {
+        const errorData: any = await response.json<{ error: string }>().catch(() => null)
+        return { valid: false, error: errorData?.error ?? NetworkError }
+      }
+
+      const { valid } = await response.json<{ message: 'ok' | 'error'; valid: true }>()
+
+      return { valid }
+    } catch (error: any) {
+      const { error: e } = await error.response.json()
+      return {
+        valid: false,
+        error: e as string,
       }
     }
   },
