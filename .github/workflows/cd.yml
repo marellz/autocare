@@ -1,0 +1,94 @@
+name: CD
+
+env:
+  REGISTRY: ghcr.io
+
+on:
+  push:
+    branches: [ci-cd']
+  # workflow_run:
+  #   workflows: ["CI"]
+  #   branches: [master]
+  #   types:
+  #     - completed
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: "Set to true to force --no-cache on docker build (default: true)"
+        required: false
+        default: "true"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        service:
+          - api
+          - web
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: autocare_test
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: autocare_test
+      REGISTRY: ghcr.io
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 'ci-cd'
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push ${{ matrix.service }}
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ github.event.inputs.no_cache }}" = "false" ]; then
+              CACHE_FLAG=""
+            else
+              CACHE_FLAG="--no-cache"
+            fi
+          else
+            CACHE_FLAG="--no-cache"
+          fi
+
+          IMAGE=${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.service }}
+          docker build $CACHE_FLAG --pull -f ${{ matrix.service }}/Dockerfile.prod \
+            -t $IMAGE:latest \
+            -t $IMAGE:${{ github.sha }} \
+            ${{matrix.service}}
+
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}
