@@ -44,7 +44,7 @@ const VendorAssign = ({ open, request, hideDialog }: Props) => {
     // will not run if request is null.
     // todo: handle with an error
     if (!request) return
-    await getVendors({})
+    await getVendors()
     await getVendorRequests({
       requestId: request.id,
     })

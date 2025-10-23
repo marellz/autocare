@@ -127,7 +127,7 @@ const DashHome = () => {
                   <Bar dataKey="quotes" fill="var(--color-quotes)" radius={4} />
                   <XAxis dataKey="month" tickLine={false} axisLine={false} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent payload={chartData} />} />
+                  <ChartLegend content={<ChartLegendContent />} />
                 </BarChart>
               </ChartContainer>
             </CardContent>
