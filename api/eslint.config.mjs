@@ -1,35 +1,36 @@
-import js from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
-import json from '@eslint/json';
-import { defineConfig } from 'eslint/config';
+import js from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import json from "@eslint/json";
+import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     plugins: { js },
-    extends: ['js/recommended'],
+    extends: ["js/recommended"],
   },
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     languageOptions: { globals: globals.browser },
   },
   tseslint.configs.recommended,
   {
-    files: ['**/*.json'],
+    files: ["**/*.json"],
     plugins: { json },
-    language: 'json/json',
-    extends: ['json/recommended'],
+    language: "json/json",
+    extends: ["json/recommended"],
   },
   {
-    files: ['**/*.jsonc'],
+    files: ["**/*.jsonc"],
     plugins: { json },
-    language: 'json/jsonc',
-    extends: ['json/recommended'],
+    language: "json/jsonc",
+    extends: ["json/recommended"],
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
+      "@typescript-eslint/no-explicit-any": "off",
+      "react-refresh/only-export-components": "off",
     },
   },
 ]);
