@@ -26,6 +26,8 @@ const Terms = lazy(() => import('./pages/docs/Terms'))
 const Privacy = lazy(() => import('./pages/docs/Privacy'))
 const Contact = lazy(() => import('./pages/Contact'))
 const FAQs = lazy(() => import('./pages/dash/FAQs'))
+const PasswordRecovery = lazy(() => import('./pages/auth/forgot-password/Recovery'))
+const PasswordReset = lazy(() => import('./pages/auth/forgot-password/Reset'))
 
 export default function App() {
   const location = useLocation()
@@ -88,13 +90,14 @@ export default function App() {
               <Route path="/privacy" element={<Privacy />} />
             </Route>
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/forgot-password" element={<PassowrdRecovery />} />
-            <Route path="/reset-password" element={<PasswordReset />} />
-          </Route>
-        </Routes>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/forgot-password" element={<PasswordRecovery />} />
+              <Route path="/reset-password" element={<PasswordReset />} />
+            </Route>
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
     </ThemeProvider>
   )
